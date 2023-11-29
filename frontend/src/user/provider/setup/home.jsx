@@ -118,7 +118,7 @@ return <Modal message={iscreateSuccess? create?.message: edit?.message} navigati
               <input
                 type="text"
                 hidden={true}
-                value={service.id}
+                value={serviceId}
                 {...register("cid")}
               />
             </div>
