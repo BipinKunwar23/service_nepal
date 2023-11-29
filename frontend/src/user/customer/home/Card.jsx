@@ -23,12 +23,8 @@ function Card({ cards }) {
               className=" bg-[#fff] p-3 m-5  rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600  hover:cursor-pointer "
               onClick={() => {
                 dispatch(
-                  setProviderId({
-                    id: card?.id,
-                    category: card?.category?.name,
-                  })
+                  setProviderId(card?.id)
                 );
-                navigate(`/Category/${card?.category?.name}/${card?.name}`);
               }}
             >
               <div className="w-full h-[200px]  box-border bg-white">
@@ -60,8 +56,14 @@ function Card({ cards }) {
                   }
                 </ol>
           <div className="p-3">
-            <button className="bg-[rgba(0,0,0,0.6)] text-white p-2 px-8 rounded-md w-full " type="button">View More</button>
+            <button className="bg-[rgba(0,0,0,0.6)] text-white p-2 px-8 rounded-md w-full " type="button"
+            onClick={()=>{
+              navigate(`/provider/${card?.name}`)
+            }}
+            >View More</button>
           </div>
+
+         
               </div>
             </div>
           );

@@ -3,6 +3,7 @@ import Time from "./time";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Charge from "./charge";
+import Modal from "../../../components/mpdal";
 import {
   useSetupServicesMutation,
   useGetProviderServiceByIdQuery,
@@ -16,8 +17,8 @@ export default function SeviceSetup() {
   const serviceId = useSelector((state) => state.serviceSlice.service);
   console.log('serviceId',serviceId);
   const providerId = localStorage.getItem("userId");
-  const [setupService, { isLoading: isCreating }] = useSetupServicesMutation();
-  const [editService, { isLoading: isUpdating }] = useEditServicesMutation();
+  const [setupService, { data:create, isLoading: isCreating,isSuccess:iscreateSuccess }] = useSetupServicesMutation();
+  const [editService, {data:edit, isLoading: isUpdating ,isSuccess:isEditSuccess}] = useEditServicesMutation();
 
   const { data: service, isLoading,isError } = useGetProviderServiceByIdQuery({
     providerId,
@@ -83,6 +84,9 @@ console.log('eror',isError);
 
   if (isLoading || isCreating  || isUpdating) {
     return <div>Loading...</div>;
+  }
+  if(iscreateSuccess || isEditSuccess){
+return <Modal message={iscreateSuccess? create?.message: edit?.message} navigation="/provider/services" />
   }
   return (
     <section className="grid grid-cols-1 text-[1em] text-slate-500 box-border bg-[rgba(0,0,0,0.6)]  p-10 gap-5 ">

@@ -22,7 +22,7 @@ export default function Naavbar() {
     {
       id: 1,
       link: "My Orders",
-      to: "/",
+      to: "/customer/orders/history",
     },
     {
       id: 1,
@@ -103,7 +103,7 @@ export default function Naavbar() {
                       key={customer?.id}
                       className="text-white border-b-2 p-3 hover:bg-red-700 border-gray-400"
                     >
-                      <NavLink to={customer.to} className="">
+                      <NavLink to={customer.to} className="w-full">
                         {" "}
                         {customer.link}
                       </NavLink>
@@ -183,11 +183,12 @@ export default function Naavbar() {
                     onClick={() => {
                       const value = confirm(
                         "Are you sure tha you want to log out form this session"
-                      );
-                      if (value) {
+                        );
+                        if (value) {
+                          navigate("/", { replace: true });
+                        window.location.href="/";
                         localStorage.removeItem("logged");
                         localStorage.removeItem("userId");
-                        navigate("/", { replace: true });
                       }
                     }}
                   >

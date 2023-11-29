@@ -6,7 +6,6 @@ import Landing from "./landingPage/landing";
 import SignUp from "./authentication/SignUP";
 import SignIn from "./authentication/SignIn";
 import Home from "./user/customer/home/Home";
-import CardAll from "./user/customer/home/CardAll";
 import Provider from "./user/customer/home/Provider";
 import { CategoryPage } from "./category/categoryPage";
 import Profile from "./profile/Profile";
@@ -18,7 +17,8 @@ import { useSelector } from "react-redux";
 import ProviderHome from "./user/provider/home/home";
 import Services from "./user/provider/services/service";
 
-
+import Order from "./user/customer/order/order";
+import OrderHistory from "./user/customer/order/orderHistory";
 function App() {
   const selected=useSelector((state)=>state.categorySlice.category)
 
@@ -31,9 +31,10 @@ function App() {
         <Route path="/register" element={<SignUp />}></Route>
         <Route path="/signIn" element={<SignIn />}></Route>
         <Route path="/customer/" element={<Home />}>
-          <Route path="Category/All/" element={<CardAll />} />
         </Route>
-        <Route path="/Category/:category/:name" element={<Provider />} />
+        <Route path="/provider/:name" element={<Provider />} />
+        <Route path="/customer/orders" element={<Order/>} />
+        <Route path="/customer/orders/history" element={<OrderHistory/>}/>
         <Route path="/user/*">
           <Route path="profile/" element={<Profile />} />
           <Route path="profile/create" element={<Edit />} />
@@ -43,18 +44,12 @@ function App() {
             <Route path=":name/:subname" element={<EditCategory />} />
             <Route path=":name/:subname/:child" element={<EditCategory />} />
           </Route>
-          {/* <Route path=":id" element={<CategoryId />} /> */}
-          {/* <Route
-            path="service/category/:id/service/:id"
-            element={<Setup />}
-          ></Route> */}
-        
+         
            
           </Route>
          
         <Route path="/provider/*" element={<ProviderHome />}>
-            {/* <Route path="all" element={<AllServices />} />
-            <Route path=":category" element={<ServiceById />} /> */}
+           
           </Route>
             <Route path="/provider/service/join" element={<ServiceSetUp />} />
             <Route path="/provider/services/*" element={<Services />} />

@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 
-export const serviceApi = createApi({
-  reducerPath: "service",
+export const providerApi = createApi({
+  reducerPath: "provider",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/services/",
+    baseUrl: "http://localhost:8000/api/provider/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
@@ -19,7 +19,7 @@ export const serviceApi = createApi({
       query: (formdata) => {
         const id = formdata.get("id");
         return {
-          url: `create/${id}`,
+          url: `services/create/${id}`,
           method: "POST",
           body: formdata,
         };
@@ -31,7 +31,7 @@ export const serviceApi = createApi({
       query: (formdata) => {
         const id = formdata.get("id");
         return {
-          url: `edit/${id}`,
+          url: `services/update/${id}`,
           method: "POST",
           body: formdata,
          
@@ -51,45 +51,54 @@ export const serviceApi = createApi({
 
     }),
 
-    getAllProviderServices: builder.query({
-      query: (providerId) => `provider/${providerId}`,
-      providesTags:(result)=>
-        result ?
-        [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
-        :['Services'],
-      
-    }),
-    getProviderServiceByCategory: builder.query({
-      query: ({providerId,categoryId}) =>`provider/${providerId}/category/${categoryId}`,
-      providesTags:(result)=>
-        result ?
-        [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
-        :['Services'],
-      
-    }),
+
+
+
     getProviderServiceById: builder.query({
-      query: ({serviceId,providerId}) =>`${serviceId}/provider/${providerId}`,
+      query: ({providerId,serviceId}) =>`${providerId}/services/${serviceId}`,
       providesTags:['Services'],
 
     }),
-    getAllProviderCategory: builder.query({
-      query: (providerId) => `provider/category/${providerId}`,
-      providesTags:(result)=>
-      result ?
-      [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
-      :['Services'],
 
+    getProviderService:builder.query({
+      query:({providerId, categoryId,subcategoryId})=>{
+          return !categoryId && !subcategoryId
+            ? `${providerId}/services`
+            : categoryId && !subcategoryId
+            ? `${providerId}/category/${categoryId}`
+            : `${providerId}/subcategory/${subcategoryId}`;
+      },
+      providesTags:(result)=>
+        result ?
+        [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
+        :['Services'],
     }),
+    
+    getProvider:builder.query({
+      query:({categoryId,subcategoryId})=>{
+          return !categoryId && !subcategoryId
+            ? "all"
+            : categoryId && !subcategoryId
+            ? `category/${categoryId}`
+            : `subcategory/${subcategoryId}`;
+      },
+      providesTags:(result)=>
+        result ?
+        [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
+        :['Services'],
+    })
+  
+    
+    
   }),
 });
 export const {
   useGetAllServicesQuery,
   useSetupServicesMutation,
   useEditServicesMutation,
-  useGetAllProviderServicesQuery,
-  useGetAllProviderCategoryQuery,
-  useGetProviderServiceByCategoryQuery,
   useGetProviderServiceByIdQuery,
   useDeleteServicesMutation,
+  useGetProviderServiceQuery,
+  useGetProviderQuery
   
-} = serviceApi;
+} = providerApi;

@@ -90,6 +90,5 @@ export const {
   useGetAllProviderCategoryQuery,
   useGetProviderServiceByCategoryQuery,
   useGetProviderServiceByIdQuery,
-  useDeleteServicesMutation,
-  
+  useDeleteServicesMutation
 } = serviceApi;

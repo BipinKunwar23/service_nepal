@@ -86,11 +86,14 @@ export const providerApi = createApi({
         result ?
         [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
         :['Services'],
+    }),
+    getProviderDetails:builder.query({
+      query:(providerId)=>`${providerId}/details`
     })
-  
-    
-    
+   
   }),
+
+
 });
 export const {
   useGetAllServicesQuery,
@@ -99,6 +102,9 @@ export const {
   useGetProviderServiceByIdQuery,
   useDeleteServicesMutation,
   useGetProviderServiceQuery,
-  useGetProviderQuery
+  useGetProviderQuery,
+  useGetProviderDetailsQuery
+  
+  
   
 } = providerApi;

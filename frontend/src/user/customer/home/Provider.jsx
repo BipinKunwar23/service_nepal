@@ -5,33 +5,35 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
-import { CardId } from "./CardId";
-import { useSelector } from "react-redux";
-import { useGetProviderDetailsQuery } from "../../../Api/cardApi";
+import { useSelector , useDispatch} from "react-redux";
+import { useGetProviderDetailsQuery } from "../../../Api/providerApi";
+import { useNavigate } from "react-router-dom";
+import { setServiceId } from "../../../redux/cardSlice";
 const Provider = () => {
-  const {id,category}=useSelector(state=>state.cardSlice.provider);
-  const { data, isLoading, isSuccess } = useGetProviderDetailsQuery(id);
+  const providerId = useSelector((state) => state.cardSlice.providerId);
+  const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const { data, isLoading, isSuccess } = useGetProviderDetailsQuery(providerId);
   console.log(data);
+  const serviceId=useSelector((state)=>state.cardSlice.serviceId);
+console.log('cards',serviceId);
   if (isLoading) {
     return <div>Loading...</div>;
   }
   if (isSuccess) {
     return (
-      <div className="  p-20 box-border bg-[rgba(0,0,0,0.5)] text-[1em]">
-        <div className="flex gap-5 bg-white p-8 border-b-2 border-gray-300">
+      <section className="   box-border text-[1em]">
+        <section className="flex gap-5 bg-white m-10 p-5 shadow shadow-gray-600">
           <div>
             <img
               src={plumber}
-              className="h-[300px] w-[300px] object-cover"
+              className="h-[300px] w-[300px] object-cover rounded-full "
               alt=""
             />
           </div>
           <div className="flex flex-col flex-1">
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-4">
-                <h2 className="text-center text-[1.4em] font-semibold font-sans">
-                  {category.toUpperCase()}
-                </h2>
                 <div className=" flex place-content-center">
                   {Array(data?.rating)
                     .fill()
@@ -53,7 +55,7 @@ const Provider = () => {
                         </i>
                       </li>
                       <li className=" text-[1.2em] font-medium">
-                       {data?.name.toUpperCase()}
+                        {data?.name.toUpperCase()}
                       </li>
                     </ul>
                   </li>
@@ -66,7 +68,6 @@ const Provider = () => {
                         </i>
                       </li>
                       <li className=" italic">{`${data?.profile?.address?.chowk}, ${data?.profile?.address?.muncipility}-${data?.profile?.address?.ward}, ${data?.profile?.address?.district}`}</li>
-
                     </ul>
                   </li>
 
@@ -81,7 +82,6 @@ const Provider = () => {
                             </i>
                           </li>
                           <li className=" italic text-[0.9em]">{data.email}</li>
-
                         </ul>
                       </li>
                       <li className=" ">
@@ -124,69 +124,48 @@ const Provider = () => {
               </button>
             </div>
           </div>
-        </div>
-        <div className="  box-border p-8  bg-white ">
-          <p className="text-[1.4em] mb-5 font-semibold align-bottom ">
+        </section>
+        <section className="  box-border p-8 m-10 bg-white shadow shadow-gray-600 ">
+          <p className="text-[1.2em] mb-5 font-semibold align-bottom text-gray-600 ">
             My Services
           </p>
-          <section className="flex flex-col   gap-5 ">
-            {
-             data?.services.map((service) => (
-                <div
-                  key={service?.id}
-                  className=" p-10 shadow grid grid-cols-1 border  border-gray-300 box-border"
-                >
-                  <div className=" flex flex-col gap-2">
-                    <p className="font-semibold font-sans text-[1.3em]">
-                      {service?.name}
-                    </p>
-                    <table  className="table-fixed  " cellSpacing={5}  cellPadding={10} >
-                  <thead  >
-                    <tr className="bg-gray-600 text-white "  >
-                      <th>Location</th>
-                      <th>Days</th>
-                      <th>Time</th>
-                      <th>Charge</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-blue-600 text-white">
-                      <td className="text-center">{service?.pivot?.location}</td>
-                      <td className="text-center ">{
-                        service?.pivot?.days.map(day=><span className="mr-2" key={day}>{day}</span>)
-                      }</td>
-                      <td className="text-center">{`${service?.pivot?.time?.start}-${service?.pivot?.time?.end}`}</td>
-                      <td className="text-center">{`${service?.pivot?.charge?.min}-${service?.pivot?.charge?.max}`}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div className="flex justify-between">
-                      <button className="bg-gray-200 p-2 w-[200px]">
-                        View More
-                      </button>
-                      <button
-                      type="button"
-                      className="font-bold font-sans text-[1em] bg-green-600 p-2 text-white"
-                    >
-                      REQUEST NOW
-                    </button>
-                    </div>
-                  </div>
-                
-                </div>
-              ))}
-          </section>
-        </div>
+          <section className="flex justify-evenly gap-10  ">
+            {data?.services.map((service) => (
+              <div
+                key={service?.id}
+                className=" p-2 shadow shadow-gray-700 grid grid-cols-1 border text-center  border-gray-300 box-border"
+              >
+                <img src={plumber} alt=""  className="w-full h-[200px] mb-2"/>
+               
+                <h2 className="font-semibold text-[#666] text-lg mb-2">
+                  {service?.name}
+                </h2>
+                <p className="mb-2 text-[1em]">
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Architecto error voluptatum inventore cum sequi, excepturi sit
+                  
+                  {service?.descripion}
+                </p>
 
-        <div className="bg-white p-2 flex flex-col gap-2">
-          <h2 className="text-[1.2em] font-semibold">Other Services</h2>
-          <div className=" ">
-            <CardId />
-          </div>
-        </div>
+                <div className="flex place-content-center">
+                  <button
+                    type="button"
+                    className="font-bold font-sans text-[1em] m-2 w-full  bg-green-600 p-2 text-white"
+                    onClick={()=>{
+                      dispatch(setServiceId(service?.id))
+                      navigate("/customer/orders")
+                    }}
+                  >
+                    Order Now
+                  </button>
+                </div>
+              </div>
+            ))}
+          </section>
+        </section>
 
         {/* footer */}
-        <div className="border-t-2 border-gray-400 flex gap-10 bg-white p-10 box-border">
+        <div className=" flex gap-10 bg-white p-8 m-5 shadow shadow-gray-600 box-border">
           <div className=" flex-1 border border-gray-300 p-6 ">
             <form action="" className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
@@ -239,7 +218,7 @@ const Provider = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     );
   }
 };

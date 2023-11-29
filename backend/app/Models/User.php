@@ -71,4 +71,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class,'user_id');
     }
+    public function orders(){
+        return $this->hasOne(User::class,'user_id');
+    }
 }

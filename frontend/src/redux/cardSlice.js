@@ -5,11 +5,8 @@ const initialState={
    
     category:{},
     subcategory:{},
-    cardId:'',
-    provider:{
-        id:'',
-        category:''
-    }
+    serviceId:null,
+    providerId:null
 }
 
 export const cardSlice=createSlice({
@@ -23,10 +20,10 @@ reducers:{
         state.subcategory=actions.payload
     }),
     setServiceId:((state,actions)=>{
-        state.cardId=actions.payload
+        state.serviceId=actions.payload
     }),
     setProviderId:((state,actions)=>{
-        state.provider=actions.payload
+        state.providerId=actions.payload
     })
 }
 })

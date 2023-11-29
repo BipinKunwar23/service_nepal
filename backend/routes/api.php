@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CusotmerProviderController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
@@ -90,3 +91,10 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
 
 });
 
+Route::prefix('orders')->controller(OrderController::class)->group(function () {
+Route::post('create/{customerId}/service/{serviceId}','placeOrder');
+Route::get('get/customer/{customerId}','getOrders');
+Route::get('get/{providerId}','getAllOrders');
+Route::get('{orderId}/{customerId}','getOrdersById');
+
+});
