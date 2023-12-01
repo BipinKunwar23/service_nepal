@@ -83,6 +83,9 @@ prepareHeaders:(headers)=>{
     }),
     viewProfile:build.query({
       query:(id)=>`profile/${id}`
+    }),
+    providerAuth:build.query({
+      query:(id)=>`profile/auth/${id}`
     })
   }),
 });
@@ -99,6 +102,7 @@ export const {
   useUpdateUserMutation,
   useEditUserQuery,
   useViewProfileQuery,
+  useProviderAuthQuery
 } = authApi;
 
 

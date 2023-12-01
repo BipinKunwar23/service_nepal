@@ -75,10 +75,12 @@ export const providerApi = createApi({
     }),
     
     getProvider:builder.query({
-      query:({categoryId,subcategoryId})=>{
-          return !categoryId && !subcategoryId
+      query:({categoryId,subcategoryId,service})=>{
+          return !categoryId && !subcategoryId && !service
             ? "all"
-            : categoryId && !subcategoryId
+            :  service ? `search/get?name=${service}`
+            
+            : categoryId && !subcategoryId 
             ? `category/${categoryId}`
             : `subcategory/${subcategoryId}`;
       },

@@ -5,7 +5,7 @@ import logo from "../images/logo.png";
 import { useViewProfileQuery, useEditProfileMutation} from "../Api/ProfileApi";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { ColorRing } from "react-loader-spinner";
-export default function Edit() {
+export default function Edit({children}) {
   const userId = localStorage.getItem("userId");
   const [editProfile, { isLoading: isUpdating }] = useEditProfileMutation();
   const { data: user, isLoading, isError, error,refetch } = useViewProfileQuery(userId);
@@ -14,7 +14,7 @@ export default function Edit() {
   const location=useLocation()
   const [previewImage, setPreviewImage] = useState(null);
 
-  const form = useForm({});
+  const form = useForm();
   const { register, handleSubmit, control, setValue } = form;
   const onSubmit = async (user) => {
     const id=localStorage.getItem('userId')
@@ -33,8 +33,7 @@ export default function Edit() {
      .unwrap()
      .then((response)=>{
      console.log(response);
-     refetch()
-     navigate(location?.state?.path ,{replace:true})
+     navigate(`${location?.state?.path} ` ,{replace:true})
      })
      .catch((error)=>{
       console.log(error);
@@ -53,10 +52,11 @@ export default function Edit() {
     <div className=" text-gray-700 grid place-content-center  text-[1em] bg-[rgba(0,0,0,0.5)] p-4 ">
       <form
         action=""
-        className={`  bg-white w-[65Vw]  grid grid-cols-2 gap-12 p-6 box-border `}
+        className={`  bg-white w-[65Vw]   p-3 box-border  rounded-lg shadow shadow-gray-700`}
         encType="multipart/form-"
         onSubmit={handleSubmit(onSubmit)}
       >
+       <section className="grid grid-cols-2 gap-16 mb-5">
         <div className="box-border flex flex-col ">
           <div className="grid place-content-center">
             <div
@@ -165,12 +165,17 @@ export default function Edit() {
               />
             </div>
           </div>
-          <div className=" text-center flex-1 grid content-end  ">
-            <button className="bg-blue-600 p-2 text-white">
+         
+        </div>
+
+        </section> 
+    
+
+          <div className=" grid justify-center  ">
+            <button className="bg-blue-600 p-2 px-4 rounded-lg text-white">
               Update Profile
             </button>
           </div>
-        </div>
       </form>
     </div>
   );

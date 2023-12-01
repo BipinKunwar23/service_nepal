@@ -11,7 +11,7 @@ import { CategoryPage } from "./category/categoryPage";
 import Profile from "./profile/Profile";
 import Edit from "./profile/edit";
 import EditCategory from "./category/EditCategory";
-import  ServiceSetUp from "./user/provider/setup/home";
+import ServiceSetUp from "./user/provider/setup/home";
 
 import { useSelector } from "react-redux";
 import ProviderHome from "./user/provider/home/home";
@@ -19,42 +19,61 @@ import Services from "./user/provider/services/service";
 
 import Order from "./user/customer/order/order";
 import OrderHistory from "./user/customer/order/orderHistory";
+
+import ViewServices from "./user/provider/services/viewServices";
+import RequireAuth from "./RequireAuth";
+import RequireCustomerAuth from "./RequireCustomerAuth";
+import RequireProviderAuth from "./RequireProviderAuth";
 function App() {
-  const selected=useSelector((state)=>state.categorySlice.category)
+  const selected = useSelector((state) => state.categorySlice.category);
 
   return (
     <>
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/register" element={<SignUp />}></Route>
-        <Route path="/signIn" element={<SignIn />}></Route>
-        <Route path="/customer/" element={<Home />}>
-        </Route>
-        <Route path="/provider/:name" element={<Provider />} />
-        <Route path="/customer/orders" element={<Order/>} />
-        <Route path="/customer/orders/history" element={<OrderHistory/>}/>
+        <Route path="/signin" element={<SignIn />}></Route>
+        <Route path="/customer/" element={<Home />}></Route>
+        <Route path="/provider/:providerId" element={<Provider />} />
+        <Route
+          path="/order/service/:serviceId"
+          element={
+            <RequireCustomerAuth>
+              <Order />
+            </RequireCustomerAuth>
+          }
+        />
+        <Route path="/customer/orders/history" element={<OrderHistory />} />
         <Route path="/user/*">
           <Route path="profile/" element={<Profile />} />
           <Route path="profile/create" element={<Edit />} />
+          
           <Route path="category/" element={<CategoryPage />}>
-            
-              
             <Route path=":name/:subname" element={<EditCategory />} />
             <Route path=":name/:subname/:child" element={<EditCategory />} />
           </Route>
-         
-           
-          </Route>
-         
-        <Route path="/provider/*" element={<ProviderHome />}>
-           
-          </Route>
-            <Route path="/provider/service/join" element={<ServiceSetUp />} />
-            <Route path="/provider/services/*" element={<Services />} />
+        </Route>
+        <Route
+          path="/provider"
+          element={
+            <RequireAuth>
+              <ProviderHome />
+            </RequireAuth>
+          }
+        />
 
-
+        <Route
+          path="/provider/service/join/:serviceId"
+          element={<RequireProviderAuth>
+            <ServiceSetUp />
+          </RequireProviderAuth>}
+        />
+        <Route path="/provider/services" element={<Services />} />
+        <Route
+          path="/provider/services/:serviceId"
+          element={<ViewServices />}
+        />
       </Routes>
 
       <Footer />

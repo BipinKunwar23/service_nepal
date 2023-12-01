@@ -12,6 +12,8 @@ import ServiceCard from "./card";
 const Services = () => {
     const categoryId = useSelector((state) => state.categorySlice.category);
     const subcategoryId = useSelector((state) => state.categorySlice.subcategory);
+    const serviceId=useSelector((state)=>state.serviceSlice.service)
+    const dispatch=useDispatch();
     const providerId=localStorage.getItem("userId");
     const {
       data: subcategories,
@@ -26,6 +28,7 @@ const Services = () => {
       isLoading: serviceLoading,
       error: serviceError,
     } = useGetProviderServiceQuery({ providerId,categoryId, subcategoryId });
+    console.log(cards);
   
     const navigate = useNavigate();
     const {
@@ -35,14 +38,14 @@ const Services = () => {
       error: cataegoryError,
     } = useGetProviderCategoryQuery(providerId);
   
-  
+
   
     if (categoryLoading || subcategoryLoading || serviceLoading ) {
       return <div>loading...</div>;
     }
   return (
     <>
-    <div className="">
+    <div className="relative">
       <section className="m-8">
         <SearchBox />
       </section>
@@ -58,6 +61,8 @@ const Services = () => {
           <ServiceCard cards={cards}/>
           </CardSection>
       </section>
+      
+  
     
     </div>
   </>

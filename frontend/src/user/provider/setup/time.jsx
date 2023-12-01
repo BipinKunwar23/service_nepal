@@ -10,8 +10,8 @@ export default function Time({ Controller, setValue, control, time, days }) {
 
   return (
     <>
-      <div className="  text-slate-800 text-[1.1em] flex flex-col gap-2">
-        <span>Service Time</span>
+      <div className="  text-slate-700  flex flex-col gap-2">
+        <span className="font-semibold">Available Time</span>
         <div className="">
           <div className=" ">
             <div>
@@ -28,7 +28,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
                       <div className="grid gap-10 grid-cols-2">
                         <input
                           type="time"
-                          className="p-1.5 border-2 border-gray-200 "
+                          className="p-2 border border-gray-700 rounded-lg "
                           onChange={(e) => {
                             const { value } = e.target;
                             setValue("time.start", value);
@@ -39,7 +39,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
 
                         <input
                           type="time"
-                          className="p-1.5 border-2 border-gray-200 "
+                          className="p-2 border border-gray-700 rounded-lg "
                           onChange={(e) => {
                             const { value } = e.target;
                             setValue("time.end", value);
@@ -56,14 +56,14 @@ export default function Time({ Controller, setValue, control, time, days }) {
         </div>
       </div>
 
-      <div className=" flex flex-col text-slate-800 text-[1.1em]  ">
-        <span>Servicing Days</span>
+      <div className=" flex flex-col text-slate-700  ">
+        <span className="font-semibold ">Available Days</span>
         <div>
           <Controller
             name="days"
             control={control}
             defaultValue={days ? days : []}
-            render={({ field }) => {
+             render={({ field }) => {
               return (
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
@@ -82,6 +82,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
                               weeks.map((day) => day)
                             );
                       }}
+                      className="border border-gray-700 rounded-lg"
                     />
 
                     <label htmlFor="all">All</label>

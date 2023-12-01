@@ -7,8 +7,8 @@ const Charge = ({ register, setValue, Controller, control,charge }) => {
 
   return (
     <>
-      <div className="  text-slate-800 text-[1.1em]  flex flex-col gap-2">
-        <span>Service Charge</span>
+      <div className="  text-slate-700  flex flex-col gap-2">
+        <span className="font-semibold">Service Charge</span>
 
         <div>
           <Controller
@@ -24,7 +24,7 @@ const Charge = ({ register, setValue, Controller, control,charge }) => {
                       <input
                         type="number"
                         placeholder="Minimum Charge"
-                        className="p-1.5  border-b-2 border-gray-400 "
+                        className="p-2  border rounded-lg border-gray-700 "
                         {...register("charge.min")}
                         defaultValue={charge && charge.min}
                         min={0}
@@ -37,7 +37,7 @@ const Charge = ({ register, setValue, Controller, control,charge }) => {
                       <input
                         type="number"
                         placeholder=" Maximum Charge"
-                        className="p-1.5  border-b-2 border-gray-400 "
+                        className="p-2  border rounded-lg border-gray-700 "
                         {...register("charge.max")}
                         defaultValue={charge && charge.max}
 

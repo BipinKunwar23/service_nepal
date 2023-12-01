@@ -93,4 +93,12 @@ class UserController extends Controller
             'message'=>'deleted succssfully'
         ],200);
     }
+
+    public function providerAuth($id){
+        $user=User::has('profile')->find($id);
+        if($user){
+            return true;
+        }
+        return false;
+    }
 }

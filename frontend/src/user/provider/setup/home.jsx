@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Time from "./time";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Charge from "./charge";
 import Modal from "../../../components/mpdal";
@@ -8,29 +8,35 @@ import {
   useSetupServicesMutation,
   useGetProviderServiceByIdQuery,
   useEditServicesMutation,
- 
 } from "../../../Api/providerApi";
 // import { useGetOtherCatserviceQuery } from "../../Api/catServiceApi";
 import { useForm, Controller } from "react-hook-form";
 export default function SeviceSetup() {
   const dispatch = useDispatch();
-  const serviceId = useSelector((state) => state.serviceSlice.service);
-  console.log('serviceId',serviceId);
+  const { serviceId } = useParams();
+  const location=useLocation();
+  console.log("serviceId", serviceId);
   const providerId = localStorage.getItem("userId");
-  const [setupService, { data:create, isLoading: isCreating,isSuccess:iscreateSuccess }] = useSetupServicesMutation();
-  const [editService, {data:edit, isLoading: isUpdating ,isSuccess:isEditSuccess}] = useEditServicesMutation();
+  const [
+    setupService,
+    { data: create, isLoading: isCreating, isSuccess: iscreateSuccess },
+  ] = useSetupServicesMutation();
+  const [
+    editService,
+    { data: edit, isLoading: isUpdating, isSuccess: isEditSuccess },
+  ] = useEditServicesMutation();
 
-  const { data: service, isLoading,isError } = useGetProviderServiceByIdQuery({
+  const {
+    data: service,
+    isLoading,
+    isError,
+  } = useGetProviderServiceByIdQuery({
     providerId,
-    serviceId
+    serviceId,
   });
 
-console.log('eror',isError);
-
-    
- 
-
-  
+  console.log("sevices", service);
+  console.log("eror", isError);
 
   const navigate = useNavigate();
 
@@ -59,7 +65,7 @@ console.log('eror',isError);
         .then((response) => {
           console.log(response);
           reset();
-          navigate("/provider/services");
+          navigate(`${location?.state?.path || '/provider/services'}` , {replace:true});
         })
         .catch((error) => {
           console.log(error);
@@ -71,48 +77,43 @@ console.log('eror',isError);
         .then((response) => {
           console.log(response);
           reset();
-          navigate("/provider/services");
+          navigate(`${location?.state?.path || '/provider/services'}` , {replace:true});
+
         })
         .catch((error) => {
           console.log(error);
         });
     }
   };
-  if(isError){
-    return <div>Error Occured</div>
+  if (isError) {
+    return <div>Error Occured</div>;
   }
 
-  if (isLoading || isCreating  || isUpdating) {
+  if (isLoading || isCreating || isUpdating) {
     return <div>Loading...</div>;
   }
-  if(iscreateSuccess || isEditSuccess){
-return <Modal message={iscreateSuccess? create?.message: edit?.message} navigation="/provider/services" />
+  if (iscreateSuccess || isEditSuccess) {
+    return (
+      <Modal
+        message={iscreateSuccess ? create?.message : edit?.message}
+        navigation="/provider/services"
+      />
+    );
   }
   return (
-    <section className="grid grid-cols-1 text-[1em] text-slate-500 box-border bg-[rgba(0,0,0,0.6)]  p-10 gap-5 ">
+    <section className="grid place-content-center text-[1em] text-slate-500 box-border p-2 bg-[rgba(0,0,0,0.6)]    ">
+      <section className="bg-white w-[80Vw] shadow shadow-gray-800 rounded-md mb-2 text-[1em]" >
 
-      <div className="flex justify-end">
-        <button
-          className="w-[200px] text-center bg-blue-600 p-2 text-white"
-          onClick={() =>
-            navigate(`/user/service`, {
-              replace: true,
-            })
-          }
-        >
-          Goto Services
-        </button>
-      </div>
-      <div>
+     
         <form
           action=""
-          className="   grid grid-cols-2 gap-5    bg-green-400 text-gray-800  p-10  box-border justify-self-center"
+          className="   grid grid-cols-2 gap-10     text-gray-800  p-5  box-border justify-self-center"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="service flex flex-col gap-4">
             <div className=" ">
-              <span className="text-[1.1em]">Service Name</span>
-              <p className="flex-1 font-medium text-[1.2em] ">
+              <span className="text-[1em]">Service Name</span>
+              <p className="flex-1 font-semibold border border-gray-700 rounded-lg p-2 ">
                 {service?.name}
               </p>
               <input
@@ -153,36 +154,16 @@ return <Modal message={iscreateSuccess? create?.message: edit?.message} navigati
 
           <div className="flex flex-col service gap-4">
             <div className="flex flex-col">
-              <label htmlFor="">Service Place</label>
+              <label htmlFor="">Available City</label>
               <input
                 type="text"
                 {...register("address")}
                 defaultValue={service?.pivot?.location}
               />
-              {/*             
-        <div className="location flex gap-2 flex-col">
-        
-          <div className="">
-            <label htmlFor="">District</label>
-            <input type="text" {...register('address.district')} />
-          </div>
-          <div className="">
-            <label htmlFor="">Muncipility</label>
-            <input type="text" {...register('address.mun')}/>
-          </div>
-          <div className="">
-            <label htmlFor="">Ward No</label>
-            <input type="text" {...register('address.ward')} />
-          </div>
-          <div className="">
-            <label htmlFor="">Tole/Chowk</label>
-            <input type="text" {...register('address.chowk')} />
-          </div>
-        </div> */}
             </div>
 
             <div className="  flex flex-col">
-              <label htmlFor=""> Service Experience</label>
+              <label htmlFor=""> Work Experience</label>
               <textarea
                 name=""
                 id=""
@@ -212,9 +193,9 @@ return <Modal message={iscreateSuccess? create?.message: edit?.message} navigati
                 render={({ field }) => {
                   return (
                     <div>
-                      <label htmlFor="">Add Images</label>
+                      <label htmlFor="" className="text-gray-700 font-semibold ">Add Images</label>
 
-                      <div>
+                      <div className="mt-5">
                         <input
                           type="file"
                           accept="image/*"
@@ -254,7 +235,8 @@ return <Modal message={iscreateSuccess? create?.message: edit?.message} navigati
             </div>
           </div>
         </form>
-      </div>
+      </section>
+
 
       <section className=" flex justify-between p-10 bg-white ">
         {/* {selected?.name != "all" && (
@@ -294,7 +276,6 @@ return <Modal message={iscreateSuccess? create?.message: edit?.message} navigati
           </div>
         </div>
       </section>
-
     </section>
   );
 }

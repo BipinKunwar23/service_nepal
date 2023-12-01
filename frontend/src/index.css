@@ -146,25 +146,14 @@
  .service >div{
   @apply grid grid-cols-1 gap-2 p-2 
  }
- .service >div >input[type='text']{
-  @apply p-2   rounded-md w-full shadow shadow-gray-200
+ .service >div input[type='text'], .service div textarea{
+  @apply p-2   rounded-lg w-full border border-gray-700 focus:outline-none hover:bg-gray-100
  }
- .service div textarea{
-  @apply rounded-md p-2 shadow shadow-gray-200
- }
- 
- .service div label{
-  @apply  text-slate-800 text-[1.1em]
+
+ .service >div> label{
+  @apply  text-slate-700 text-[1em] font-semibold
  } 
- .service .location div{
-  @apply grid grid-cols-3 gap-4
- } 
- .service .location div label{
-  @apply  grid place-content-end 
- } 
- .service .location div input{
-  @apply  col-span-2 outline-none bg-white border-b-2   pt-2 shadow-lg shadow-gray-700
- } 
+
 
  .charge {
   @apply flex gap-10 bg-red-500
@@ -249,7 +238,7 @@
     @apply flex flex-col gap-5 mb-8
    }
    .order div input, .order div textarea{
-    @apply p-2 w-full shadow shadow-gray-800 outline-none focus:outline-none hover:bg-gray-100
+    @apply p-2 w-full shadow shadow-gray-800 outline-none focus:outline-none hover:bg-gray-100 text-gray-800
    }
    .order div label{
     @apply font-semibold text-gray-400
@@ -281,5 +270,8 @@ h1 {
   line-height: 1.1;
 }
 
-
-     
+ a.active{
+  color:#EF351B ;
+  font-weight: 600;
+  
+}

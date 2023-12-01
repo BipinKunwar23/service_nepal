@@ -48,7 +48,7 @@ function Card({ cards }) {
               </div>
               <div className="">{card?.description}</div>
               <div className="bg-indigo-800  text-white  text-left">
-                <ol className="flex flex-col gap-4 text-white list-disc p-4">
+                <ol className="flex flex-col gap-4 text-white list-disc p-4 ">
                   {
                     card?.services?.map((service)=>{
                       return <li key={service?.id} className="font-semibold ml-2">{service?.name}</li>
@@ -58,7 +58,7 @@ function Card({ cards }) {
           <div className="p-3">
             <button className="bg-[rgba(0,0,0,0.6)] text-white p-2 px-8 rounded-md w-full " type="button"
             onClick={()=>{
-              navigate(`/provider/${card?.name}`)
+              navigate(`/provider/${card?.id}`)
             }}
             >View More</button>
           </div>

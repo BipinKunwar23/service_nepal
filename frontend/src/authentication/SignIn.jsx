@@ -31,7 +31,7 @@ const SignIn = () => {
           ? (localStorage.setItem("logged", "1"),
             localStorage.setItem("userId", response.id),
             console.log(response),
-            navigate("/",  {replace:true}))
+            navigate(`${location?.state?.path || '/'}`,  {replace:true}))
           : null;
       })
       .catch((error) => {

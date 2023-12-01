@@ -18,8 +18,8 @@ function Profile() {
   return <div>loading profile</div>
  }
   return (
-    <div className="grid place-content-center p-1">
-      <div className="flex gap-5 w-[70Vw] p-1 bg-white ">
+    <div className="grid place-content-center p-5">
+      <div className="flex gap-5 w-[70Vw] p-1 bg-white shadow shadow-gray-700 rounded-lg ">
         <div className="flex  w-[25Vw] flex-col gap-4">
           <div className="  flex place-content-center  p-1 ">
             <img
@@ -76,11 +76,12 @@ function Profile() {
             </ul>
           </div>
         </div>
-        <div className="flex-1 flex flex-col p-4   box-border gap-4">
-          <div className=" mt-20">
+        <div className="flex-1 flex flex-col p-4   box-border gap-4 " >
+          <div className=" mt-20 ">
             <h2 className=" text-indigo-600  font-semibold text-3xl">
               {user?.name.toUpperCase()}
             </h2>
+           
           </div>
           {
             user?.bio &&

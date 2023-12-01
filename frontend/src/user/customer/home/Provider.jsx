@@ -7,15 +7,16 @@ import { FaStar } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { useSelector , useDispatch} from "react-redux";
 import { useGetProviderDetailsQuery } from "../../../Api/providerApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { setServiceId } from "../../../redux/cardSlice";
 const Provider = () => {
-  const providerId = useSelector((state) => state.cardSlice.providerId);
   const navigate=useNavigate();
+  const {providerId}=useParams();
   const dispatch=useDispatch();
   const { data, isLoading, isSuccess } = useGetProviderDetailsQuery(providerId);
   console.log(data);
   const serviceId=useSelector((state)=>state.cardSlice.serviceId);
+  const logged=localStorage.getItem("logged");
 console.log('cards',serviceId);
   if (isLoading) {
     return <div>Loading...</div>;
@@ -129,11 +130,11 @@ console.log('cards',serviceId);
           <p className="text-[1.2em] mb-5 font-semibold align-bottom text-gray-600 ">
             My Services
           </p>
-          <section className="flex justify-evenly gap-10  ">
+          <section className="grid grid-cols-5 gap-2  ">
             {data?.services.map((service) => (
               <div
                 key={service?.id}
-                className=" p-2 shadow shadow-gray-700 grid grid-cols-1 border text-center  border-gray-300 box-border"
+                className=" p-2 shadow shadow-gray-700 grid grid-cols-1 border text-center   border-gray-300 box-border"
               >
                 <img src={plumber} alt=""  className="w-full h-[200px] mb-2"/>
                
@@ -153,7 +154,7 @@ console.log('cards',serviceId);
                     className="font-bold font-sans text-[1em] m-2 w-full  bg-green-600 p-2 text-white"
                     onClick={()=>{
                       dispatch(setServiceId(service?.id))
-                      navigate("/customer/orders")
+                      navigate(`/order/service/${service?.id}`)
                     }}
                   >
                     Order Now

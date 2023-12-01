@@ -4,13 +4,12 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from "react-redux";
 import Modal from "../../../components/mpdal";
 import Error from "../../../components/ErrorHandling/error";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 const Order = () => {
   const navigate=useNavigate();
-  
+  const {serviceId}=useParams()
 const {register,handleSubmit,control,reset}=useForm();
 const customerId=localStorage.getItem('userId');
-const serviceId=useSelector((state)=>state.cardSlice.serviceId);
 console.log('services',serviceId);
 const [placeOrder,{data,isLoading,isSuccess,isError,error}]=usePlaceOrderMutation();
 const onSubmit=async (values)=>{
@@ -84,9 +83,10 @@ if(isSuccess){
         </div>
 
         </div>
-        <div className=" flex flex-col gap-5 text-gray-400 font-semibold">
-          <label htmlFor="">Problem Descripton</label>
+        <div className=" flex flex-col gap-5  ">
+          <label htmlFor="" className="text-gray-400 font-semibold ">Problem Descripton</label>
           <textarea name="" id="" cols="30" rows="3" 
+          className=" shadow shadow-gray-800 focus:outline-none hover:bg-gray-200 p-2"
           {...register('description')}
           
           ></textarea>

@@ -32,6 +32,7 @@ Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::get('/view/{user}', 'viewById');
     Route::put('/update/{user}', 'update');
     Route::delete('/delete/{user}', 'delete');
+    Route::get('/profile/auth/{id}','providerAuth');
 });
 Route::prefix('profile')->controller(ProfileController::class)->group(function () {
 
@@ -87,6 +88,9 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
     Route::get('category/{categoryId}', 'getProviderByCategory');
     Route::get('subcategory/{subcategoryid}', 'getProviderBySubCategory');
     Route::get('{providerId}/details', 'getProviderDetails');
+
+    Route::get('service/search','SearchService');
+    Route::get('search/get','searchedProviders');
 
 
 });

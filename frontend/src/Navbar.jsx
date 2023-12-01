@@ -20,19 +20,19 @@ export default function Naavbar() {
       to: "/customer",
     },
     {
-      id: 1,
+      id: 2,
       link: "My Orders",
       to: "/customer/orders/history",
     },
     {
-      id: 1,
+      id: 3,
       link: "Notifications",
-      to: "/",
+      to: "/notify",
     },
     {
-      id: 1,
+      id: 4,
       link: "Know More",
-      to: "/",
+      to: "/know",
     },
   ];
 
@@ -43,19 +43,19 @@ export default function Naavbar() {
       to: "/provider",
     },
     {
-      id: 1,
+      id: 2,
       link: "My Services",
       to: "/provider/services",
     },
     {
-      id: 1,
+      id: 3,
       link: "Received Orders",
-      to: "/",
+      to: "/received",
     },
     {
-      id: 1,
+      id: 4,
       link: "Notification",
-      to: "/",
+      to: "/notification",
     },
   ];
 
@@ -66,7 +66,7 @@ export default function Naavbar() {
       to: "/user/profile",
     },
     {
-      id: 1,
+      id: 2,
       link: "Sign Out",
       to: "/provider/services",
     },
@@ -87,31 +87,46 @@ export default function Naavbar() {
             }}
           >
             <li className="">
-              <NavLink to="/">Home</NavLink>
+              <NavLink to="/" exact >Home</NavLink>
             </li>
-            <li
-              className="relative"
-              onMouseEnter={() => {
-                setdropdown("customer");
-              }}
-            >
-              FindAService
-              {logged && dropdown === "customer" && (
-                <ul className="text-white flex flex-col w-[180px] font-bold absolute top-7 left-1  bg-black">
-                  {customers.map((customer) => (
-                    <li
-                      key={customer?.id}
-                      className="text-white border-b-2 p-3 hover:bg-red-700 border-gray-400"
-                    >
-                      <NavLink to={customer.to} className="w-full">
-                        {" "}
-                        {customer.link}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              )}
+          {
+            !logged ? <li>
+              <NavLink
+              to="/customer"
+              > FindAService</NavLink>
             </li>
+            :   <li
+            className="relative"
+            onMouseEnter={() => {
+              setdropdown("customer");
+            }}
+          >
+            FindAService
+            { dropdown === "customer" && (
+              <ul className="text-white flex flex-col w-[180px] font-bold absolute top-7 left-1  bg-black">
+                {customers.map((customer) => (
+                  <li
+                    key={customer?.id}
+                    className="text-white border-b-2 p-3 hover:bg-gray-800 border-gray-400"
+                  >
+                    <NavLink to={customer.to} className="w-full">
+                      {" "}
+                      {customer.link}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+          }
+
+          {
+             !logged ? <li>
+             <NavLink
+             to="/provider"
+             > ProviderHub</NavLink>
+           </li>
+           :
             <li
               className="relative"
               onMouseEnter={() => {
@@ -119,12 +134,12 @@ export default function Naavbar() {
               }}
             >
               Provider Hub
-              {logged && dropdown === "provider" && (
+              { dropdown === "provider" && (
                 <ul className="text-white flex flex-col w-[180px]   font-bold absolute top-7 left-1  bg-black">
                   {providers.map((provider) => (
                     <li
                       key={provider?.id}
-                      className="text-white border-b-2 p-3 hover:bg-red-700 border-gray-400"
+                      className="text-white border-b-2 p-3 hover:bg-gray-800 border-gray-400"
                     >
                       <NavLink to={provider.to} className="">
                         {" "}
@@ -135,11 +150,12 @@ export default function Naavbar() {
                 </ul>
               )}
             </li>
+          }
             <li>
-              <NavLink>About Us </NavLink>
+              <NavLink to="/about">About Us </NavLink>
             </li>
             <li>
-              <NavLink>How It Works</NavLink>
+              <NavLink to="/works">How It Works</NavLink>
             </li>
           </ul>
         </div>
@@ -179,7 +195,7 @@ export default function Naavbar() {
                   <NavLink to="user/profile">Profile</NavLink>
                 </li>
                 <li className="text-white border-b-2 p-2 hover:bg-red-700 border-gray-400">
-                  <NavLink
+                  <button
                     onClick={() => {
                       const value = confirm(
                         "Are you sure tha you want to log out form this session"
@@ -193,7 +209,7 @@ export default function Naavbar() {
                     }}
                   >
                     Sign Out
-                  </NavLink>
+                  </button>
                 </li>
               </ul>
             )}

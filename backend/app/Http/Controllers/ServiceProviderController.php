@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\catservice_providerRequest;
 use App\Http\Resources\ProviderDetailsResource;
 use App\Http\Resources\ProviderResource;
+use App\Http\Resources\ServiceDetailsResource;
 use App\Http\Resources\ServiceResource;
 use App\Models\Category;
 use App\Models\Service;
@@ -79,8 +80,11 @@ class ServiceProviderController extends Controller
         $services = User::find($providerId)->services->find($serviceId);
         if ($services) {
             
-            return new ServiceResource($services);
+            return new ServiceDetailsResource($services);
         }
+        $value=Service::select(['id','name'])->find($serviceId);
+        $collection=collect($value)->put('pivot',null)->toArray();
+        return response()->json($collection);
     }
 
     public function getServicesByCategory($providerId, $categoryId)
@@ -160,7 +164,9 @@ class ServiceProviderController extends Controller
     public function getAllProvider()
     {
 
-        $providers = User::has('services')->with(['services','profile'])
+        $providers = User::has('services')->with(['services'=>function($query){
+            $query->take(3);
+        },'profile'])
             ->get();
         if ($providers) {
 
@@ -203,6 +209,25 @@ public function getProviderDetails($providerId){
     }
 }
 
-    
+    public function SearchService(Request $request){
+        $search=$request->input('name');
+        $services = Service::has('users')->where('name','LIKE',$search.'%')->distinct()
+            ->get();
+        return $services;
+    }
+
+    public function searchedProviders(Request $request){
+        $name=$request->input('name');
+        $providers = User::whereHas('services',function($query) use ($name) {
+            $query->where('name',$name);
+        })->with(['services'=>function($query){
+            $query->take(3);
+        },'profile'])
+            ->get();
+        if ($providers) {
+
+            return ProviderResource::collection($providers);
+        }
+    }
    
 }
