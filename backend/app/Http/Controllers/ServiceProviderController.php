@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ServiceProviderController extends Controller
 {
@@ -122,14 +123,23 @@ class ServiceProviderController extends Controller
     {
         $users = User::find($providerId);
         
+        
         $path = null;
         
         if ($request->hasFile('image')) {
+            $destination = $users->services->find($request->input('sid'))->pivot->image;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $name = time() . '.' . $extension;
             $file->move('service/image', $name);
             $path = 'service/image/' . $name;
+        }
+        else{
+            $path = $users->services->find($request->input('sid'))->pivot->image;
+
         }
         $users->services()->updateExistingPivot($request['sid'], [
             'description' => $request['description'],

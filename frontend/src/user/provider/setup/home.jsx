@@ -204,6 +204,9 @@ export default function SeviceSetup() {
                           }}
                         />
                       </div>
+                      <div className="p-2">
+                        <img src={`http://localhost:8000/${service?.pivot?.image}`} alt="" className=" h-[100px] w-[100px]"/>
+                      </div>
                     </div>
                   );
                 }}
