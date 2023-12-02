@@ -10,6 +10,7 @@ import {
 } from "../../Api/categoryApi";
 const EditCategory = () => {
   const selected = useSelector((state) => state.categorySlice.category);
+  console.log('selected',selected);
   const navigate = useNavigate();
   const dispatch=useDispatch()
   const { data: category, isLoading } = useGetCategoryByIdQuery(selected);
@@ -17,15 +18,19 @@ const EditCategory = () => {
     useEditCategoryMutation();
 
   const submitForm = async (values) => {
-    console.log(values);
-    await editCategory({ ...values, id: selected })
+    const formdata = new FormData();
+    formdata.append("name", values.name);
+    
+    formdata.append("description", values.description);
+    formdata.append("keywords", values.keywords);
+    formdata.append("icons", values.icons);
+
+    await editCategory({formdata, id: selected })
       .unwrap()
       .then((response) => {
-        reset();
         dispatch(setEditAction(""));
 
 
-        console.log(response);
       })
       .catch((error) => {
         console.log(error);

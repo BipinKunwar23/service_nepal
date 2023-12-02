@@ -65,7 +65,7 @@ export default function SeviceSetup() {
         .then((response) => {
           console.log(response);
           reset();
-          navigate(`${location?.state?.path || '/provider/services'}` , {replace:true});
+          navigate(`${location?.state?.path || '/services/provider'}` , {replace:true});
         })
         .catch((error) => {
           console.log(error);
@@ -77,7 +77,7 @@ export default function SeviceSetup() {
         .then((response) => {
           console.log(response);
           reset();
-          navigate(`${location?.state?.path || '/provider/services'}` , {replace:true});
+          navigate(`${location?.state?.path || '/services/provider'}` , {replace:true});
 
         })
         .catch((error) => {

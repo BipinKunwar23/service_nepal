@@ -71,10 +71,10 @@ tagTypes:['services'],
       
     }),
     editService: build.mutation({
-      query: ({id,...service}) => ({
+      query: ({formdata,id}) => ({
         url: `edit/${id}`,
-        method: "PUT",
-        body: service,
+        method: "POST",
+        body: formdata,
       }),
       invalidatesTags: ['services'],
     }),

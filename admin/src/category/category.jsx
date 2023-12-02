@@ -10,7 +10,6 @@ import { setCategoryAciton ,setCategory,setSubcategory,setEditAction} from "../r
 
 
 export default function Category({categories}) {
-  console.log(categories);
   const selected=useSelector((state)=>state.categorySlice.category)
   
   const navigate = useNavigate();

@@ -1,23 +1,23 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm , Controller} from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { setEditAction } from "../../redux/categorySlice";
 
 const EditForm = ({ name, submitForm ,values}) => {
   const dispatch = useDispatch();
-  const { register, control, handleSubmit } = useForm();
+  const { register, control, handleSubmit, setValue } = useForm();
   return (
     <form
       action=""
-      className={`border w-[40Vw] bg-white p-10  border-gray-300 shadow-xl shadow-gray-800 rounded-md sticky top-[14Vh] m-auto`}
+      className={`border w-[40Vw] bg-white p-5  border-gray-300 shadow-xl shadow-gray-800 rounded-md sticky top-[10Vh] m-auto`}
       onSubmit={handleSubmit(submitForm)}
     >
-      <div className="flex p-5 ">
-      <h2 className=" flex-1 text-center p-2 text-2xl font-semibold">{`Edit ${name} `}</h2>
+      <div className="flex p-2 ">
+      <h2 className=" flex-1 text-center p-2 text-xl font-semibold">{`Edit ${name} `}</h2>
 
         <div className="  grid place-content-center">
         <button
-            className=" text-white text-3xl bg-red-600 rounded-full p-1 px-3"
+            className=" text-white text-xl bg-red-600 rounded-full p-1 px-3"
             type="button"
             onClick={() => {
               dispatch(setEditAction(""));
@@ -37,7 +37,7 @@ const EditForm = ({ name, submitForm ,values}) => {
       </div>
       <div>
         <label htmlFor="">Description</label>
-        <textarea {...register("description")} id="" rows={5}
+        <textarea {...register("description")} id="" rows={2}
         defaultValue={values?.description}
         ></textarea>
       </div>
@@ -47,6 +47,36 @@ const EditForm = ({ name, submitForm ,values}) => {
         defaultValue={values?.keywords}
         />
       </div>
+      <div className="">
+              <Controller
+                name="icons"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <div>
+                      <label htmlFor="" className="text-gray-700 font-semibold ">Add Icon/Image</label>
+
+                      <div className="">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          
+                          onChange={(e) => {
+                            setValue("icons", e.target.files[0]);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+            {
+              values?.icons &&
+            <div>
+              <img src={  `http://localhost:8000/${values?.icons}`} alt="image" className="w-[80px] h-[80px]" />
+            </div>
+            }
       <div>
         <button
           className="bg-blue-600 text-white p-2"

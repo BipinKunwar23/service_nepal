@@ -14,12 +14,12 @@ const SubCategory = ({ subcategories }) => {
     return (
       <div className="flex justify-center">
         <button
-          className="bg-green-600 l p-2 px-8 rounded-full   text-white"
+          className="bg-green-600 l p-2 px-4 rounded-full   text-white"
           onClick={() => {
             dispatch(setCategoryAciton("subcategory"));
           }}
         >
-          Add More
+          Add SubCategory
         </button>
       </div>
     );

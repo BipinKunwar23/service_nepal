@@ -30,7 +30,7 @@ const Card = ({ cards }) => {
               key={card?.id}
             >
               <img
-                src={image1}
+                src={`http://localhost:8000/${card?.icons}`}
                 alt=""
                 className="h-[200px] w-full object-cover mb-3"
               />

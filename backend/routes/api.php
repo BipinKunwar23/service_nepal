@@ -59,7 +59,7 @@ Route::prefix('category')->controller(CategoryController::class)->group(function
     Route::get('service/{id}', 'getServices');
     Route::get('All/{id}', 'getAllCategory');
     Route::get('provider/{id}','getCategoryByProviderId');
-    Route::put('edit/{id}', 'updateCategory');
+    Route::post('edit/{id}', 'updateCategory');
 
 });
 Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
@@ -78,7 +78,7 @@ Route::prefix('services')->controller(ServiceController::class)->group(function 
     Route::get('{id}','getById');
     Route::get('view/{id}','viewServiceById');
     Route::get('category/{id}','getByCategory');
-    Route::put('edit/{service}','updateService');
+    Route::post('edit/{service}','updateService');
  
 });
 

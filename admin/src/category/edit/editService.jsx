@@ -18,10 +18,15 @@ const EditService = () => {
     useEditServiceMutation();
 
   const submitForm = async (values) => {
-    console.log(values);
+    const formdata = new FormData();
+    formdata.append("name", values.name);
+    formdata.append('subcategory_id',subcategoryId)
+    formdata.append("description", values.description);
+    formdata.append("keywords", values.keywords);
+    formdata.append("icons", values.icons);
+
     await editCategory({
-      ...values,
-      subcategory_id: subcategoryId,
+     formdata,
       id: serviceId,
     })
       .unwrap()

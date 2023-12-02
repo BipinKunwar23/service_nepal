@@ -51,11 +51,12 @@ tagTypes:['Category'],
       })
     }),
     editCategory: builder.mutation({
-      query: ({id,...category}) => ({
+      query: ({formdata, id}) => ({
         url: `edit/${id}`,
-        method: "PUT",
-        body: category,
+        method: "POST",
+        body: formdata,
       }),
+      
       invalidatesTags: ['Category'],
 
     }),

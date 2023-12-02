@@ -17,6 +17,7 @@ class ServiceDetailsResource extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'icons'=>$this->icons,
             'pivot'=>[
                 'description'=>$this->pivot->description,
                 'time'=>json_decode($this->pivot->time),

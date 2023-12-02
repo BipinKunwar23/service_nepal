@@ -18,6 +18,7 @@ class ServiceResource extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'icons'=>$this->icons,
             'pivot'=>[
                 'description'=>$this->pivot->description,
                 'image'=>$this->pivot->image,

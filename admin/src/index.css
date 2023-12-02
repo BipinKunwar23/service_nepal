@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .add-form{
-  @apply grid grid-cols-1 gap-4
+  @apply grid grid-cols-1 gap-4 rounded-md
 }
 .add-form div{
   @apply grid grid-cols-1 gap-2

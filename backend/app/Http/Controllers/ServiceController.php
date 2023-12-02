@@ -9,13 +9,14 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Subcategory;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 
 class ServiceController extends Controller
 {
   public function create(serviceRequest $request, $id)
   {
-      $path=null;
+    $path = null;
 
     if ($request->hasFile('icons')) {
       $file = $request->file('icons');
@@ -46,17 +47,33 @@ class ServiceController extends Controller
     return response()->json($services);
   }
 
-  public function updateService(Request $req, Service $service)
+  public function updateService(Request $request, Service $service)
   {
-    $validate = $req->validate([
+    $validate = $request->validate([
       'name' => ['required', Rule::unique('services', 'name')->ignore($service->id)],
 
       'description' => 'sometimes',
       'image' => 'sometimes',
-      'subcategory_id' => 'required'
+      'subcategory_id' => 'required',
+      'keywords' => 'sometimes'
 
     ]);
-    $service->fill($validate)->save();
+    if ($request->hasFile('icons')) {
+      $destination = $service->icons;
+      if (File::exists($destination)) {
+        File::delete($destination);
+      }
+      $file = $request->file('icons');
+      $extension = $file->getClientOriginalExtension();
+      $name = time() . '.' . $extension;
+      $file->move('category/icons', $name);
+      $path = 'category/icons/' . $name;
+    } else {
+      $path = $service->icons;
+    }
+
+    $service->fill(collect($validate)->put('icons', $path)->toArray())->save();
+
     return response()->json([
       'message' => 'successfully updated'
     ], 200);

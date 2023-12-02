@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCategoryAciton, setEditAction } from "../redux/categorySlice";
 import { setServiceId } from "../redux/catServiceSlice";
 const serviceCard = ({ cards }) => {
-  console.log('sevice',cards);
   const dispatch = useDispatch();
   const selected = useSelector((state) => state.categorySlice.subcategory);
   if (cards.length === 0) {

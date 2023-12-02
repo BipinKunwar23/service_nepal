@@ -18,7 +18,8 @@ class CatServiceResource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'description'=>$this->description,
-            'icons'=>$this->icons
+            'icons'=>$this->icons,
+            'keywords'=>$this->keywords
         ];
     }
 }

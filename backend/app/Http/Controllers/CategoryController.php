@@ -6,6 +6,8 @@ use App\Http\Requests\categoryRequest;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +15,7 @@ class CategoryController extends Controller
 {
     public function category(Request $request)
     {
-       $request->validate([
+        $request->validate([
             'name' => ['required', 'unique:categories,name'],
             'description' => 'sometimes',
             'keywords' => 'required',
@@ -55,16 +57,31 @@ class CategoryController extends Controller
         return response()->json($category);
     }
 
-    public function updateCategory(Request $req, $id)
+    public function updateCategory(Request $request, $id)
     {
-        $validate = $req->validate([
+        $validate = $request->validate([
             'name' => ['required', Rule::unique('categories', 'name')->ignore($id)],
-
             'description' => 'sometimes',
             'keywords' => 'required',
         ]);
-        $category = Category::find($id)->first();
-        $category->fill($validate)->save();
+
+        $category = Category::find($id);
+
+
+        if ($request->hasFile('icons')) {
+            $destination = $category->icons;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('icons');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('category/icons', $name);
+            $path = 'category/icons/' . $name;
+        } else {
+            $path = $category->icons;
+        }
+        $category->fill(collect($validate)->put('icons', $path)->toArray())->save();
         return response()->json([
             'message' => 'successfully updated'
         ], 200);
