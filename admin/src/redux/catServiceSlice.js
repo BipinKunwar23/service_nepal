@@ -1,17 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState={
-   
-   selectedOnClick:{
-    parent:{
-       name:'all',
-       category:[],
-    },
-    subparent:{},
-    child:{},
-   },
-   path:'',
-   count:0,
-   serviceId:''
+ 
+   serviceId:null
    
 
 }
@@ -21,9 +11,7 @@ name:"catServiceSlice",
 initialState,
 reducers:{
        
-    setSelectedOnClick:((state,action)=>{
-        state.selectedOnClick=action.payload
-    }),
+  
     setServiceId:(state,action)=>{
         state.serviceId=action.payload
     },
@@ -32,5 +20,5 @@ reducers:{
 }
 
 })
-export const {setSelectedOnClick,setServiceId}=catServiceSlice.actions
+export const {setServiceId}=catServiceSlice.actions
 export default catServiceSlice.reducer 

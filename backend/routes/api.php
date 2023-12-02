@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QualificationController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\SubCategoryController;
@@ -51,27 +52,33 @@ Route::prefix('qualification')->controller(QualificationController::class)->grou
 });
 Route::prefix('category')->controller(CategoryController::class)->group(function () {
     Route::post('create', 'category');
-    Route::put('update/{id}', 'updateCategory');
     Route::get('view', 'viewCategory');
+    Route::get('view/{id}', 'viewCategoryById');
     Route::get('search', 'search');
     Route::get('services/{id}', 'getCategoryById');
     Route::get('service/{id}', 'getServices');
     Route::get('All/{id}', 'getAllCategory');
     Route::get('provider/{id}','getCategoryByProviderId');
+    Route::put('edit/{id}', 'updateCategory');
+
 });
 Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
     Route::post('create/{id}', 'create');
     Route::get('viewAll', 'getAll');
     Route::get('view/{id}', 'getById');
+    Route::get('view/detail/{id}','viewSubCategoryById');
     Route::get('provider/{providerId}/category/{categoryId}','getSubCategoryByProviderCategoryId');
     Route::get('provider/{providerId}','getSubCategoryByProviderId');
+    Route::put('edit/{id}','updateSubCategory');
 });
 
 Route::prefix('services')->controller(ServiceController::class)->group(function () {
     Route::post('create/{id}', 'create');
     Route::get('all','getAll');
     Route::get('{id}','getById');
+    Route::get('view/{id}','viewServiceById');
     Route::get('category/{id}','getByCategory');
+    Route::put('edit/{service}','updateService');
  
 });
 
@@ -89,8 +96,8 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
     Route::get('subcategory/{subcategoryid}', 'getProviderBySubCategory');
     Route::get('{providerId}/details', 'getProviderDetails');
 
-    Route::get('service/search','SearchService');
-    Route::get('search/get','searchedProviders');
+    Route::get('search/service','searchByService');
+  
 
 
 });
@@ -102,3 +109,12 @@ Route::get('get/{providerId}','getAllOrders');
 Route::get('{orderId}/{customerId}','getOrdersById');
 
 });
+
+Route::prefix('search')->controller(SearchController::class)->group(function () {
+  
+    Route::get('service','searchService');
+    Route::get('location/get','searchLocation');
+    Route::get('location/provider','searchByLocation');
+    Route::get('location/category/{categoryId}','searchCategoryLocation');
+
+    });

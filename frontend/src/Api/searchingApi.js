@@ -3,7 +3,7 @@ import {  createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react'
 
 export const searchingApi = createApi({
     reducerPath: 'orderApi',
-    baseQuery: fetchBaseQuery({baseUrl:'http://localhost:8000/api/',
+    baseQuery: fetchBaseQuery({baseUrl:'http://localhost:8000/api/search',
     prepareHeaders:(headers)=>{
         // headers.set('Content-Type','multipart/form-data')
         headers.set('Accept','application/json')
@@ -14,7 +14,13 @@ export const searchingApi = createApi({
 
     endpoints:(build=>({
         searchProvider:build.query({
-            query:(service)=>`provider/service/search?name=${service}`
+            query:(service)=>`service?name=${service}`
+        }),
+        searchLocaton:build.query({
+            query:(categoryId)=>{
+                return !categoryId ? "location/get" : `location/category/${categoryId}`
+            }
+
         })
       
        
@@ -22,6 +28,7 @@ export const searchingApi = createApi({
 })
   
 export const {
-useSearchProviderQuery
+useSearchProviderQuery,
+useSearchLocatonQuery
 }=searchingApi
 

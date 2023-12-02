@@ -10,10 +10,22 @@ export const categoryApi = createApi({
     return headers
   }
 }),
+tagTypes:['Category'],
+
   endpoints: (builder) => ({
     viewCategory: builder.query({
       query: () => "view",
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'Category', id })), 'Category']
+      :['Category'],
     }),
+    getCategoryById: builder.query({
+      query: (id) => `view/${id}`,
+  providesTags:['Category'],
+
+    }),
+    
     getCategoryService: builder.query({
       query: (id) => `service/${id}`,
     }),
@@ -21,34 +33,43 @@ export const categoryApi = createApi({
       query: (providerId) => `provider/${providerId}`,
     }),
     addCategory: builder.mutation({
-      query: (category) => ({
+      query: ({formdata}) => ({
         url: "create",
         method: "POST",
-        body: category,
+        body: formdata,
       }),
+      invalidatesTags: ['Category'],
+
     }),
-    updateCategory: builder.mutation({
-      query: ({id,...category}) => ({
-        url: `update/${id}`,
-        method: "PUT",
-        body: category,
-      }),
-    }),
-  
+
+
     addCatgService:builder.mutation({
       query:({id,...service})=>({
         url:`service/create/${id}`,
         method:'post',
         body:service
       })
-    })
+    }),
+    editCategory: builder.mutation({
+      query: ({id,...category}) => ({
+        url: `edit/${id}`,
+        method: "PUT",
+        body: category,
+      }),
+      invalidatesTags: ['Category'],
+
+    }),
+   
+    
   }),
 });
 export const {
   useViewCategoryQuery,
+  useGetCategoryByIdQuery,
   useGetCategoryServiceQuery,
   useAddCategoryMutation,
-  useUpdateCategoryMutation,
   useAddCatgServiceMutation,
-  useGetProviderCategoryQuery
+  useGetProviderCategoryQuery,
+  useEditCategoryMutation,
+  
 } = categoryApi;

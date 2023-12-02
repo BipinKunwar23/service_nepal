@@ -9,29 +9,53 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Subcategory;
+use Illuminate\Validation\Rule;
 
 class ServiceController extends Controller
 {
   public function create(serviceRequest $request, $id)
   {
-    $validate = $request->validated();
+      $path=null;
 
-    // return dd($validate);
-    // Here to validate the object elements of an array we use *.name
-    // $validate['category_id']=$id;
-    $collection = collect($validate)->put('subcategory_id', $id)->toArray();
-    Service::create($collection);
+    if ($request->hasFile('icons')) {
+      $file = $request->file('icons');
+      $extension = $file->getClientOriginalExtension();
+      $name = time() . '.' . $extension;
+      $file->move('catservice/icons', $name);
+      $path = 'catservice/icons/' . $name;
+    }
+
+    Service::create([
+      'subcategory_id' => $id,
+      'name' => $request->name,
+      'description' => $request->description,
+      'keywords' => $request->keywords,
+      'icons' => $path,
+
+    ]);
+
 
     return response()->json([
       'message' => 'successfully created'
     ], 200);
   }
 
-
-
-  public function update(serviceRequest $request, Service $service)
+  public function viewServiceById($id)
   {
-    $validate = $request->validated();
+    $services = Service::find($id);
+    return response()->json($services);
+  }
+
+  public function updateService(Request $req, Service $service)
+  {
+    $validate = $req->validate([
+      'name' => ['required', Rule::unique('services', 'name')->ignore($service->id)],
+
+      'description' => 'sometimes',
+      'image' => 'sometimes',
+      'subcategory_id' => 'required'
+
+    ]);
     $service->fill($validate)->save();
     return response()->json([
       'message' => 'successfully updated'
@@ -71,7 +95,7 @@ class ServiceController extends Controller
       $query->where('category_id', $id);
     })
       ->get();
-    if($service){
+    if ($service) {
       return CatServiceResource::collection($service);
     }
   }

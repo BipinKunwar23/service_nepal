@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 .add-form{
-  @apply grid grid-cols-1 gap-5
+  @apply grid grid-cols-1 gap-4
 }
 .add-form div{
   @apply grid grid-cols-1 gap-2
 }
 .add-form div label{
-  @apply text-gray-700 text-lg
+  @apply text-gray-700 text-[1em]
 }
-.add-form div input, .add-form div textarea{
-  @apply p-2 focus:outline-none shadow shadow-gray-800
+.add-form div input[type="text"], .add-form div textarea{
+  @apply p-2 focus:outline-none border border-gray-500 rounded-lg text-[1em]
 }
 a {
   font-weight: 500;

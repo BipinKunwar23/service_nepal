@@ -3,7 +3,7 @@ import { useNavigate, Outlet, useParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setCategory } from "../../../redux/categorySlice";
 import Category from "../../../services/category";
-import CardSection from "../../../services/cardSection";
+import CardSection from "../home/CardSection";
 import { useViewCategoryQuery } from "../../../Api/categoryApi";
 import { useGetSubCategoryQuery } from "../../../Api/subCategoryApi";
 import { useGetProviderQuery } from "../../../Api/providerApi";
@@ -86,7 +86,8 @@ const Home = () => {
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
               onChange={(e) => {
-                e.target.value==='' ? dispatch(setSearchingProvider(null)):
+                console.log(e.target.value);
+                !e.target.value ? dispatch(setSearchingProvider(null)):
                 dispatch(setSearchingProvider(e.target.value));
               }}
             />

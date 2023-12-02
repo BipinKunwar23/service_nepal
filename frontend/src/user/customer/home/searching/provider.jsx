@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSearchProviderQuery } from "../../../../Api/searchingApi";
 import { useSelector ,useDispatch} from 'react-redux';
 import {setService} from "../../../../redux/cardSlice"
@@ -6,6 +6,11 @@ const Provider = () => {
   const dispatch=useDispatch();
     const search=useSelector((state)=>state.cardSlice.searchProvider)
     
+    useEffect(()=>{
+      if(search===null){
+        dispatch(setService(null))
+      }
+    },[search])
     const { data: services, isLoading } = useSearchProviderQuery(search);
     if(isLoading){
         return <>
@@ -20,7 +25,7 @@ if(services.length!==0){
           className='hover:bg-[rgba(0,0,0,0.3)] p-2 rounded-lg hover:cursor-pointer'
           
           onClick={()=>{
-            dispatch(setService(service?.name))
+            dispatch(setService(search ? service?.name :null))
           }}
           >{service?.name}</p>)
         }

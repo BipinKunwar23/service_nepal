@@ -9,6 +9,7 @@ import AllForm from "./AllForm";
 import CardSection from "./cardSection";
 import { useGetSubCategoryQuery } from "../Api/subCategoryApi";
 import { useGetServicesQuery } from "../Api/catServiceApi";
+import EditAction from "./edit/editAction"
 export const CategoryPage = () => {
   const category = useSelector((state) => state.categorySlice.category);
   const subcategory = useSelector((state) => state.categorySlice.subcategory);
@@ -41,7 +42,7 @@ export const CategoryPage = () => {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative  ">
         <section className="m-8">
           <SearchBox />
         </section>
@@ -57,6 +58,9 @@ export const CategoryPage = () => {
         </section>
         <section>
           <AllForm />
+        </section>
+        <section>
+         <EditAction/>
         </section>
       </div>
     </>

@@ -22,7 +22,7 @@ export default function Naavbar() {
     {
       id: 2,
       link: "My Orders",
-      to: "/customer/orders/history",
+      to: "/orders/customer",
     },
     {
       id: 3,
@@ -40,12 +40,12 @@ export default function Naavbar() {
     {
       id: 1,
       link: "Manage Services",
-      to: "/provider",
+      to: "provider",
     },
     {
       id: 2,
       link: "My Services",
-      to: "/provider/services",
+      to: "services/provider",
     },
     {
       id: 3,

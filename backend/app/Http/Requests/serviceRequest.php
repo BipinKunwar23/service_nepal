@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class serviceRequest extends FormRequest
 {
@@ -28,15 +29,11 @@ class serviceRequest extends FormRequest
                     'name' => 'required',
                     'description' => 'sometimes',
                     'image' => 'sometimes',
+                    'icons'=>'sometimes',
+                    'keywords'=>'required'
                 ];
-            case 'update':
-                return [
-                    '*.name' => 'required',
-                    '*.description' => 'sometimes',
-                    '*.image' => 'sometimes',
-                    '*.category_id' => 'required'
-
-                ];
+            case 'updateService':
+              
         }
     }
 }

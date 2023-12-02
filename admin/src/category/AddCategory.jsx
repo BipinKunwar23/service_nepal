@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAddCategoryMutation,useViewCategoryQuery } from "../Api/categoryApi";
 import { useSelector, useDispatch } from "react-redux";
 import Form from "./Form";
+import { setCategoryAciton } from "../redux/categorySlice";
 export const AddCategory = () => {
  
 const dispatch=useDispatch()
@@ -16,10 +17,18 @@ const dispatch=useDispatch()
 
  const submitForm= async(values)=>{
   console.log(values);
-  await addCategory(values)
+  const formdata = new FormData();
+  formdata.append("name", values.name);
+  
+  formdata.append("description", values.description);
+  formdata.append("keywords", values.keywords);
+  formdata.append("icons", values.icons);
+
+  console.log(values);
+  await addCategory({formdata})
   .unwrap()
   .then((response)=>{
-    reset()
+    dispatch(setCategoryAciton(""));
     console.log(response);
   })
   .catch((error)=>{
@@ -32,15 +41,7 @@ const dispatch=useDispatch()
  if(isError){
   return <div>{error.status}</div>
  }
-// const handleScroll=()=>{
-// setHeight(height+2)
-// }
-//  useEffect(()=>{
-//   window.addEventListener('scroll',handleScroll)
-//   return () => {
-//     window.removeEventListener('scroll', handleScroll);
-//   };
-//  },[])
+
 
   return (
    <Form submitForm={submitForm} name="Category" />

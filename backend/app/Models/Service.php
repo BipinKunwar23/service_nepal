@@ -9,7 +9,7 @@ use App\Models\Subcategory;
 class Service extends Model
 {
     use HasFactory;
-    public $fillable = ['name', 'description', 'image', 'subcategory_id'];
+    public $fillable = ['name', 'description', 'image','icons', 'subcategory_id'];
    
     public function subcategory()
     {

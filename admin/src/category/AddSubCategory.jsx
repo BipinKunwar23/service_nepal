@@ -1,16 +1,20 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Form from './Form'
 import {useAddSubCategoryMutation} from '../Api/subCategoryApi'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCategoryAciton } from '../redux/categorySlice'
 const AddSubCategory = () => {
 const selected=useSelector((state)=>state.categorySlice.category);
   const [addSubCategory,{data,isLoading,isError,error}]=useAddSubCategoryMutation()
+  const dispatch=useDispatch()
     const submitForm= async(values)=>{
       await addSubCategory({...values,id:selected})
       .unwrap()
       .then((response)=>{
-        reset()
+        dispatch(setCategoryAciton(""));
+
+        
         console.log(response);
       })
       .catch((error)=>{

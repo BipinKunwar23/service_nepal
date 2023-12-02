@@ -1,17 +1,27 @@
 import React from "react";
 import {useAddCatServicesMutation} from '../Api/catServiceApi'
 import Form from "./Form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategoryAciton } from "../redux/categorySlice";
 const AddService = () => {
   const [addService, { data, isLoading, isError,error }] =
     useAddCatServicesMutation();
 const selected=useSelector((state)=>state.categorySlice.subcategory);
-  const submitForm = async (service) => {
-    console.log('services',service);
-    await addService({service,id:selected})
+const dispatch= useDispatch()
+  const submitForm = async (values) => {
+    console.log(values);
+    const formdata = new FormData();
+    formdata.append("name", values.name);
+    
+    formdata.append("description", values.description);
+    formdata.append("keywords", values.keywords);
+    formdata.append("icons", values.icons);
+    await addService({formdata,id:selected})
       .unwrap()
       .then((response) => {
-        reset();
+        dispatch(setCategoryAciton(""));
+
+        
         console.log(response);
       })
       .catch((error) => {

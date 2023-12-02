@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SubCategoryController extends Controller
 {
@@ -27,6 +28,12 @@ class SubCategoryController extends Controller
         $subcategories = Subcategory::all(['id', 'name', 'category_id']);
         return response()->json($subcategories);
     }
+
+    public function viewSubCategoryById($id){
+        $subcategory=Subcategory::find($id);
+        return response()->json($subcategory);
+       }
+    
     public function getById($id)
     {
         $subcategories = Category::find($id)->subcategories()->get(['id', 'name', 'category_id']);
@@ -57,5 +64,20 @@ public function getSubCategoryByProviderId( $providerId){
         if ($subcategories) {
             return response()->json($subcategories);
         }
+    }
+
+    public function updateSubCategory(Request $req, $id){
+        $validate = $req->validate([
+            'name' => ['required', Rule::unique('subcategories', 'name')->ignore($id)],
+            'description'=>'sometimes',
+            'keywords'=>'required',
+            'category_id'=>'required'
+        ]);
+        $category= Subcategory::find($id)->first();
+        $category->fill($validate)->save();
+        return response()->json([
+            'message'=>'successfully updated'
+          ],200);
+
     }
 }

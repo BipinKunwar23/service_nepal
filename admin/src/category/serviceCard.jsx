@@ -1,8 +1,10 @@
 import React from "react";
 import image1 from "../images/plumber.jpg";
 import { useDispatch, useSelector } from "react-redux";
-import { setCategoryAciton } from "../redux/categorySlice";
+import { setCategoryAciton, setEditAction } from "../redux/categorySlice";
+import { setServiceId } from "../redux/catServiceSlice";
 const serviceCard = ({ cards }) => {
+  console.log('sevice',cards);
   const dispatch = useDispatch();
   const selected = useSelector((state) => state.categorySlice.subcategory);
   if (cards.length === 0) {
@@ -46,21 +48,36 @@ const serviceCard = ({ cards }) => {
               key={card?.id}
             >
               <img
-                src={image1}
-                alt=""
+                src={`http://localhost:8000/${card?.icons}`}
+                alt="service"
                 className="h-[200px] w-full object-cover mb-3"
               />
               <div className="text-lg font-bold text-[#666] mb-3">
                 {card?.name}
               </div>
-              <div className="">{card?.description}</div>
-              <div className="flex justify-between p-5">
-                <button className="text-green-600">View</button>
-                <button className="text-green-600">Edit</button>
+              <div className="line-clamp-2 ">{card?.description}</div>
+              <div className="flex  p-5">
+                <button className="text-green-600 flex-1 justify-center">View</button>
+             {
+              selected && (
+                <>
+                <button
+                className="text-green-600 flex-1 justify-center"
+                onClick={() => {
+                  dispatch(setServiceId(card?.id));
 
-                <button className="text-green-600">Delete</button>
+                  dispatch(setEditAction("service"));
+                }}
+                
+              >
+                Edit
+              </button>
 
-              
+              <button className="text-green-600 flex-1 justify-center">Delete</button>
+              </>
+
+              )
+             }
               </div>
             </div>
           );

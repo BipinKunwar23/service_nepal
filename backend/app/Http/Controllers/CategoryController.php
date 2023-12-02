@@ -7,20 +7,37 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
     public function category(Request $request)
     {
-        $validate = $request->validate([
+       $request->validate([
             'name' => ['required', 'unique:categories,name'],
-            'description'=>'sometimes',
-            'keywords'=>'required',
+            'description' => 'sometimes',
+            'keywords' => 'required',
+            'icons' => 'sometimes'
         ]);
 
+        $path = null;
 
-        Category::create($validate);
+
+        if ($request->hasFile('icons')) {
+            $file = $request->file('icons');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('category/icons', $name);
+            $path = 'category/icons/' . $name;
+        }
+
+        Category::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'keywords' => $request->keywords,
+            'icons' => $path,
+
+        ]);
         return response()->json([
             'message' => 'successfully create',
         ]);
@@ -31,19 +48,26 @@ class CategoryController extends Controller
         $value = Category::all();
         return response()->json($value);
     }
-   
-    public function updateCategory(Request $req, $id){
+
+    public function viewCategoryById($id)
+    {
+        $category = Category::find($id);
+        return response()->json($category);
+    }
+
+    public function updateCategory(Request $req, $id)
+    {
         $validate = $req->validate([
-            'name' => ['required', 'unique:categories,name'],
-            'description'=>'sometimes',
-            'keywords'=>'required',
+            'name' => ['required', Rule::unique('categories', 'name')->ignore($id)],
+
+            'description' => 'sometimes',
+            'keywords' => 'required',
         ]);
-        $category= Category::find($id)->first();
+        $category = Category::find($id)->first();
         $category->fill($validate)->save();
         return response()->json([
-            'message'=>'successfully updated'
-          ],200);
-
+            'message' => 'successfully updated'
+        ], 200);
     }
 
     public function getCategoryById($id)
@@ -62,11 +86,12 @@ class CategoryController extends Controller
             'category' => $items
         ]);
     }
-    public function getServices($id){
-        $item=Category::find($id)->services()->select('id','name')->get();
+    public function getServices($id)
+    {
+        $item = Category::find($id)->services()->select('id', 'name')->get();
         return response()->json($item);
     }
-  
+
 
     public function getCategoryByProviderId($id)
     {

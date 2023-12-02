@@ -15,6 +15,7 @@ function App() {
     <>
     
      <Naavbar/>
+     
      <Routes>
      <Route path='/' element={<Home/>}/>
       

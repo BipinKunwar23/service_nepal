@@ -8,31 +8,31 @@ const Dashboard = () => {
           to: "/",
         },
         {
-          id: 1,
+          id: 2,
           link: "Providers",
           to: "",
         },
         {
-          id: 1,
+          id: 3,
           link: "Services",
           to: "/category",
         },
       
         {
-          id: 1,
+          id: 4,
           link: "Customers",
           to: "/",
         },
        
         {
-          id: 1,
+          id: 5,
           link: "Payments",
           to: "/",
         },
     ]
   return (
     <div>
-    <nav className=" shadow w-[250px] shadow-white flex flex-col text-white text-[1em] min-h-screen bg-gray-800 ">
+    <nav className=" shadow w-[250px] shadow-white flex flex-col text-white text-[1em] min-h-screen bg-gray-500 ">
     <h2 className="text-xl font-semibold ml-10  m-10 ">Admin Dashboard </h2>
   <ul className="flex flex-col   ">
     {

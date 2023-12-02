@@ -10,9 +10,15 @@ export const categoryApi = createApi({
     return headers
   }
 }),
+tagTypes:['Category'],
+
   endpoints: (builder) => ({
     viewCategory: builder.query({
       query: () => "view",
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'Category', id })), 'Category']
+      :['Category'],
     }),
     getCategoryService: builder.query({
       query: (id) => `service/${id}`,
@@ -26,6 +32,8 @@ export const categoryApi = createApi({
         method: "POST",
         body: category,
       }),
+      invalidatesTags: ['Category'],
+
     }),
     updateCategory: builder.mutation({
       query: ({id,...category}) => ({
@@ -33,6 +41,8 @@ export const categoryApi = createApi({
         method: "PUT",
         body: category,
       }),
+      invalidatesTags: ['Category'],
+
     }),
   
     addCatgService:builder.mutation({

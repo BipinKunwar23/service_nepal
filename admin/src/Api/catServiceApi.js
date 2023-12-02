@@ -10,19 +10,31 @@ export const catServiceAPi = createApi({
       return headers;
     },
   }),
+tagTypes:['services'],
+
   endpoints: (build) => ({
     addCatServices: build.mutation({
-      query: ({ service, id }) => ({
+      query: ({ formdata, id }) => ({
         url: `create/${id}`,
         method: "post",
-        body: service,
+        body: formdata,
       }),
+      invalidatesTags: ['services'],
+
     }),
     viewCategoryServices: build.query({
       query: (id) => `show/${id}`,
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
+      :['services'],
     }),
     getCatServiceById: build.query({
       query: (id) => `${id}`,
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
+      :['services'],
     }),
     getOtherCatservice: build.query({
       query: (id) => `other/${id}`,
@@ -32,6 +44,10 @@ export const catServiceAPi = createApi({
     }),
     getServicesByCategory: build.query({
       query: (id) => `category/${id}`,
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
+      :['services'],
     }),
     getServices: build.query({
       query: ({ category, subcategory }) => {
@@ -41,7 +57,28 @@ export const catServiceAPi = createApi({
           ? `category/${category}`
           : `${subcategory}`;
       },
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
+      :['services'],
     }),
+
+    
+    viewServiceById: build.query({
+      query: (id) => `view/${id}`,
+      providesTags:['services'],
+
+      
+    }),
+    editService: build.mutation({
+      query: ({id,...service}) => ({
+        url: `edit/${id}`,
+        method: "PUT",
+        body: service,
+      }),
+      invalidatesTags: ['services'],
+    }),
+
   }),
 });
 export const {
@@ -51,5 +88,7 @@ export const {
   useViewCategoryServicesQuery,
   useGetAllCatservicesQuery,
   useGetServicesByCategoryQuery,
-  useGetServicesQuery
+  useGetServicesQuery,
+  useEditServiceMutation,
+  useViewServiceByIdQuery
 } = catServiceAPi;

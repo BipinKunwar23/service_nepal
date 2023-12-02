@@ -80,6 +80,11 @@ export const serviceApi = createApi({
       :['Services'],
 
     }),
+
+
+   
+
+
   }),
 });
 export const {
@@ -90,5 +95,6 @@ export const {
   useGetAllProviderCategoryQuery,
   useGetProviderServiceByCategoryQuery,
   useGetProviderServiceByIdQuery,
-  useDeleteServicesMutation
+  useDeleteServicesMutation,
+  useViewServiceByIdQuery,
 } = serviceApi;

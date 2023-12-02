@@ -40,27 +40,6 @@ export default function Category() {
       ? clicked?.subparent
       : clicked?.parent;
 
-  //   useEffect(()=>{
-  //     Object.keys(clicked?.parent).length !== 0 &&
-  //                     Object.keys(clicked?.parent?.category).length === 0  ?(
-  //                       navigate(`${clicked?.parent.name}`)
-  //                     )
-  //                     :(
-  //                       Object.keys(clicked?.subparent).length !== 0 &&
-  //                       Object.keys(clicked?.subparent?.category).length === 0  ?
-  //                       (
-  //                     navigate(` ${clicked?.parent?.name} /${clicked?.subparent?.name}`)
-
-  //                       )
-  //                       :(
-  //                         Object.keys(clicked?.child).length!==0?
-  //                     navigate(` ${clicked?.parent?.name} /${clicked?.subparent?.name}/${clicked?.child?.name}`):
-  //                     navigate('/user/service/category')
-  //                       )
-  //                     )
-  //   },[clicked])
-
-  // const [selected, setSelected] = useState(hovered);
   useEffect(() => {
     Object.keys(selectedCatg).length !== 0 &&
       navigate(`Category/${selectedCatg?.name}`);

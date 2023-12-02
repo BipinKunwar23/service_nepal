@@ -78,7 +78,7 @@ export const providerApi = createApi({
       query:({categoryId,subcategoryId,service})=>{
           return !categoryId && !subcategoryId && !service
             ? "all"
-            :  service ? `search/get?name=${service}`
+            :  service ? `search/service?name=${service}`
             
             : categoryId && !subcategoryId 
             ? `category/${categoryId}`

@@ -12,28 +12,28 @@ export default function Naavbar() {
       to: "/",
     },
     {
-      id: 1,
+      id: 2,
       link: "Dashboard",
       to: "/dashboard",
     },
     {
-      id: 1,
+      id: 3,
       link: "Category",
       to: "/category",
     },
   
     {
-      id: 1,
+      id: 4,
       link: "Approval",
       to: "/",
     },
     {
-      id: 1,
+      id: 5,
       link: "Feedbacks",
       to: "/",
     },
     {
-      id: 1,
+      id: 6,
       link: "Setting",
       to: "/",
     },
@@ -46,13 +46,13 @@ export default function Naavbar() {
   return (
     <>
     
-    <nav className=" shadow shadow-white flex text-white text-[1em] gap-20 sticky top-0 bg-gray-900 z-10">
+    <nav className="flex sticky top-0   z-10 bg-gray-200 border-b-2  border-gray-400 ">
       <h2 className="text-2xl font-semibold  text-center p-8  ">Admin </h2>
-    <ul className="flex flex-1 place-self-center  ">
+    <ul className="flex flex-1 place-self-center ml-[10%] ">
       {
         dashbars.map((dashbar)=>{
           return <li key={dashbar.id} className="  p-3 ">
-          <NavLink to={dashbar.to} className="text-white m-5">
+          <NavLink to={dashbar.to} className=" m-5 ">
             {dashbar?.link}
           </NavLink>
           </li>

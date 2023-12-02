@@ -10,6 +10,8 @@ export const catServiceAPi = createApi({
       return headers;
     },
   }),
+tagTypes:['Services'],
+
   endpoints: (build) => ({
     addCatServices: build.mutation({
       query: ({ service, id }) => ({

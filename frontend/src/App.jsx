@@ -34,7 +34,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/register" element={<SignUp />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
-        <Route path="/customer/" element={<Home />}></Route>
+        <Route path="/customer" element={<Home />}></Route>
         <Route path="/provider/:providerId" element={<Provider />} />
         <Route
           path="/order/service/:serviceId"
@@ -44,18 +44,18 @@ function App() {
             </RequireCustomerAuth>
           }
         />
-        <Route path="/customer/orders/history" element={<OrderHistory />} />
+        <Route path="/orders/customer" element={<OrderHistory />} />
         <Route path="/user/*">
           <Route path="profile/" element={<Profile />} />
           <Route path="profile/create" element={<Edit />} />
-          
+
           <Route path="category/" element={<CategoryPage />}>
             <Route path=":name/:subname" element={<EditCategory />} />
             <Route path=":name/:subname/:child" element={<EditCategory />} />
           </Route>
         </Route>
         <Route
-          path="/provider"
+          path="provider"
           element={
             <RequireAuth>
               <ProviderHome />
@@ -65,11 +65,14 @@ function App() {
 
         <Route
           path="/provider/service/join/:serviceId"
-          element={<RequireProviderAuth>
-            <ServiceSetUp />
-          </RequireProviderAuth>}
+          element={
+            <RequireProviderAuth>
+              <ServiceSetUp />
+            </RequireProviderAuth>
+          }
         />
-        <Route path="/provider/services" element={<Services />} />
+        <Route path="services/provider" element={<Services />} />
+
         <Route
           path="/provider/services/:serviceId"
           element={<ViewServices />}

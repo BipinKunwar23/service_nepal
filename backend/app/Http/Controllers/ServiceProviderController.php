@@ -209,25 +209,19 @@ public function getProviderDetails($providerId){
     }
 }
 
-    public function SearchService(Request $request){
-        $search=$request->input('name');
-        $services = Service::has('users')->where('name','LIKE',$search.'%')->distinct()
-            ->get();
-        return $services;
-    }
+public function searchByService(Request $request)
+{
+    $name = $request->input('name');
+    $providers = User::whereHas('services', function ($query) use ($name) {
+        $query->where('name', $name);
+    })->with(['services' => function ($query) {
+        $query->take(3);
+    }, 'profile'])
+        ->get();
+    if ($providers) {
 
-    public function searchedProviders(Request $request){
-        $name=$request->input('name');
-        $providers = User::whereHas('services',function($query) use ($name) {
-            $query->where('name',$name);
-        })->with(['services'=>function($query){
-            $query->take(3);
-        },'profile'])
-            ->get();
-        if ($providers) {
-
-            return ProviderResource::collection($providers);
-        }
+        return ProviderResource::collection($providers);
     }
-   
+}
+  
 }
