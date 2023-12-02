@@ -7,6 +7,7 @@ const initialState = {
   subCatgButton: "",
   action: "",
   edit: "",
+  isAdmin:false
 };
 
 export const categorySlice = createSlice({
@@ -37,6 +38,9 @@ export const categorySlice = createSlice({
     setEditAction: (state, actons) => {
       state.edit = actons.payload;
     },
+    setAdmin:((state)=>{
+      state.isAdmin=true
+    })
   },
 });
 export const {
@@ -46,6 +50,7 @@ export const {
   setPath,
   setCategoryAciton,
   setSubCatgButton,
-  setEditAction
+  setEditAction,
+  setAdmin
 } = categorySlice.actions;
 export default categorySlice.reducer;

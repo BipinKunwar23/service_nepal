@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer components {
+  .admin {
+@apply  shadow shadow-gray-800 p-20 rounded-md w-[33Vw] box-border 
+  }
+  .admin div{
+    @apply mb-5 flex flex-col gap-3
+  }
+  .admin div input{
+    @apply w-full rounded-lg focus:outline-none border border-gray-600 p-2
+  }
+  .admin div label{
+    @apply text-lg font-semibold
+  }
+}
 .add-form{
   @apply grid grid-cols-1 gap-4 rounded-md
 }
