@@ -34,12 +34,7 @@ export default function Category({categories}) {
         })
       }
       </section>
-    
-    <div className="flex place-content-center mt-8 gap-10">
-          <Button name="View All" bg_color="green-600" text_color="white"></Button>
-          
-        </div>
-     
+  
     </section>
   );
 }
