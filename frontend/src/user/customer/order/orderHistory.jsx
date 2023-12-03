@@ -5,6 +5,7 @@ import Loader from '../../../components/Loader';
 const orderHistory = () => {
     const id=localStorage.getItem('userId');
     const {data,isLoading,isError,error}=useGetCustomerOrdersQuery(id)
+    console.log(data);
     if(isLoading){
         return <Loader/>
     }

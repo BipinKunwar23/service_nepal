@@ -14,7 +14,7 @@ function Card({ cards }) {
 
   console.log("cards", cards);
   return (
-    <section className="  grid grid-cols-3  grid-flow-row  px-20  font-sans bg-white  ">
+    <section className="  grid grid-cols-3  grid-flow-row  px-10  font-sans bg-white  ">
       {cards &&
         cards.map((card) => {
           return (
@@ -25,31 +25,33 @@ function Card({ cards }) {
                 dispatch(setProviderId(card?.id));
               }}
             >
-              <div className="w-full h-[200px]  box-border bg-white">
+              <div className="w-full h-[200px]  box-border bg-white mb-5">
                 <img
                   src={`http://localhost:8000/${card?.profile?.photo}`}
                   alt={image}
                   className=" w-full h-full object-cover rounded-md"
                 />
               </div>
-              <div className=" flex place-content-center">
+              <div className="bg-[#1D1B63] text-gray-100 p-1">
+
+              <div className="text-2xl font-semibold ">
+                {card?.name}
+              </div>
+              <div className=" flex place-content-center my-2">
                 {Array(card?.rating)
                   .fill()
                   .map((_, index) => (
                     <div key={index} className=" ">
-                      <FaStar className=" text-[#FA130C] text-[1em] m-2 mt-5 mb-5 " />
+                      <FaStar className=" text-[#FA130C] text-[1.2em] mr-1  " />
                     </div>
                   ))}
               </div>
-              <div className="text-xl font-semibold text-[#666] mb-3">
-                {card?.name.toUpperCase()}
-              </div>
               <div className="">{card?.description}</div>
-              <div className="bg-indigo-800  text-white  text-left">
+              <div className="  text-white  text-left">
                 <ol className="flex flex-col gap-4 text-white list-disc p-4 ">
                   {card?.services?.map((service) => {
                     return (
-                      <li key={service?.id} className="font-semibold ml-2">
+                      <li key={service?.id} className="font-semibold ml-2  text-[1.2em]">
                         {service?.name}
                       </li>
                     );
@@ -66,6 +68,8 @@ function Card({ cards }) {
                     View More
                   </button>
                 </div>
+              </div>
+
               </div>
             </div>
           );

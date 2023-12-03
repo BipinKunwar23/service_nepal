@@ -21,12 +21,12 @@ const Card = ({ cards }) => {
 
   return (
     <section className=" ">
-      <section className="grid grid-cols-4 ">
+      <section className="grid grid-cols-3 gap-16 p-10 ">
         {cards.map((card) => {
           console.log("cardId", card?.id);
           return (
             <div
-              className="    m-5 bg-[#fff] p-3 rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600 "
+              className="     bg-[#fff] p-3 rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600 "
               key={card?.id}
             >
               <img

@@ -14,7 +14,7 @@
     @apply w-full rounded-lg focus:outline-none border border-gray-600 p-2
   }
   .admin div label{
-    @apply text-lg font-semibold
+    @apply text-[1em] font-semibold
   }
 }
 .add-form{

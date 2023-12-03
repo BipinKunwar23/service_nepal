@@ -26,7 +26,7 @@ export default function Category({categories}) {
           
           >
             <div className="max-w-[150px] m-5  box-border hover:cursor-pointer hover:scale-105 transition">
-            <img src={image} className="max-w-[120px] h-[120px] rounded-full border border-gray-300 mb-5 " alt="" />
+            <img src={`http://localhost:8000/${category?.icons}`} className="max-w-[120px] h-[120px] rounded-full border border-gray-300 mb-5 " alt="" />
             <p className="text-center mt-5 text-gray-600 font-semibold ">{category?.name}</p>
 
             </div>

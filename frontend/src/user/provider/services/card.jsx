@@ -5,6 +5,7 @@ import { setProviderService } from "../../../redux/serviceSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const serviceCard = ({ cards }) => {
+  console.log(cards);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const selected = useSelector((state) => state.serviceSlice.service);
@@ -22,23 +23,23 @@ const serviceCard = ({ cards }) => {
 
   return (
     <section className=" ">
-      <section className="grid grid-cols-4 p-5 box-border ">
+      <section className="grid grid-cols-3 p-10  box-border ">
         {cards.map((card) => {
           console.log("cardId", card?.id);
           return (
             <div
-              className="    m-5 bg-[#fff] p-3 rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600 "
+              className="   m-5  bg-[#fff] p-3 rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600 "
               key={card?.id}
             >
               <img
-                src={`http://localhost:8000/${card?.icons}`}
-                alt=""
+                src={`http://localhost:8000/${card?.pivot?.image}`}
+                alt="Service Image"
                 className="h-[200px] w-full object-cover mb-3"
               />
               <div className="text-lg font-bold text-[#666] mb-3">
                 {card?.name}
               </div>
-              <div className="">{card?.description}</div>
+              <div className="line-clamp-2">{card?.pivot?.description}</div>
               <div className="flex justify-center ">
                 <button
                   className="bg-green-600 p-1 px-6 w-full m-5 rounded-lg text-white font-bold text-md"

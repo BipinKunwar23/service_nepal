@@ -122,7 +122,7 @@ class CategoryController extends Controller
                     $subquery->whereIn('id', $user);
                 });
             })
-                ->get(['id', 'name']);
+                ->get(['id', 'name','icons']);
             if ($categories) {
                 return response()->json($categories);
             }

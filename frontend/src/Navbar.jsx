@@ -87,7 +87,7 @@ export default function Naavbar() {
             }}
           >
             <li className="">
-              <NavLink to="/" exact >Home</NavLink>
+              <NavLink to="/"  >Home</NavLink>
             </li>
           {
             !logged ? <li>

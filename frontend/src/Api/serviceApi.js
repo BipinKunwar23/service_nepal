@@ -80,6 +80,16 @@ export const serviceApi = createApi({
       :['Services'],
 
     }),
+    getCustomerOrders:builder.query({
+      query:(customerId)=>`get/customer/${customerId}`,
+          
+      
+      // providesTags:(result)=>
+      // result ?
+      // [ ...result.map(({ id }) => ({ type: 'Orders', id })), 'Orders']
+      // :['Orders'],
+
+  })
   }),
 });
 export const {
@@ -91,5 +101,6 @@ export const {
   useGetProviderServiceByCategoryQuery,
   useGetProviderServiceByIdQuery,
   useDeleteServicesMutation,
+  useGetCustomerOrdersQuery
   
 } = serviceApi;

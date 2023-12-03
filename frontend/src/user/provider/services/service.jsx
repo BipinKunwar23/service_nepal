@@ -39,7 +39,7 @@ const Services = () => {
       error: cataegoryError,
     } = useGetProviderCategoryQuery(providerId);
   
-
+console.log('category',categories);
   
     if (categoryLoading || subcategoryLoading || serviceLoading ) {
       return <Loader/>

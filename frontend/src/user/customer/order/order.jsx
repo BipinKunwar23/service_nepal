@@ -31,7 +31,7 @@ if(isError){
   return <Error error={error}/>
 }
 if(isSuccess){
-  return <Modal message={data?.message} navigation="/customer/orders/history"/>
+  return <Modal message={data?.message} navigation="/orders/customers"/>
 }
   return (
     <section className="grid place-content-center p-10  bg-[#D6FFFF]   ">

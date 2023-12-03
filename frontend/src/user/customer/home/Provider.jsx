@@ -24,8 +24,8 @@ console.log('cards',serviceId);
   }
   if (isSuccess) {
     return (
-      <section className="   box-border text-[1em]">
-        <section className="flex gap-5 bg-white m-10 p-5 shadow shadow-gray-600">
+      <section className="   box-border text-[1em] bg-[rgba(0,0,0,0.2)]">
+        <section className="flex gap-5 bg-white mx-10 p-5 shadow shadow-gray-200">
           <div>
             <img
               src={plumber}
@@ -127,7 +127,7 @@ console.log('cards',serviceId);
             </div>
           </div>
         </section>
-        <section className="  box-border p-8 m-10 bg-white shadow shadow-gray-600 ">
+        <section className="  box-border p-8 mx-10 bg-white shadow shadow-gray-200 border-t-2 ">
           <p className="text-[1.2em] mb-5 font-semibold align-bottom text-gray-600 ">
             My Services
           </p>
@@ -135,24 +135,23 @@ console.log('cards',serviceId);
             {data?.services.map((service) => (
               <div
                 key={service?.id}
-                className=" p-2 shadow shadow-gray-700 grid grid-cols-1 border text-center   border-gray-300 box-border"
+                className=" p-2 shadow shadow-gray-800 grid grid-cols-1 border text-center   border-gray-300 box-border"
               >
-                <img src={plumber} alt=""  className="w-full h-[200px] mb-2"/>
+                <img src={`http://localhost:8000/${service?.pivot?.image}`} alt=""  className="w-full h-[200px] mb-2"/>
                
                 <h2 className="font-semibold text-[#666] text-lg mb-2">
                   {service?.name}
                 </h2>
-                <p className="mb-2 text-[1em]">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Architecto error voluptatum inventore cum sequi, excepturi sit
+                <p className="mb-2 text-[1em] line-clamp-2">
+                 
                   
-                  {service?.descripion}
+                  {service?.pivot?.description}
                 </p>
 
                 <div className="flex place-content-center">
                   <button
                     type="button"
-                    className="font-bold font-sans text-[1em] m-2 w-full  bg-green-600 p-2 text-white"
+                    className="font-bold font-sans text-[1em] m-2 w-full  bg-green-600 p-2 text-white rounded-lg"
                     onClick={()=>{
                       dispatch(setServiceId(service?.id))
                       navigate(`/order/service/${service?.id}`)
@@ -167,7 +166,7 @@ console.log('cards',serviceId);
         </section>
 
         {/* footer */}
-        <div className=" flex gap-10 bg-white p-8 m-5 shadow shadow-gray-600 box-border">
+        <div className=" flex gap-10 bg-white p-8 mx-10 shadow shadow-gray-200 mt-1 box-border">
           <div className=" flex-1 border border-gray-300 p-6 ">
             <form action="" className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
