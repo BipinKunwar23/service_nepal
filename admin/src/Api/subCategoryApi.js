@@ -11,11 +11,16 @@ prepareHeaders:(headers)=>{
     headers.set('Authorize',localStorage.getItem('token'))
     return headers
   }}),
+
 tagTypes:['subCategory'],
 
 endpoints:(builder)=>({
   getAllSubCategory:builder.query({
-    query:()=>"viewAll"
+    query:()=>"viewAll",
+    providesTags:(result)=>
+    result ?
+    [ ...result.map(({ id }) => ({ type: 'subCategory', id })), 'subCategory']
+    :['subCategory'],
 }),
 getSubCategoryById:builder.query({
   query:(id)=>`view/${id}`,
@@ -36,7 +41,11 @@ addSubCategory: builder.mutation({
 getSubCategory:builder.query({
   query:(categoryId)=>{
     return !categoryId? "viewAll" : `view/${categoryId}`
-  }
+  },
+  providesTags:(result)=>
+  result ?
+  [ ...result.map(({ id }) => ({ type: 'subCategory', id })), 'subCategory']
+  :['subCategory'],
 }),
 getProviderSubCategory:builder.query({
   query:({categoryId,providerId})=>{

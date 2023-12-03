@@ -9,6 +9,7 @@ import { useSelector , useDispatch} from "react-redux";
 import { useGetProviderDetailsQuery } from "../../../Api/providerApi";
 import { useNavigate,useParams } from "react-router-dom";
 import { setServiceId } from "../../../redux/cardSlice";
+import Loader from "../../../components/Loader";
 const Provider = () => {
   const navigate=useNavigate();
   const {providerId}=useParams();
@@ -19,7 +20,7 @@ const Provider = () => {
   const logged=localStorage.getItem("logged");
 console.log('cards',serviceId);
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader/>
   }
   if (isSuccess) {
     return (

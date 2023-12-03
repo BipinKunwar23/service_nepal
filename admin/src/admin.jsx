@@ -37,7 +37,7 @@ const onSubmit=async (values)=>{
           <input type="password" {...register('password')} />
         </div>
         <div className="flex justify-center">
-        <button type="submit" className="bg-gray-300 p-2 rounded-lg text-2xl font-semibold text-gray-800"
+        <button type="submit" className="bg-gray-300 p-2 rounded-lg text-lg font-semibold text-gray-800"
         
         >Enter</button>
         </div>

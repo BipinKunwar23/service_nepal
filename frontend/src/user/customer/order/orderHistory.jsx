@@ -1,11 +1,12 @@
 import React from 'react'
 import { useGetCustomerOrdersQuery } from '../../../Api/orderApi'
 import Error from './../../../ErrorHandling/error';
+import Loader from '../../../components/Loader';
 const orderHistory = () => {
     const id=localStorage.getItem('userId');
     const {data,isLoading,isError,error}=useGetCustomerOrdersQuery(id)
     if(isLoading){
-        return <div>loading...</div>
+        return <Loader/>
     }
   return (
     <div className='bg-gray-700 p-20'>

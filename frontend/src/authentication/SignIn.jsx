@@ -93,7 +93,7 @@ const SignIn = () => {
 
                   <div className="grid  ">
                     {isLoading ? (
-                      <div className=" text-center">
+                      <div className=" flex justify-center">
                         <button>
                           <ColorRing height="40" width="40" />
                         </button>

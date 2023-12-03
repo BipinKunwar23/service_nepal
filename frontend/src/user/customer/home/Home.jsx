@@ -8,9 +8,11 @@ import { useViewCategoryQuery } from "../../../Api/categoryApi";
 import { useGetSubCategoryQuery } from "../../../Api/subCategoryApi";
 import { useGetProviderQuery } from "../../../Api/providerApi";
 import { setSearchingProvider, setService } from "../../../redux/cardSlice";
+
 import Provider from "./searching/provider";
 
 import Card from "./Card";
+import Loader from "../../../components/Loader";
 const Home = () => {
   const dispatch = useDispatch();
   const [showItemList, setShowItemList] = useState(false);
@@ -67,7 +69,7 @@ const Home = () => {
   } = useViewCategoryQuery();
 
   if (categoryLoading || subcategoryLoading || serviceLoading) {
-    return <div>loading...</div>;
+    return <Loader/>
   }
   return (
     <>

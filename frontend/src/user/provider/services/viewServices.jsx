@@ -2,6 +2,7 @@ import React from "react";
 import image from "../../../images/plumber.jpg";
 import { useParams,useNavigate, useLocation } from "react-router-dom";
 import { useGetProviderServiceByIdQuery } from "../../../Api/providerApi";
+import Loader from "../../../components/Loader";
 const viewServices = () => {
   const providerId=localStorage.getItem('userId');
   const {serviceId}=useParams();
@@ -10,7 +11,7 @@ const viewServices = () => {
   const {data:service,isLoading}=useGetProviderServiceByIdQuery({providerId,serviceId})
   console.log(service);
   if(isLoading){
-    return <div>loading..</div>
+    return <Loader/>
   }
   return (
     <section className=" w-full bg-[rgba(0,0,0,0.1)] p-5  ">

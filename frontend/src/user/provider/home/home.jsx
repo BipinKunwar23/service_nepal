@@ -9,6 +9,7 @@ import CardSection from "../../../services/cardSection";
 import { useGetSubCategoryQuery } from "../../../Api/subCategoryApi";
 import { useGetServicesQuery } from "../../../Api/catServiceApi";
 import Card from "./card";
+import Loader from "../../../components/Loader";
 const ProviderHome = () => {
     const category = useSelector((state) => state.categorySlice.category);
     const subcategory = useSelector((state) => state.categorySlice.subcategory);
@@ -36,7 +37,7 @@ const ProviderHome = () => {
   
   
     if (categoryLoading || subcategoryLoading || serviceLoading ) {
-      return <div>loading...</div>;
+      return <Loader/>
     }
   return (
     <>

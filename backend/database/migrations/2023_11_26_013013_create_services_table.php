@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable()->default(null);
-            $table->binary('picture')->nullable()->default(null);
+            $table->string('icons')->nullable()->default(null);
+            $table->string('keywords')->default(null);
             $table->foreignId('subcategory_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

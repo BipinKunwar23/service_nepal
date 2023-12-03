@@ -2,6 +2,7 @@ import React from "react";
 import {useAddCatServicesMutation} from '../../../Api/catServiceApi'
 import Form from "../form/Form";
 import { useSelector } from "react-redux";
+import Loader from "../../../components/Loader";
 const AddService = () => {
   const [addService, { data, isLoading, isError,error }] =
     useAddCatServicesMutation();
@@ -19,7 +20,7 @@ const selected=useSelector((state)=>state.categorySlice.subcategory);
       });
   };
   if (isLoading) {
-    return <div>Saving</div>;
+    return <Loader/>
   }
   if (isError) {
     return <div>{error}</div>;

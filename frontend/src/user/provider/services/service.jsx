@@ -9,6 +9,7 @@ import { useGetProviderCategoryQuery } from "../../../Api/categoryApi";
 import { useGetProviderSubCategoryQuery } from "../../../Api/subCategoryApi";
 import {useGetProviderServiceQuery} from "../../../Api/providerApi"
 import ServiceCard from "./card";
+import Loader from "../../../components/Loader";
 const Services = () => {
     const categoryId = useSelector((state) => state.categorySlice.category);
     const subcategoryId = useSelector((state) => state.categorySlice.subcategory);
@@ -41,7 +42,7 @@ const Services = () => {
 
   
     if (categoryLoading || subcategoryLoading || serviceLoading ) {
-      return <div>loading...</div>;
+      return <Loader/>
     }
   return (
     <>

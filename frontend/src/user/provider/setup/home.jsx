@@ -11,6 +11,7 @@ import {
 } from "../../../Api/providerApi";
 // import { useGetOtherCatserviceQuery } from "../../Api/catServiceApi";
 import { useForm, Controller } from "react-hook-form";
+import Loader from "../../../components/Loader";
 export default function SeviceSetup() {
   const dispatch = useDispatch();
   const { serviceId } = useParams();
@@ -90,7 +91,7 @@ export default function SeviceSetup() {
   }
 
   if (isLoading || isCreating || isUpdating) {
-    return <div>Loading...</div>;
+    return <Loader/>
   }
   if (iscreateSuccess || isEditSuccess) {
     return (
