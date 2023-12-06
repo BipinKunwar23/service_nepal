@@ -10,10 +10,9 @@ export default function Time({ Controller, setValue, control, time, days }) {
 
   return (
     <>
-      <div className="  text-slate-700  flex flex-col gap-2">
-        <span className="font-semibold">Available Time</span>
-        <div className="">
-          <div className=" ">
+      <div className="  text-slate-800  flex flex-col gap-2 p-5">
+        <span className="">Available Time</span>
+      
             <div>
               <Controller
                 name="time"
@@ -24,11 +23,10 @@ export default function Time({ Controller, setValue, control, time, days }) {
                 }}
                 render={({ field }) => {
                   return (
-                    <div className="flex flex-col gap-3">
-                      <div className="grid gap-10 grid-cols-2">
+                      <div className="grid gap-10 grid-cols-2 ">
                         <input
                           type="time"
-                          className="p-2 border border-gray-700 rounded-lg "
+                          className="p-2  border-2 border-slate-300  rounded-lg "
                           onChange={(e) => {
                             const { value } = e.target;
                             setValue("time.start", value);
@@ -39,7 +37,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
 
                         <input
                           type="time"
-                          className="p-2 border border-gray-700 rounded-lg "
+                          className="p-2 border-2 border-slate-300  rounded-lg "
                           onChange={(e) => {
                             const { value } = e.target;
                             setValue("time.end", value);
@@ -47,17 +45,15 @@ export default function Time({ Controller, setValue, control, time, days }) {
                           defaultValue={time && time?.end || "17:00"}
                         />
                       </div>
-                    </div>
                   );
                 }}
               />
             </div>
-          </div>
-        </div>
+   
       </div>
 
-      <div className=" flex flex-col text-slate-700  ">
-        <span className="font-semibold ">Available Days</span>
+      <div className=" flex flex-col text-slate-800 p-5  ">
+        <span className=" ">Available Days</span>
         <div>
           <Controller
             name="days"
@@ -82,7 +78,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
                               weeks.map((day) => day)
                             );
                       }}
-                      className="border border-gray-700 rounded-lg"
+                      className="borde-2 border-slate-300 rounded-lg"
                     />
 
                     <label htmlFor="all">All</label>

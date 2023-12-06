@@ -21,9 +21,14 @@ import Order from "./user/customer/order/order";
 import OrderHistory from "./user/customer/order/orderHistory";
 
 import ViewServices from "./user/provider/services/viewServices";
+import ViewProvider from "./user/customer/home/ViewProvider";
+
 import RequireAuth from "./RequireAuth";
 import RequireCustomerAuth from "./RequireCustomerAuth";
 import RequireProviderAuth from "./RequireProviderAuth";
+import JoinService from "./user/provider/setup/JoinService";
+import Getstarted from "./user/provider/setup/getstarted";
+import Status from "./user/provider/order/status";
 function App() {
   const selected = useSelector((state) => state.categorySlice.category);
 
@@ -35,7 +40,7 @@ function App() {
         <Route path="/register" element={<SignUp />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/customer" element={<Home />}></Route>
-        <Route path="/provider/:providerId" element={<Provider />} />
+        <Route path="/provider/:providerId" element={<ViewProvider />} />
         <Route
           path="/order/service/:serviceId"
           element={
@@ -44,7 +49,12 @@ function App() {
             </RequireCustomerAuth>
           }
         />
-        <Route path="/orders/customer" element={<OrderHistory />} />
+      <Route path="/join" element={<JoinService/>}/>
+      <Route path="/notify" element={<Getstarted/>}/>
+
+        <Route path="/orders/customer" element={<Order />} />
+        <Route path="/status" element={<Status />} />
+
         <Route path="/user/*">
           <Route path="profile/" element={<Profile />} />
           <Route path="profile/create" element={<Edit />} />

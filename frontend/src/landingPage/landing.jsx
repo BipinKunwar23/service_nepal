@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import image from "../images/Plumber.png";
 import image1 from "../images/plumber.jpg";
-
+import { useNavigate } from "react-router-dom";
 const landing = () => {
+  const [started,setStarted]=useState(false)
+  const [role,setRole]=useState(null);
+  const navigate=useNavigate();
   return (
-    <section className=" bg-[#474747]  grid-cols-1 gap-2 grid justify-items-center   ">
+    <section className=" bg-gray-100 grid-cols-1 gap-2 grid justify-items-center shadow shadow-gray-600    ">
       <div className="max-w-[60Vw]">
-        <article className="bg-[#004840] text-white flex flex-col gap-5   px-20 py-10 box-border">
+        <article className=" text-gray-600 bg-white flex flex-col gap-5 border-b border-gray-400  px-20 py-10 box-border">
           <h2 className="font-bold text-[2em]  text-orange-600 w-[50Vw]">
             CREATE YOUR OWN SERVICES AND SELL YOUR SERVICES ONLINE
           </h2>
@@ -17,11 +20,40 @@ const landing = () => {
                 tenetur veritatis magni cumque corrupti quaerat eius est aperiam
                 eos optio velit, fugit sapiente mollitia saepe perferendis,
               </p>
-              <div className="g flex-1">
-                <button className="bg-[#EF351B] rounded-full p-2 w-[200px] text-white font-semibold tracking-wider">
-                  {" "}
-                  GETTING STARTED
+              <div className=" flex flex-col gap-2  w-[200px]">
+                <button className="bg-[#EF351B] rounded-full p-2 w-full text-white font-semibold tracking-wider"
+                onClick={()=>{
+                  setStarted(true)
+                }}
+                >
+               Get Started 
                 </button>
+              
+                  {
+                    started && 
+                      <ul className="flex  w-[200px] flex-col gap-2 bg-[#262666]  p-3 rounded-lg  text-white shadow shadow-gray-800 ">
+                        <li className="shadow shadow-gray-100 rounded-lg hover:bg-blue-600 hover:text-white ">
+                     <button className="  m-2 rounded-md "
+                     onClick={()=>{
+                      localStorage.setItem('role','customer')
+                      navigate('/customer',{replace:true});
+
+                     }}
+                     >Customer</button>
+
+                        </li>
+                      <li className="shadow shadow-gray-100 rounded-lg hover:bg-blue-600 hover:text-white">
+                     <button className=" m-2 rounded-md"
+                     onClick={()=>{
+                      localStorage.setItem('role','provider');
+                      navigate('/provider',{replace:true});
+
+                     }}
+                     >Service Provider</button>
+
+                      </li>
+                      </ul>
+                  }
               </div>
             </div>
             <div>

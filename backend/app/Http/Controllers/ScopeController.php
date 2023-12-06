@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Scope;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class ScopeController extends Controller
@@ -17,18 +18,21 @@ class ScopeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, $serviceId)
     {
         
         $validate = $request->validate([
             'name' => ['required', 'unique:categories,name'],
-            'parent_id' => 'sometimes',
+            'service_id' => 'sometimes',
         ]);
 
+        $scope= new Scope();
+        $scope->name=$request->name;
+        $scope->service_id=$serviceId;
 
-        Scope::create($validate);
+        $scope->save();
         return response()->json([
-            'message' => 'successfullu create',
+            'message' => 'successfulluy create',
         ]);
     }
 
@@ -43,9 +47,16 @@ class ScopeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Scope $scope)
+    public function show()
     {
-        //
+        $scopes=Scope::all();
+        return response()->json($scopes);
+    }
+    public function showByServiceId($serviceId)
+    {
+        $service=Service::find($serviceId);
+        $scopes=$service->scopes;
+        return response()->json($scopes);
     }
 
     /**

@@ -20,4 +20,7 @@ class Service extends Model
         return $this->belongsToMany(User::class)
         ->withPivot('description', 'days', 'time', 'charge', 'offers', 'experience', 'image', 'address');
     }
+    public function scopes(){
+        return $this->hasMany(Scope::class);
+    }
 }

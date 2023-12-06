@@ -14,50 +14,48 @@ function Card({ cards }) {
 
   console.log("cards", cards);
   return (
-    <section className="  grid grid-cols-3  grid-flow-row  px-10  font-sans bg-white  ">
+    <section className="  grid grid-cols-3  grid-flow-row  px-5  font-sans bg-white  ">
       {cards &&
         cards.map((card) => {
           return (
             <div
               key={card.id}
-              className=" bg-[#fff] p-3 m-5  rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600  hover:cursor-pointer "
+              className=" bg-[#fff] p-3 m-5 w-[250px]  rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600  hover:cursor-pointer "
               onClick={() => {
                 dispatch(setProviderId(card?.id));
+                navigate(`/provider/${card?.id}`);
               }}
             >
-              <div className="w-full h-[200px]  box-border bg-white mb-5">
+              <div className=" h-[180px]  box-border bg-white mb-5">
                 <img
-                  src={`http://localhost:8000/${card?.profile?.photo}`}
+                  src={`http://localhost:8000/${card?.profile?.photo} `}
                   alt={image}
-                  className=" w-full h-full object-cover rounded-md"
+                  className=" w-full h-full object-cover rounded-lg"
                 />
               </div>
-              <div className="bg-[#1D1B63] text-gray-100 p-1">
+              <div className=" p-1">
 
-              <div className="text-2xl font-semibold ">
+              <div className="text-lg font-semibold ">
                 {card?.name}
               </div>
-              <div className=" flex place-content-center my-2">
-                {Array(card?.rating)
-                  .fill()
-                  .map((_, index) => (
-                    <div key={index} className=" ">
-                      <FaStar className=" text-[#FA130C] text-[1.2em] mr-1  " />
-                    </div>
-                  ))}
-              </div>
-              <div className="">{card?.description}</div>
-              <div className="  text-white  text-left">
-                <ol className="flex flex-col gap-4 text-white list-disc p-4 ">
+            
+              <div className="">{card?.profile?.description}</div>
+              <div className="   text-center">
+                <div className="text-center my-2">
+                <a href={`/provider/${card?.id}`} className="text-gray-600 font-bold text-sm underline text-center ">See all services</a>
+
+                </div>
+                <h2 className=" font-bold">Featuring Services:</h2>
+                <ol className="flex flex-col gap-1 text-gray-600 text-center p-2 ">
                   {card?.services?.map((service) => {
                     return (
-                      <li key={service?.id} className="font-semibold ml-2  text-[1.2em]">
+                      <li key={service?.id} className="font-semibold ml-2 text-center text-[1em]">
                         {service?.name}
                       </li>
                     );
                   })}
                 </ol>
-                <div className="p-3">
+                {/* <div className="p-3">
                   <button
                     className="bg-[rgba(0,0,0,0.6)] text-white p-2 px-8 rounded-md w-full "
                     type="button"
@@ -67,7 +65,7 @@ function Card({ cards }) {
                   >
                     View More
                   </button>
-                </div>
+                </div> */}
               </div>
 
               </div>

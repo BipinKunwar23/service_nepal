@@ -3,10 +3,13 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CusotmerProviderController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderScopeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QualificationController;
+use App\Http\Controllers\ScopeController;
+use App\Http\Controllers\ScopeUserController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceProviderController;
@@ -118,3 +121,31 @@ Route::prefix('search')->controller(SearchController::class)->group(function () 
     Route::get('location/category/{categoryId}','searchCategoryLocation');
 
     });
+
+
+    Route::prefix('scope')->controller(ScopeController::class)->group(function () {
+  
+        Route::post('create/{serviceId}','create');
+        Route::get('all','show');
+        Route::get('service/{serviceId}','showByServiceId');
+
+    
+        });
+
+        Route::prefix('scope/provider')->controller(ScopeUserController::class)->group(function () {
+  
+            Route::post('create/{providerId}','create');
+            Route::get('show/{providerId}/{servcieId}','getProviderScope');
+           
+    
+        
+            });
+
+            Route::prefix('order/scope')->controller(OrderScopeController::class)->group(function () {
+  
+                Route::post('create/{orderId}','create');
+                Route::get('show/{orderId}/{providerId}','showByProviderOrder');
+               
+        
+            
+                });

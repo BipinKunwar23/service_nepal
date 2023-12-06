@@ -241,7 +241,45 @@
     @apply p-2 w-full shadow shadow-gray-800 outline-none focus:outline-none hover:bg-gray-100 text-gray-800
    }
    .order div label{
-    @apply font-semibold text-gray-400
+    @apply font-semibold text-gray-600
+   }
+
+
+
+   .join-service{
+    @apply border border-gray-300 w-[60Vw] flex flex-col  bg-white
+   }
+   .service-field{
+    @apply flex flex-col   gap-2 p-5 shadow shadow-gray-200
+   }
+
+   .service-field label{
+    @apply text-[1em]  text-slate-600 
+   }
+
+   .service-field input, .service-field textarea{
+    @apply border border-slate-400  p-2 rounded-md 
+   }
+   .service-field p{
+    @apply  text-slate-500 
+   }
+
+   .selected-service{
+    @apply bg-white w-[60Vw] p-10 flex flex-col box-border gap-5
+   }
+   .selected-field{
+    @apply flex flex-col gap-3 p-4 shadow shadow-gray-100
+   }
+   .selected-field input, .selected-field textarea{
+    @apply  border-2 border-slate-300  p-2 rounded-md 
+   }
+
+   .more-items{
+    @apply flex flex-col gap-4
+   }
+
+   .refund-policy div{ 
+    @apply flex gap-4
    }
 }
 :root {
@@ -271,7 +309,7 @@ h1 {
 }
 
  a.active{
-  color:#EF351B ;
+  color: #fff; ;
   font-weight: 600;
   
 }

@@ -16,5 +16,8 @@ class Order extends Model
     public function services(){
         return $this->belongsTo(Service::class,'service_id');
     }
+    public function scopes(){
+            return $this->belongsToMany(Scope::class,'order_scope');
+    }
 
 }

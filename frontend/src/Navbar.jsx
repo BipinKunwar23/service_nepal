@@ -5,7 +5,6 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setRoute } from "./redux/RouteSlice";
 
 export default function Naavbar() {
   const logged = localStorage.getItem("logged");
@@ -13,151 +12,141 @@ export default function Naavbar() {
   const dispatch = useDispatch();
   const location = useLocation();
   const [dropdown, setdropdown] = useState("");
+
+  const RenderNavbar=({navbars})=>{
+    return (
+      <ul className=" flex-1 flex justify-evenly ml-5  mr-[14Vw] font-semibold">
+                  {navbars.map((navbar) => (
+                    <li
+                      key={navbar?.id}
+                      className="text-gray-300"
+                    >
+                      <NavLink to={navbar.to} className="w-full">
+                        {" "}
+                        {navbar.link}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+    )
+  }
+
   const customers = [
     {
       id: 1,
-      link: "View Services",
-      to: "/customer",
+      link: "Home",
+      to: "/",
     },
     {
       id: 2,
-      link: "My Orders",
-      to: "/orders/customer",
+      link: " Providers",
+      to: "/customer",
     },
     {
       id: 3,
+      link: "Services",
+      to: "/provider/search",
+    },
+    {
+      id: 4,
+      link: "Orders",
+      to: "/orders/customer",
+    },
+    {
+      id: 5,
       link: "Notifications",
       to: "/notify",
     },
     {
-      id: 4,
+      id: 6,
       link: "Know More",
-      to: "/know",
+      to: "/join",
     },
+    {
+      id:7,
+      link:"Status",
+      to:"/status"
+
+    }
   ];
+
+ 
 
   const providers = [
     {
       id: 1,
+      link: "Home",
+      to: "/",
+    },
+    {
+      id: 2,
       link: "Manage Services",
       to: "provider",
     },
     {
-      id: 2,
+      id: 3,
       link: "My Services",
       to: "services/provider",
     },
     {
-      id: 3,
+      id: 4,
       link: "Received Orders",
       to: "/received",
     },
     {
-      id: 4,
+      id: 5,
       link: "Notification",
       to: "/notification",
     },
   ];
 
-  const profiles = [
+
+
+
+
+
+
+ 
+
+  const mains = [
     {
       id: 1,
-      link: "Profile",
-      to: "/user/profile",
+      link: "Home",
+      to: "/",
     },
     {
       id: 2,
-      link: "Sign Out",
+      link: "About Us",
+      to: "/about us",
+    },
+    {
+      id: 3,
+      link: "Contact Us",
+      to: "/contact",
+    },
+   
+    {
+      id: 4,
+      link: "How It Works",
       to: "/provider/services",
     },
   ];
+  const role=localStorage.getItem('role')
   return (
     <>
-      <nav className="flex sticky top-0 p-6 tracking-widest z-10 bg-[#004840] border-b-2 border-gray-400 ">
+      <nav className="flex sticky top-0 p-6 tracking-widest z-10 bg-[#C90000] shadow shadow-gray-500  ">
         <div className="  flex ">
-          <p className="text-[1.3em] text-[#EF351B] font-bold">
+          <p className="text-[1.3em] text-gray-300 font-bold">
             SERVICE MARKET PLACE
           </p>
         </div>
         <div className="flex-1 flex  text-[0.9em] ">
-          <ul
-            className="text-white flex-1 flex justify-evenly ml-5  mr-[14Vw] font-semibold  "
-            onMouseLeave={() => {
-              setdropdown("");
-            }}
-          >
-            <li className="">
-              <NavLink to="/"  >Home</NavLink>
-            </li>
           {
-            !logged ? <li>
-              <NavLink
-              to="/customer"
-              > FindAService</NavLink>
-            </li>
-            :   <li
-            className="relative"
-            onMouseEnter={() => {
-              setdropdown("customer");
-            }}
-          >
-            FindAService
-            { dropdown === "customer" && (
-              <ul className="text-white flex flex-col w-[180px] font-bold absolute top-7 left-1  bg-black">
-                {customers.map((customer) => (
-                  <li
-                    key={customer?.id}
-                    className="text-white border-b-2 p-3 hover:bg-gray-800 border-gray-400"
-                  >
-                    <NavLink to={customer.to} className="w-full">
-                      {" "}
-                      {customer.link}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
+            role==='customer' ? <RenderNavbar navbars={customers}/>:(
+              role=='provider' ? <RenderNavbar navbars={providers}/> :
+              <RenderNavbar navbars={mains}/>
+            )
           }
-
-          {
-             !logged ? <li>
-             <NavLink
-             to="/provider"
-             > ProviderHub</NavLink>
-           </li>
-           :
-            <li
-              className="relative"
-              onMouseEnter={() => {
-                setdropdown("provider");
-              }}
-            >
-              Provider Hub
-              { dropdown === "provider" && (
-                <ul className="text-white flex flex-col w-[180px]   font-bold absolute top-7 left-1  bg-black">
-                  {providers.map((provider) => (
-                    <li
-                      key={provider?.id}
-                      className="text-white border-b-2 p-3 hover:bg-gray-800 border-gray-400"
-                    >
-                      <NavLink to={provider.to} className="">
-                        {" "}
-                        {provider.link}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          }
-            <li>
-              <NavLink to="/about">About Us </NavLink>
-            </li>
-            <li>
-              <NavLink to="/works">How It Works</NavLink>
-            </li>
-          </ul>
         </div>
         {!logged ? (
           <div>

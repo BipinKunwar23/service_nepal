@@ -74,4 +74,7 @@ class User extends Authenticatable
     public function orders(){
         return $this->hasOne(User::class,'user_id');
     }
+    public function scopes(){
+        return $this->belongsToMany(Scope::class,'scope_user')->withPivot('price','unit','currency');
+    }
 }
