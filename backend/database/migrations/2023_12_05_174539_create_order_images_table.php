@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('order_images', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->string('name');
             $table->timestamps();
         });
     }
