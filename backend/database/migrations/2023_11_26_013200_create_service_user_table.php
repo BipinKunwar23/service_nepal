@@ -17,31 +17,18 @@ return new class extends Migration
             $table->unsignedBigInteger('service_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('service_id')->references('id')->on('services');
-            // $table->date('availabe_date');
-            // $table->time('period');
-            // $table->integer('duration');
-            // $table->unsignedBigInteger('price');
-            // $table->json('location');
-            // $table->json('refund_Policy')->nullable()->default(null);
-            // $table->json('gallery')->nullable();
-            // $table->boolean('status');
-            // 'description' => $service['description'],
-            // 'days' => $service['Days'],
-            // 'time' => $service['time'],
-            // 'charge' => $service['charge'],
-            // 'offers' => $service['offers'],
-            // 'experience' => $service['experience'],
-            // 'image' => $service['image'],
-            // 'address' => $service['address'],
-
             $table->text('description')->nullable()->default(null);
-            $table->json('days')->nullable();
             $table->string('time')->nullable();
-            $table->string('charge')->nullable();
-            $table->string('offers')->nullable();
-            $table->text('experience')->nullable()->default(null);
-            $table->string('image')->nullable()->default(null);
-            $table->string('address')->nullable()->default(null);
+            $table->json('days')->nullable();
+            $table->string('currency',40)->nullable();
+            $table->string('cities')->nullable();
+            $table->string('additional_info')->nullable();
+            $table->string('experience')->nullable();
+            $table->string('experience_certificate')->nullable();
+            $table->string('trainings')->nullable();
+            $table->string('training_certificate')->nullable();
+            $table->string('projects')->nullable();
+            $table->string('project_certificate')->nullable();
             $table->timestamps();
         });
     }

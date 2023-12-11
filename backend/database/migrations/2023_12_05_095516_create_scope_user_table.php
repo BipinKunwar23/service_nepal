@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');     
             $table->unsignedBigInteger('scope_id');
+            $table->unsignedBigInteger('service_id');
+
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('scope_id')->references('id')->on('scopes');
+            $table->foreign('service_id')->references('id')->on('services');
+            
             $table->decimal('price',8,2);
             $table->string('unit');
-            $table->string('currency');
             $table->timestamps();
         });
     }

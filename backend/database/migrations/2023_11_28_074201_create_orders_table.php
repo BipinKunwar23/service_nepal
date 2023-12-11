@@ -13,17 +13,23 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');     
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('service_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('service_id')->references('id')->on('services');
             $table->date('date');
-            $table->string('time');
-            $table->string('duration');
+            $table->string('emergency')->nullable();
+            $table->string('delay')->nullable();
             $table->string('location');
+            $table->json('scopes');
+            $table->string('service')->nullable();
+            $table->string('size')->nullable();
+
+            $table->string('response')->nullable();
+
+            $table->string('name', 40);
             $table->string('email');
-            $table->string('contact');
-            $table->string('description');
+            $table->string('number', 12);
             $table->timestamps();
         });
     }

@@ -19,11 +19,11 @@ class ServiceResource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'icons'=>$this->icons,
-            'pivot'=>[
-                'description'=>$this->pivot->description,
-                'image'=>$this->pivot->image,
+            // 'pivot'=>[
+            //     'description'=>$this->pivot->description,
 
-            ]
+            // ]
+            'images'=>ImageResource::collection($this->whenLoaded('images')),
 
            
         ];

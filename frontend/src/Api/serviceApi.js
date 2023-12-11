@@ -89,7 +89,8 @@ export const serviceApi = createApi({
       // [ ...result.map(({ id }) => ({ type: 'Orders', id })), 'Orders']
       // :['Orders'],
 
-  })
+  }),
+  
   }),
 });
 export const {

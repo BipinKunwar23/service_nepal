@@ -24,8 +24,14 @@ class SearchController extends Controller
  
     public function searchLocation()
     {
-        $places = DB::table('service_user')->select('address')->distinct()->get();
-        return $places;
+        $places = DB::table('service_user')->select('cities')->distinct()->get();
+        $cities=[];
+        foreach ($places as $place) {
+            $cities[] = json_decode($place->cities);
+        }
+        return response()->json(
+           $cities
+        );
         // $places=User::whereHas('services',function ($query){
         //     $query->whereNotNull('service_user.address');
         // })->with('services')->get();
@@ -43,9 +49,11 @@ class SearchController extends Controller
             ->join('subcategories', 'services.subcategory_id', '=', 'subcategories.id')
             ->join('categories', 'subcategories.category_id', '=', 'categories.id')
             ->where('categories.id', $categoryId)
-            ->select('service_user.address')
+            ->select('service_user.cities')
             ->distinct()
             ->get();
-        return $addresses;
+        return response()->json(
+            json_decode($addresses)
+        );
     }
 }

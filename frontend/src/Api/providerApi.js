@@ -16,8 +16,7 @@ export const providerApi = createApi({
       query: () => "providers",
     }),
     setupServices: builder.mutation({
-      query: (formdata) => {
-        const id = formdata.get("id");
+      query: ({formdata,id}) => {
         return {
           url: `services/create/${id}`,
           method: "POST",
@@ -59,6 +58,11 @@ export const providerApi = createApi({
       providesTags:['Services'],
 
     }),
+    viewProviderServiceDetailsById: builder.query({
+      query: ({providerId,serviceId}) =>`${providerId}/service/${serviceId}/view`,
+      providesTags:['Services'],
+
+    }),
 
     getProviderService:builder.query({
       query:({providerId, categoryId,subcategoryId})=>{
@@ -91,6 +95,9 @@ export const providerApi = createApi({
     }),
     getProviderDetails:builder.query({
       query:(providerId)=>`${providerId}/details`
+    }),
+    getProviderServiceScope:builder.query({
+      query:({providerId,serviceId})=>`${providerId}/${serviceId}/scope`
     })
    
   }),
@@ -105,7 +112,9 @@ export const {
   useDeleteServicesMutation,
   useGetProviderServiceQuery,
   useGetProviderQuery,
-  useGetProviderDetailsQuery
+  useGetProviderDetailsQuery,
+  useViewProviderServiceDetailsByIdQuery,
+  useGetProviderServiceScopeQuery
   
   
   

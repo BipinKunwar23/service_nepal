@@ -12,6 +12,7 @@ import { catServiceAPi } from "./Api/catServiceApi";
 import { providerApi } from "./Api/providerApi";
 import serviceSliceReducer from "./redux/serviceSlice";
 import RouteSliceReducer from "./redux/RouteSlice";
+import orderSliceReducer from "./redux/orderSlice";
 import { orderApi } from "./Api/orderApi";
 import { searchingApi } from "./Api/searchingApi";
 const middleware = getDefaultMiddleware({
@@ -47,7 +48,8 @@ export const store = configureStore({
     catServiceSlice:catServiceSliceReducer,
     cardSlice:cardSliceReducer,
     serviceSlice:serviceSliceReducer,
-    routeSlice:RouteSliceReducer
+    routeSlice:RouteSliceReducer,
+    orderSlice:orderSliceReducer,
   },
 
   middleware

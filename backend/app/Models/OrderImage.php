@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class OrderImage extends Model
 {
     use HasFactory;
+    public $table='orderimages';
 }

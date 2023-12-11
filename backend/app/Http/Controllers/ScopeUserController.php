@@ -16,14 +16,7 @@ class ScopeUserController extends Controller
             ->map(function ($item) {
                 return collect($item)->except('id')->toArray();
             });
-        // foreach ($data as $scope) {
-        //     $collection[$scope['id']] = [
-        //         'price' => $scope['price'],
-        //         'unit' => $scope['unit'],
-        //         'currency' => $scope['currency'],
-
-        //     ];
-        // }
+      
         $user->scopes()->sync($collection);
 
         return response()->json([

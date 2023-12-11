@@ -6,6 +6,7 @@ use App\Http\Requests\serviceRequest;
 use App\Http\Resources\CatServiceResource;
 use App\Http\Resources\ServiceResource;
 use App\Models\Category;
+use App\Models\Scope;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Subcategory;
@@ -14,7 +15,7 @@ use Illuminate\Validation\Rule;
 
 class ServiceController extends Controller
 {
-  public function create(serviceRequest $request, $id)
+  public function create(Request $request, $id)
   {
     $path = null;
 
@@ -26,15 +27,24 @@ class ServiceController extends Controller
       $path = 'catservice/icons/' . $name;
     }
 
-    Service::create([
+    $value = Service::create([
       'subcategory_id' => $id,
       'name' => $request->name,
       'description' => $request->description,
       'keywords' => $request->keywords,
+      'units' => $request->units,
       'icons' => $path,
 
     ]);
+    $serviceId = $value->id;
+    $scopes = json_decode($request->scopes);
+    foreach ($scopes as $scope) {
+      $value = new Scope();
+      $value->name = $scope->name;
+      $value->service_id = $serviceId;
 
+      $value->save();
+    }
 
     return response()->json([
       'message' => 'successfully created'

@@ -268,10 +268,10 @@
     @apply bg-white w-[60Vw] p-10 flex flex-col box-border gap-5
    }
    .selected-field{
-    @apply flex flex-col gap-3 p-4 shadow shadow-gray-100
+    @apply flex flex-col gap-3 p-4 shadow shadow-gray-100 
    }
    .selected-field input, .selected-field textarea{
-    @apply  border-2 border-slate-300  p-2 rounded-md 
+    @apply  border border-slate-400  p-2 rounded-md focus:outline-blue-500 focus:border-none
    }
 
    .more-items{
@@ -280,6 +280,10 @@
 
    .refund-policy div{ 
     @apply flex gap-4
+   }
+
+   .agreement-button button{
+    @apply shadow shadow-gray-400 border-2 border-slate-400 text-gray-700 m-5 p-1.5 w-[150px] rounded-lg hover:bg-red-600 hover:text-white
    }
 }
 :root {
@@ -313,3 +317,14 @@ h1 {
   font-weight: 600;
   
 }
+/* .custom-select{
+  color: black;
+  appearance: none;
+  border: none;
+  box-shadow: inset;
+  color:white;
+  background-color: #2873ff;
+  font-size: 20px;
+  padding: 0 30px 0 15px;
+} */
+

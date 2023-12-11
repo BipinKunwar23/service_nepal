@@ -29,6 +29,12 @@ import RequireProviderAuth from "./RequireProviderAuth";
 import JoinService from "./user/provider/setup/JoinService";
 import Getstarted from "./user/provider/setup/getstarted";
 import Status from "./user/provider/order/status";
+import ViewService from "./user/customer/home/ViewService";
+
+import CustomerOrder from "./user/provider/order/customerOrder";
+import ViewOrderDetail from "./user/provider/order/viewDetail";
+import Agreement from "./user/provider/agreement/agreement";
+
 function App() {
   const selected = useSelector((state) => state.categorySlice.category);
 
@@ -40,7 +46,9 @@ function App() {
         <Route path="/register" element={<SignUp />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/customer" element={<Home />}></Route>
-        <Route path="/provider/:providerId" element={<ViewProvider />} />
+        <Route path="/provider/:providerId/*" element={<ViewProvider />}>
+          <Route path="service/:serviceId" element={<ViewService />} />
+        </Route>
         <Route
           path="/order/service/:serviceId"
           element={
@@ -49,8 +57,8 @@ function App() {
             </RequireCustomerAuth>
           }
         />
-      <Route path="/join" element={<JoinService/>}/>
-      <Route path="/notify" element={<Getstarted/>}/>
+        <Route path="/join" element={<JoinService />} />
+        <Route path="/notify" element={<Getstarted />} />
 
         <Route path="/orders/customer" element={<Order />} />
         <Route path="/status" element={<Status />} />
@@ -64,6 +72,12 @@ function App() {
             <Route path=":name/:subname/:child" element={<EditCategory />} />
           </Route>
         </Route>
+
+        <Route path="received/orders" element={<CustomerOrder />} />
+        <Route path="received/orders/:orderId/*" element={<ViewOrderDetail />}>
+          <Route path="agreement" element={<Agreement />} />
+        </Route>
+
         <Route
           path="provider"
           element={
@@ -83,10 +97,10 @@ function App() {
         />
         <Route path="services/provider" element={<Services />} />
 
-        <Route
+        {/* <Route
           path="/provider/services/:serviceId"
           element={<ViewServices />}
-        />
+        /> */}
       </Routes>
 
       <Footer />

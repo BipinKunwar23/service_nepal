@@ -1,47 +1,128 @@
-import React from "react";
+import React, { useState } from "react";
 import { usePlaceOrderMutation } from "../../../Api/orderApi";
 import { useSelector } from "react-redux";
 import Modal from "../../../components/mpdal";
 import Error from "../../../components/ErrorHandling/error";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
-
+import { useGetProviderServiceScopeQuery } from "../../../Api/providerApi";
+import Loader from "./../../../components/Loader";
 const Order = () => {
   const navigate = useNavigate();
-  const { serviceId } = useParams();
+  const { providerId, serviceId } = useParams();
   const customerId = localStorage.getItem("userId");
   console.log("services", serviceId);
+  const { data: scopes, isLoading: scopeLoading } =
+    useGetProviderServiceScopeQuery({ providerId, serviceId });
+  console.log(scopes);
   const [placeOrder, { data, isLoading, isSuccess, isError, error }] =
     usePlaceOrderMutation();
 
   const { register, control, setValue, handleSubmit, getValues, watch } =
     useForm({
       defaultValues: {
-        images: [{ image: "" }],
+        emergency: false,
+        delay: null,
       },
+    
     });
 
-  const { fields, append, remove } = useFieldArray({
-    name: "images",
-    control,
-  });
+  const [selectedScope, setSelectedScope] = useState([]);
+
+  const handleSelectedScope = (e) => {
+    const { checked, value } = e.target;
+    if (checked) {
+      setSelectedScope([...selectedScope, value]);
+    } else {
+      const updatedScope = selectedScope.filter((s) => s !== value);
+      setSelectedScope([...updatedScope]);
+    }
+  };
+
+  const [imagePreviews, setImagePreviews] = useState([]);
+
+  console.log("preview", imagePreviews);
+
+  const fileInputRef = React.createRef();
+  const handleAddButtonClick = () => {
+    // Trigger the file input programmatically when the "Add" button is clicked
+    fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (event) => {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+    console.log("selectedFiles", file);
+
+    const reader = new FileReader();
+
+    // Read the file as a data URL
+    reader.readAsDataURL(file);
+
+    // Callback when reading is complete
+    reader.onloadend = () => {
+      // Create a preview object with the file and data URL
+      const preview = {
+        id: Date.now(),
+        file,
+        dataURL: reader.result,
+      };
+
+      // Update the state with the new preview
+      setImagePreviews((prevPreviews) => [...prevPreviews, preview]);
+    };
+    fileInput.value = null;
+  };
+
+  const handleRemoveImage = (id) => {
+    // Filter out the preview with the specified id
+    setImagePreviews((prevPreviews) =>
+      prevPreviews.filter((preview) => preview.id !== id)
+    );
+  };
+
   const onSubmit = async (values) => {
     console.log(values);
-    await placeOrder({ ...values, customerId, serviceId })
+    const userId = localStorage.getItem("userId");
+
+    const formdata = new FormData();
+    formdata.append("pid", providerId);
+    formdata.append("date", values.date);
+    formdata.append("emergency", values.emergency);
+    formdata.append("delay", values.delay);
+    formdata.append("location", values.location);
+    for (const file of imagePreviews) {
+      formdata.append("images[]", file.file);
+    }
+    for (const scope of selectedScope) {
+      formdata.append("scopes[]",scope );
+    }
+
+    formdata.append("service", values.service);
+    formdata.append("size", values.size);
+    formdata.append("response", values.response);
+    formdata.append("name", values.name);
+    formdata.append("email", values.email);
+    formdata.append("number", values.number);
+    await placeOrder({ formdata, customerId, serviceId })
       .unwrap()
       .then((response) => {
-        console.log(response);
+        console.log('response',response);
         reset();
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
       });
   };
 
   const images = watch("images");
 
   console.log(error);
+  const [delay, setDelay] = useState(false);
 
+  if (isLoading || scopeLoading) {
+    return <Loader />;
+  }
   if (isError) {
     return <Error error={error} />;
   }
@@ -64,14 +145,46 @@ const Order = () => {
             <label htmlFor="">Service For(Date)</label>
             <input type="date" {...register("date")} />
           </div>
-          <div className="selected-field">
-            <label htmlFor="">Emergency Service</label>
-            <input type="text" {...register("date")} />
+          <div className="">
+            <p className="m-3">Emergency Service</p>
+            <div className="flex gap-4 px-4">
+              <div className="flex gap-3">
+                <input
+                  type="radio"
+                  onChange={(e) => {
+                    const { checked } = e.target;
+                    if (checked) {
+                      setValue("emergency", true);
+                      setDelay(false);
+                    }
+                  }}
+                  name="emergency"
+                />{" "}
+                <span>Yes</span>
+              </div>
+              <div className="flex gap-3">
+                <input
+                  type="radio"
+                  name="emergency"
+                  onChange={(e) => {
+                    const { checked } = e.target;
+                    if (checked) {
+                      setValue("emergency", false);
+                      setDelay(true);
+                    }
+                  }}
+                />{" "}
+                <span>No</span>
+              </div>
+            </div>
           </div>
-          <div className="selected-field">
-            <label htmlFor="">Maximum Delay</label>
-            <input type="text" {...register("date")} />
-          </div>
+
+          {delay && (
+            <div className="selected-field">
+              <label htmlFor="">Maximum Delay</label>
+              <input type="text" {...register("delay")} />
+            </div>
+          )}
           <div className="selected-field">
             <label htmlFor="">Delivery Location</label>
             <input type="text" {...register("location")} />
@@ -82,104 +195,32 @@ const Order = () => {
           <table className="w-full" cellPadding={2}>
             <thead>
               <tr>
-                <th></th>
+                <th>Select</th>
                 <th>Service</th>
 
-                <th>Basic Charge</th>
+                <th>Price</th>
+                <th>Unit</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
-              <tr className="mb-4">
-                <td className="text-center">
-                  <input type="checkbox" />
-                </td>
-                <td className="text-center">Service1</td>
-                <td className="text-center">
-                  <input
-                    type="text"
-                    value=""
-                    className="border-b-2 border-slate-500 "
-                  />
-                </td>
-              </tr>
+              {scopes.map((scope, index) => {
+                return (
+                  <tr className="mb-4" key={scope.id}>
+                    <td className="text-center">
+                      <input
+                        type="checkbox"
+                        value={scope.id}
+                        onChange={(e) => {
+                          handleSelectedScope(e);
+                        }}
+                      />
+                    </td>
+                    <td className="text-center">{scope.name}</td>
+                    <td className="text-center">{scope.price}</td>
+                    <td className="text-center">{scope.unit}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <div className=" flex flex-col gap-5 selected-field  ">
@@ -192,7 +233,7 @@ const Order = () => {
               cols="30"
               rows="2"
               className="  focus:outline-none hover:bg-gray-200 p-2"
-              {...register("description")}
+              {...register("service")}
             ></textarea>
           </div>
           <div className=" flex flex-col gap-5 selected-field  ">
@@ -205,114 +246,77 @@ const Order = () => {
               cols="30"
               rows="2"
               className="  focus:outline-none hover:bg-gray-200 p-2"
-              {...register("description")}
+              {...register("size")}
             ></textarea>
           </div>
-          <div className="selected-field">
-            <p>Upload Files or Image</p>
 
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-4 gap-4 ">
-                {images.map((image) => {
-                  return (
-                    <>
-                      {image?.image && (
-                        <img
-                          src={URL.createObjectURL(image.image)}
-                          alt=""
-                          className="h-[150px] w-full object-cover"
-                        />
-                      )}
-                    </>
-                  );
-                })}
-              </div>
-              {fields.map((field, index) => {
-                <div>
+          <div className=" ">
+            <h2 className="ml-4">
+              Upload Files <span className="text-red-600 ml-2 text-xl">*</span>
+            </h2>
+
+            <div className="grid grid-cols-6 ml-5 gap-4 mb-3">
+              {imagePreviews.map((preview, index) => (
+                <div key={preview.id} className="relative">
                   <img
-                    src={field?.image && URL.createObjectURL(field.image)}
-                    alt=""
+                    key={index}
+                    src={preview.dataURL}
+                    alt={`Preview ${preview.id}`}
+                    className="w-[100px] h-[100px] shadow shadow-gray-400"
+                    onClick={() => handleRemoveImage(preview.id)}
                   />
-                </div>;
 
-                return (
-                  <div key={field.id}>
-                    <Controller
-                      name="images"
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <div className="flex  gap-3">
-                            <input
-                              type="file"
-                              onChange={(e) => {
-                                const { files } = e.target;
-                                console.log(files);
-                                setValue(`images.${index}.image`, files[0]);
-                                console.log("getvalue", getValues("images"));
-                              }}
-                              className="w-[60%]"
-                            />
+                  <button
+                    onClick={() => handleRemoveImage(preview.id)}
+                    type="button"
+                    className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
 
-                            <div className="flex gap-3">
-                              {index > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={() => remove(index)}
-                                  className="shadow shadow-gray-500 text-xl p-1 px-2 rounded-md"
-                                >
-                                  -
-                                </button>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => append({ image: "" })}
-                                className="shadow shadow-gray-500 text-xl px-2 p-1 rounded-md"
-                              >
-                                +
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      }}
-                    />
-                  </div>
-                );
-              })}
+              <div className="h-[100px] w-[100px]  flex place-content-center border-2  border-gray-400 shadow">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileInputChange}
+                  ref={fileInputRef}
+                  className="hidden"
+                />
+                <button
+                  onClick={handleAddButtonClick}
+                  type="button"
+                  className="text-[70px] text-blue-500"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>
         <div className="selected-field">
           <label htmlFor=""> Response Time Limit</label>
-          <input type="text" {...register("duration")} />
+          <input type="text" {...register("response")} />
         </div>
         <div>
           <p>Contact Information</p>
           <div>
-          <div className="selected-field">
-          <label htmlFor=""> Name</label>
-          <input type="email" {...register("email")} />
-        </div>
-        <div className="selected-field">
-          <label htmlFor=""> Email Address</label>
-          <input type="email" {...register("email")} />
-        </div>
-        <div className="selected-field">
-          <label htmlFor=""> Phone Number</label>
-          <input type="text" {...register("number")} />
-        </div>
-
+            <div className="selected-field">
+              <label htmlFor=""> Name</label>
+              <input type="text" {...register("name")} />
+            </div>
+            <div className="selected-field">
+              <label htmlFor=""> Email Address</label>
+              <input type="email" {...register("email")} />
+            </div>
+            <div className="selected-field">
+              <label htmlFor=""> Phone Number</label>
+              <input type="text" {...register("number")} />
+            </div>
           </div>
         </div>
-<div>
-  <p>Ask Questions</p>
-  <div className="selected-field">
-  <input type="text" {...register("number")} />
-  <input type="text" {...register("number")} />
-  <input type="text" {...register("number")} />
-
-  </div>
-</div>
 
         <div className="flex-1 flex justify-around">
           <button

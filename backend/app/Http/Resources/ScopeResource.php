@@ -19,7 +19,6 @@ class ScopeResource extends JsonResource
             'name'=>$this->name,
             'price'=>$this->pivot->price,
             'unit'=>$this->pivot->unit,
-            'currency'=>$this->pivot->currency
         ];
     }
 }

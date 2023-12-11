@@ -11,7 +11,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
   return (
     <>
       <div className="  text-slate-800  flex flex-col gap-2 p-5">
-        <span className="">Available Time</span>
+        <span className="">Available Time <span className="text-red-600 ml-2 text-xl">*</span></span>
       
             <div>
               <Controller
@@ -53,7 +53,7 @@ export default function Time({ Controller, setValue, control, time, days }) {
       </div>
 
       <div className=" flex flex-col text-slate-800 p-5  ">
-        <span className=" ">Available Days</span>
+        <span className=" ">Available Days <span className="text-red-600 ml-2 text-xl">*</span></span>
         <div>
           <Controller
             name="days"

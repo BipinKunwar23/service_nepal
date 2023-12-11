@@ -6,7 +6,7 @@ import AddService from "./AddService";
 const AllForm = () => {
   const AddSection = ({ children }) => {
     return (
-      <section className="form absolute -top-8 w-full h-full box-border  bg-[rgba(0,0,0,0.4)]">
+      <section className="grid justify-content-center absolute -top-8 w-full min-h-full box-border p-2  bg-[rgba(0,0,0,0.4)]">
         {children}
       </section>
     );

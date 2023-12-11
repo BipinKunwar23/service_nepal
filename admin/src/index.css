@@ -4,6 +4,16 @@
 
 
 @layer components {
+
+.service-form{
+  @apply bg-white w-[60Vw] p-5 flex flex-col box-border gap-5 rounded-md 
+}
+.field {
+  @apply  flex flex-col gap-3 p-4 shadow shadow-gray-100
+}
+.field input, .field textarea{
+ @apply border-2 border-slate-300  p-2 rounded-md 
+}
   .admin {
 @apply  shadow shadow-gray-800 p-20 rounded-md w-[33Vw] box-border 
   }

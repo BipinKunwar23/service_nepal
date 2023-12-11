@@ -6,11 +6,11 @@ export const orderApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/orders/" }),
   endpoints: (build) => ({
     placeOrder: build.mutation({
-      query: ({ customerId, serviceId, ...order }) => {
+      query: ({ formdata, customerId, serviceId }) => {
         return {
           url: `create/${customerId}/service/${serviceId}`,
           method: "POST",
-          body: order,
+          body: formdata,
         };
       },
     }),
@@ -18,7 +18,18 @@ export const orderApi = createApi({
     getCustomerOrders: build.query({
       query: (id) => `get/customer/${id}`,
     }),
+    getProviderReceivedOrders: build.query({
+      query: (id) => `customer/all/${id}`,
+    }),
+    viewOrderDetailsById: build.query({
+      query: (orderId) => `customer/${orderId}/details`,
+    }),
   }),
 });
 
-export const { usePlaceOrderMutation, useGetCustomerOrdersQuery } = orderApi;
+export const {
+  usePlaceOrderMutation,
+  useGetCustomerOrdersQuery,
+  useGetProviderReceivedOrdersQuery,
+  useViewOrderDetailsByIdQuery
+} = orderApi;

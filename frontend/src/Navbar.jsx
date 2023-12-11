@@ -91,7 +91,7 @@ export default function Naavbar() {
     {
       id: 4,
       link: "Received Orders",
-      to: "/received",
+      to: "/received/orders",
     },
     {
       id: 5,

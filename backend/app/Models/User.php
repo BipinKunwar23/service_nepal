@@ -61,7 +61,7 @@ class User extends Authenticatable
     public function services(){
         return  $this->belongsToMany(Service::class,'service_user')
         // ->using(CatserviceUser::class)
-        ->withPivot('description', 'days', 'time', 'charge', 'offers', 'experience', 'image', 'address');
+        ->withPivot('description', 'days', 'time', 'experience','currency', 'cities','additional_info','experience_certificate','trainings','training_certificate','projects','project_certificate');
     }
     // public function categories()
     // {
@@ -75,6 +75,6 @@ class User extends Authenticatable
         return $this->hasOne(User::class,'user_id');
     }
     public function scopes(){
-        return $this->belongsToMany(Scope::class,'scope_user')->withPivot('price','unit','currency');
+        return $this->belongsToMany(Scope::class,'scope_user')->withPivot('price','unit');
     }
 }

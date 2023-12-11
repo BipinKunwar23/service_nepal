@@ -18,17 +18,18 @@ class ServiceDetailsResource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'icons'=>$this->icons,
+            'description'=>$this->description,
+            'units'=>$this->units,
             'pivot'=>[
                 'description'=>$this->pivot->description,
                 'time'=>json_decode($this->pivot->time),
                 'days'=>json_decode($this->pivot->days),
-                'charge'=>json_decode($this->pivot->charge),
-                'offers'=>$this->pivot->offers,
-                'location'=>$this->pivot->address,
+                'location'=>$this->pivot->cities,
                 'expereince'=>$this->pivot->experience,
-                'image'=>$this->pivot->image,
+                
 
-            ]
+            ],
+            'scopes'=>ServiceScopeResource::collection($this->scopes)
             ];
     }
 }

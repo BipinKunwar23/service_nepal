@@ -36,7 +36,7 @@ Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::get('/view/{user}', 'viewById');
     Route::put('/update/{user}', 'update');
     Route::delete('/delete/{user}', 'delete');
-    Route::get('/profile/auth/{id}','providerAuth');
+    Route::get('/profile/auth/{id}', 'providerAuth');
 });
 Route::prefix('profile')->controller(ProfileController::class)->group(function () {
 
@@ -61,28 +61,26 @@ Route::prefix('category')->controller(CategoryController::class)->group(function
     Route::get('services/{id}', 'getCategoryById');
     Route::get('service/{id}', 'getServices');
     Route::get('All/{id}', 'getAllCategory');
-    Route::get('provider/{id}','getCategoryByProviderId');
+    Route::get('provider/{id}', 'getCategoryByProviderId');
     Route::post('edit/{id}', 'updateCategory');
-
 });
 Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
     Route::post('create/{id}', 'create');
     Route::get('viewAll', 'getAll');
     Route::get('view/{id}', 'getById');
-    Route::get('view/detail/{id}','viewSubCategoryById');
-    Route::get('provider/{providerId}/category/{categoryId}','getSubCategoryByProviderCategoryId');
-    Route::get('provider/{providerId}','getSubCategoryByProviderId');
-    Route::put('edit/{id}','updateSubCategory');
+    Route::get('view/detail/{id}', 'viewSubCategoryById');
+    Route::get('provider/{providerId}/category/{categoryId}', 'getSubCategoryByProviderCategoryId');
+    Route::get('provider/{providerId}', 'getSubCategoryByProviderId');
+    Route::put('edit/{id}', 'updateSubCategory');
 });
 
 Route::prefix('services')->controller(ServiceController::class)->group(function () {
     Route::post('create/{id}', 'create');
-    Route::get('all','getAll');
-    Route::get('{id}','getById');
-    Route::get('view/{id}','viewServiceById');
-    Route::get('category/{id}','getByCategory');
-    Route::post('edit/{service}','updateService');
- 
+    Route::get('all', 'getAll');
+    Route::get('{id}', 'getById');
+    Route::get('view/{id}', 'viewServiceById');
+    Route::get('category/{id}', 'getByCategory');
+    Route::post('edit/{service}', 'updateService');
 });
 
 Route::prefix('provider')->controller(ServiceProviderController::class)->group(function () {
@@ -93,59 +91,56 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
     Route::post('services/update/{providerId}', 'editProviderService');
     Route::delete('{providerId}/delete/{serviceId}', 'deleteServiceByServiceId');
     Route::get('{providerId}/services/{serviceId}', 'getServiceById');
+    Route::get('{providerId}/service/{serviceId}/view', 'viewProviderServicesById');
+
+    Route::get('{providerId}/{serviceId}/scope', 'getProviderServiceScope');
+
+
 
     Route::get('all', 'getAllProvider');
     Route::get('category/{categoryId}', 'getProviderByCategory');
     Route::get('subcategory/{subcategoryid}', 'getProviderBySubCategory');
     Route::get('{providerId}/details', 'getProviderDetails');
 
-    Route::get('search/service','searchByService');
-  
+    Route::get('search/service', 'searchByService');
 
-
+    
 });
 
 Route::prefix('orders')->controller(OrderController::class)->group(function () {
-Route::post('create/{customerId}/service/{serviceId}','placeOrder');
-Route::get('get/customer/{customerId}','getOrders');
-Route::get('get/{providerId}','getAllOrders');
-Route::get('{orderId}/{customerId}','getOrdersById');
+    Route::post('create/{customerId}/service/{serviceId}', 'placeOrder');
+    Route::get('customer/all/{providerId}', 'getProviderReceivedOrders');
+    Route::get('customer/{orderId}/details','viewOrderDetails');
 
+    Route::get('get/customer/{customerId}', 'getOrders');
+    Route::get('get/{providerId}', 'getAllOrders');
+    Route::get('{orderId}/{customerId}', 'getOrdersById');
 });
 
 Route::prefix('search')->controller(SearchController::class)->group(function () {
-  
-    Route::get('service','searchService');
-    Route::get('location/get','searchLocation');
-    Route::get('location/provider','searchByLocation');
-    Route::get('location/category/{categoryId}','searchCategoryLocation');
 
-    });
+    Route::get('service', 'searchService');
+    Route::get('location/get', 'searchLocation');
+    Route::get('location/provider', 'searchByLocation');
+    Route::get('location/category/{categoryId}', 'searchCategoryLocation');
+});
 
 
-    Route::prefix('scope')->controller(ScopeController::class)->group(function () {
-  
-        Route::post('create/{serviceId}','create');
-        Route::get('all','show');
-        Route::get('service/{serviceId}','showByServiceId');
+Route::prefix('scope')->controller(ScopeController::class)->group(function () {
 
-    
-        });
+    Route::post('create/{serviceId}', 'create');
+    Route::get('all', 'show');
+    Route::get('service/{serviceId}', 'showByServiceId');
+});
 
-        Route::prefix('scope/provider')->controller(ScopeUserController::class)->group(function () {
-  
-            Route::post('create/{providerId}','create');
-            Route::get('show/{providerId}/{servcieId}','getProviderScope');
-           
-    
-        
-            });
+Route::prefix('scope/provider')->controller(ScopeUserController::class)->group(function () {
 
-            Route::prefix('order/scope')->controller(OrderScopeController::class)->group(function () {
-  
-                Route::post('create/{orderId}','create');
-                Route::get('show/{orderId}/{providerId}','showByProviderOrder');
-               
-        
-            
-                });
+    Route::post('create/{providerId}', 'create');
+    Route::get('show/{providerId}/{servcieId}', 'getProviderScope');
+});
+
+Route::prefix('order/scope')->controller(OrderScopeController::class)->group(function () {
+
+    Route::post('create/{orderId}', 'create');
+    Route::get('show/{orderId}/{providerId}', 'showByProviderOrder');
+});
