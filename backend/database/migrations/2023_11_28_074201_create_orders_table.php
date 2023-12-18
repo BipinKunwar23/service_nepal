@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('service_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('provider_id');
+            $table->foreign('customer_id')->references('id')->on('users');
             $table->foreign('service_id')->references('id')->on('services');
+            $table->foreign('provider_id')->references('id')->on('users');
+
             $table->date('date');
-            $table->string('emergency')->nullable();
+            $table->boolean('emergency');
             $table->string('delay')->nullable();
             $table->string('location');
             $table->json('scopes');
@@ -31,6 +34,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('number', 12);
             $table->timestamps();
+
         });
     }
 

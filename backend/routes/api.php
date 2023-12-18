@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CusotmerProviderController;
 use App\Http\Controllers\OrderController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\ScopeUserController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceProviderController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -103,18 +105,21 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
     Route::get('{providerId}/details', 'getProviderDetails');
 
     Route::get('search/service', 'searchByService');
-
-    
 });
 
 Route::prefix('orders')->controller(OrderController::class)->group(function () {
-    Route::post('create/{customerId}/service/{serviceId}', 'placeOrder');
-    Route::get('customer/all/{providerId}', 'getProviderReceivedOrders');
-    Route::get('customer/{orderId}/details','viewOrderDetails');
+    Route::post('create/{customerId}/service/{serviceId}/provider/{providerId}', 'placeOrder');
+    Route::get('provider/{providerId}', 'getReceivedOrders');
+    Route::get('{orderId}/received', 'viewOrderReceived');
+    Route::get('{orderId}/made', 'viewCustomerOrder');
 
-    Route::get('get/customer/{customerId}', 'getOrders');
-    Route::get('get/{providerId}', 'getAllOrders');
-    Route::get('{orderId}/{customerId}', 'getOrdersById');
+
+    Route::get('customer/{customerId}', 'getCustomerOrders');
+
+    Route::put('{orderId}/accept', 'AcceptOrder');
+    Route::put('{orderId}/cancel', 'CancelOrder');
+    // Route::get('get/{providerId}', 'getAllOrders');
+    // Route::get('{orderId}/{customerId}', 'getOrdersById');
 });
 
 Route::prefix('search')->controller(SearchController::class)->group(function () {
@@ -143,4 +148,22 @@ Route::prefix('order/scope')->controller(OrderScopeController::class)->group(fun
 
     Route::post('create/{orderId}', 'create');
     Route::get('show/{orderId}/{providerId}', 'showByProviderOrder');
+});
+
+Route::prefix('order/agreement')->controller(AgreementController::class)->group(function () {
+
+    Route::post('initial/{orderId}', 'initialAgreement');
+    Route::post('final/{orderId}', 'finalAgreement');
+    Route::get('check/initial/{orderId}', 'viewInitialAgreement');
+    Route::get('check/final/{orderId}', 'viewFinalAgreement');
+    Route::put('{orderId}/accept', 'AcceptAgreement');
+
+});
+
+Route::prefix('status')->controller(StatusController::class)->group(function () {
+
+    Route::post('order/{orderId}/accept', 'AcceptOrder');
+    Route::post('order/{orderId}/cancel', 'CancelOrder');
+    Route::get('check/initial/{orderId}', 'viewInitialAgreement');
+    Route::get('check/final/{orderId}', 'viewFinalAgreement');
 });

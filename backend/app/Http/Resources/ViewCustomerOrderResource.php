@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderDetailResource extends JsonResource
+class ViewCustomerOrderResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,14 +24,13 @@ class OrderDetailResource extends JsonResource
             'service'=>$this->service,
             'size'=>$this->size,
             'response'=>$this->response,
-            'name'=>$this->name,
-            'email'=>$this->email,
-            'number'=>$this->number,
             'created'=>$this->created_at->format('Y-m-d'),
-            'images'=> ImageResource::collection($this->whenLoaded('images')),
             'service_name'=>$service->name,
             'icons'=>$service->icons,
             'status'=>collect($this->whenLoaded('status'))->except('created_at','updated_at','order_id','id')->toArray(),
+            'images'=> ImageResource::collection($this->whenLoaded('images')),
+            'provider' => new ProviderOrderProfileResource($this->whenLoaded('providers')),
+
         ];
     }
 }

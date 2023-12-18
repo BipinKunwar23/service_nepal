@@ -9,7 +9,9 @@ import { useMatch } from "react-router-dom";
 const ViewProvider = () => {
   const { providerId } = useParams();
   const { data, isLoading, isSuccess } = useGetProviderDetailsQuery(providerId);
-  const match = useMatch("/provider/:providerId/service/:serviceId");
+  const service = useMatch("/provider/:providerId/service/:serviceId");
+  const order = useMatch("/provider/:providerId/service/:serviceId/order");
+
   const params = useParams();
 
   if (isLoading) {
@@ -21,7 +23,7 @@ const ViewProvider = () => {
         <Profile data={data} />
 
         <section className="   box-border text-[1em]  col-span-4">
-          {match ? <Outlet /> : <Provider services={data.services} />}
+          {service || order ? <Outlet /> : <Provider services={data.services} />}
         </section>
       </section>
     </>

@@ -15,6 +15,8 @@ import RouteSliceReducer from "./redux/RouteSlice";
 import orderSliceReducer from "./redux/orderSlice";
 import { orderApi } from "./Api/orderApi";
 import { searchingApi } from "./Api/searchingApi";
+
+import { agreementApi } from "./Api/agreementApi";
 const middleware = getDefaultMiddleware({
   serializableCheck:{
     ignoreActions:['profile/basicDetails'],
@@ -31,6 +33,7 @@ const middleware = getDefaultMiddleware({
   providerApi.middleware,
   orderApi.middleware,
   searchingApi.middleware,
+  agreementApi.middleware,
 );
 export const store = configureStore({
   reducer: {
@@ -44,6 +47,7 @@ export const store = configureStore({
     [providerApi.reducerPath]:providerApi.reducer,
     [orderApi.reducerPath]:orderApi.reducer,
     [searchingApi.reducerPath]:searchingApi.reducer,
+    [agreementApi.reducerPath]:agreementApi.reducer,
     categorySlice:categorySliceReducer,
     catServiceSlice:catServiceSliceReducer,
     cardSlice:cardSliceReducer,

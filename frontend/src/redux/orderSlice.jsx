@@ -8,6 +8,7 @@ const initialState={
         initial: true,
         final: false,
       },
+      status:{}
 }
 
 export const orderSlice=createSlice({
@@ -20,9 +21,13 @@ reducers:{
     setSteps:((state,actions)=>{
         state.step=actions.payload
     }),
+    setStatus:((state,actions)=>{
+        state.status=actions.payload
+    }),
+   
    
   
 }
 })
-export const {setImagePreviews, setSteps}=orderSlice.actions
+export const {setImagePreviews, setSteps, setStatus}=orderSlice.actions
 export default orderSlice.reducer

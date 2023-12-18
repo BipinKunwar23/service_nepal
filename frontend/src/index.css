@@ -282,8 +282,15 @@
     @apply flex gap-4
    }
 
-   .agreement-button button{
+   .agreement-button button, .order-button{
     @apply shadow shadow-gray-400 border-2 border-slate-400 text-gray-700 m-5 p-1.5 w-[150px] rounded-lg hover:bg-red-600 hover:text-white
+   }
+
+   .agreement-field{
+    @apply grid grid-cols-2 p-4 gap-3 
+   }
+   .agreement-field p{
+    @apply text-slate-500 font-semibold
    }
 }
 :root {

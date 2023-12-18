@@ -1,39 +1,15 @@
 import React from "react";
-import { useGetProviderReceivedOrderDetailQuery } from "../../../Api/orderApi";
+import { useViewCustomerOrderDetailQuery } from "../../../Api/orderApi";
 import { useNavigate, useParams, Outlet } from "react-router-dom";
 import Loader from "../../../components/Loader";
-import {
-  useAcceptOrderMutation,
-  useCancelOrderMutation,
-} from "../../../Api/orderApi";
-const viewDetail = () => {
+import { setStatus } from "../../../redux/orderSlice";
+import { useDispatch } from "react-redux";
+const BookingDetails = () => {
   const { orderId } = useParams();
-  const { data, isLoading } = useGetProviderReceivedOrderDetailQuery(orderId);
+  const { data, isLoading } = useViewCustomerOrderDetailQuery(orderId);
   const navigate = useNavigate();
-  const [acceptOrder, { isLoading: isAccept }] = useAcceptOrderMutation();
-  const [cancelOrder, { isLoading: isCancel }] = useCancelOrderMutation();
-
-  const handleCancelOrder = async () => {
-    await cancelOrder(orderId)
-      .unwrap()
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handleAcceptOrder = async () => {
-    await acceptOrder(orderId)
-      .unwrap()
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  if (isLoading || isAccept || isCancel) {
+  const dispatch=useDispatch();
+  if (isLoading) {
     return <Loader />;
   }
   return (
@@ -131,80 +107,76 @@ const viewDetail = () => {
 
         <div className="flex justify-around p-3 mb-5">
           <p>
-            <strong>Order By :</strong>{" "}
-            <span className="ml-2">{data?.order.name}</span>
+            <strong>Order To :</strong>{" "}
+            <span className="ml-2">{data?.order.provider?.name}</span>
           </p>
           <p>
             <strong>Email :</strong>{" "}
-            <span className="ml-2">{data?.order.email}</span>
+            <span className="ml-2">{data?.order.provider?.email}</span>
           </p>
           <p>
             <strong>Contact No :</strong>{" "}
-            <span className="ml-2">{data?.order.number}</span>
+            <span className="ml-2">{data?.order.provider?.phone}</span>
           </p>
         </div>
         <div>
           <p className="text-center mb-5">
-            <strong>Location :</strong>{" "}
-            <span className="ml-3">{data?.order.location}</span>
+            <strong>Address :</strong>{" "}
+            <span className="ml-3">{`${data?.order.provider.address?.chowk},  ${data?.order.provider.address?.muncipility} - ${data?.order.provider.address?.ward},  ${data?.order.provider.address?.district}`}</span>
           </p>
         </div>
         <div className="mb-5">
           <p className="text-center">
-            Need Response back with in <strong> {data?.order.response}</strong>
+            Your Response Limit: <strong> {data?.order.response}</strong>
           </p>
         </div>
-        <div className="flex ">
-          {data?.order?.status?.isOrder ? (
-            !data?.order?.status?.isAgreement ? (
-              <form action="">
+        <div className="">
+            {
+             ! data?.order?.status?.cancel?(
+             ! data?.order?.status?.isOrder ?(
                 <button
-                  className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
-                  onClick={() => {}}
-                >
-                  Ask For Agreement
-                </button>
-              </form>
-            ) : (
-              
-              <button
                 className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
                 onClick={() => {
                   navigate("agreement");
                 }}
               >
-                Start Agreement
-              </button>
-            )
-          ) : (
-            <div className="flex  place-content-center">
-              <button
-                className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
-                onClick={handleAcceptOrder}
-              >
-                Accept Order
-              </button>
-              <button
-                className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
-                onClick={handleCancelOrder}
-              >
                 Cancel Order
               </button>
-            </div>
-          )}
+              ):(
+                !data?.order?.status?.isAgreement ?(
+                  <button
+                  className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
+                  onClick={() => {
+                    navigate("agreement");
+                  }}
+                >
+                  Ask For Agreement
+                </button>
+                ):(
+                  <button
+                  className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
+                  onClick={() => {
+                    dispatch(setStatus(data?.order?.status))
+                    navigate("agreement");
 
-          {
-            data?.order?.status?.isOrder &&  <button
-            className="bg-green-700 p-2 px-4 mx-auto  block rounded-full text-white"
-          >
-            Start Progress
-          </button>
-          }
+                  }}
+                >
+                  Check Agreement
+                </button>
+                )
+              )
+
+             ):null
+            }
+
+       
         </div>
+        <section className="">
+          <Outlet />
+        </section>
       </section>
-      <Outlet />
     </section>
   );
 };
 
-export default viewDetail;
+export default BookingDetails;

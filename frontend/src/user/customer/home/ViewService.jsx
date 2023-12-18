@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useViewProviderServiceDetailsByIdQuery } from "../../../Api/providerApi";
 import Loader from "../../../components/Loader";
-import Order from "./../order/order";
+import Order from "../order/makeOrder";
 const ViewService = () => {
   const { providerId, serviceId } = useParams();
   const { data, isLoading, isSuccess } = useViewProviderServiceDetailsByIdQuery(
@@ -16,24 +16,21 @@ const ViewService = () => {
     project: false,
   });
 
+  const navigate=useNavigate();
   // const {pivot}=services;
   // console.log('pivot',pivot);
   if (isLoading) {
     return <Loader />;
   }
   return (
-    <section>
-      <section className="p-10">
+    <section className="bg-[#D6FFFF]">
+      <section className="p-10  ">
         <div className="flex flex-col gap-8">
           <div className="">
             <h2 className="text-2xl text-slate-600 font-bold">
               {data?.services?.name}
             </h2>
-            <div className="flex justify-end">
-              <button className="bg-orange-600 text-white rounded-lg p-2 px-4 ">
-                Make Order
-              </button>
-            </div>
+        
           </div>
           <p>{data?.services?.pivot?.description}</p>
 
@@ -174,7 +171,7 @@ const ViewService = () => {
               )}
             </div>
 
-            <div>
+            <div className="mb-5">
               <h2 className="cursor-pointer mb-2" onClick={()=>{
                 setAdditonal({...additonal,other:!additonal?.other})
               }}>Others</h2>
@@ -187,9 +184,18 @@ const ViewService = () => {
             </div>
           </div>
         </div>
+      <div className="flex justify-center">
+              <button className="bg-orange-600 text-white rounded-lg p-2 px-4 "
+              onClick={()=>{
+                navigate('order')
+              }}
+              >
+                Place An Order
+              </button>
+            </div>
       </section>
-      <section>
-        <Order />
+      <section className="">
+       <Outlet/>
       </section>
     </section>
   );

@@ -39,35 +39,32 @@ export default function Naavbar() {
     },
     {
       id: 2,
-      link: " Providers",
-      to: "/customer",
+      link: "Dashbaord",
+      to: "/dashboard/customer",
     },
     {
       id: 3,
-      link: "Services",
-      to: "/provider/search",
+      link: "FInd Providers",
+      to: "/customer",
     },
     {
       id: 4,
-      link: "Orders",
-      to: "/orders/customer",
+      link: "Find Services",
+      to: "/provider/search",
     },
     {
       id: 5,
-      link: "Notifications",
-      to: "/notify",
+      link: "My Booking",
+      to: "/booking/customer",
     },
     {
-      id: 6,
-      link: "Know More",
-      to: "/join",
+      id: 5,
+      link: "My Profiles",
+      to: "/user/profile",
     },
-    {
-      id:7,
-      link:"Status",
-      to:"/status"
-
-    }
+  
+ 
+   
   ];
 
  

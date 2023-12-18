@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AllCustomerOrdersResource;
 use App\Http\Resources\CustomerOrdersResource;
 use App\Http\Resources\OrderDetailResource;
+use App\Http\Resources\ProviderOrderProfileResource;
 use App\Http\Resources\ScopeResource;
+use App\Http\Resources\ViewCustomerOrderResource;
 use App\Models\Order;
 use App\Models\OrderImage;
 use App\Models\Scope;
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
@@ -17,17 +20,18 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function placeOrder(Request $req, $customerId, $serviceId)
+    public function placeOrder(Request $req, $customerId, $serviceId, $providerId)
     {
 
+        $order =  Order::create([
 
-        $orders =  Order::create([
-
-            'user_id' => $customerId,
+            'customer_id' => $customerId,
             'service_id' => $serviceId,
+            'provider_id' => $providerId,
 
             'date' => $req->date,
-            'emergency' => filter_var($req->emergency, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
+            // 'emergency' => filter_var($req->emergency, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
+            'emergency'=>(bool)$req->emergency,
 
             'delay' => $req->delay,
             'location' => $req->location,
@@ -42,6 +46,10 @@ class OrderController extends Controller
 
         ]);
 
+        Status::create([
+            'order_id'=>$order->id,
+            'isAgreement'=>(bool) $req->isAgreement
+        ]);
         $imageNames = [];
         if (isset($req->images)) {
 
@@ -65,7 +73,7 @@ class OrderController extends Controller
             foreach ($imageNames as $image) {
                 $data = new OrderImage();
                 $data->name = $image;
-                $data->order_id = $orders->id;
+                $data->order_id = $order->id;
 
                 $data->save();
             }
@@ -76,15 +84,16 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getOrders($customerId)
+    public function getCustomerOrders($customerId)
     {
-        $orders = Order::with('services')->where('user_id', $customerId)->orderBy('created_at', 'desc')->get();
+        $orders = Order::with('services', 'providers.profile')->where('customer_id', $customerId)->orderBy('created_at', 'desc')->get();
+        // return $orders;
         if ($orders) {
             return CustomerOrdersResource::collection($orders);
         }
         return $orders;
     }
-    public function getProviderReceivedOrders($providerId)
+    public function getReceivedOrders($providerId)
     {
 
         $orders = Order::whereHas('services.users', function ($query) use ($providerId) {
@@ -95,24 +104,54 @@ class OrderController extends Controller
         }
     }
 
-    public function viewOrderDetails($orderId)
+    public function viewOrderReceived($orderId)
     {
-        
-        $order = Order::with('images','services')->find($orderId);
-       
-        $scope = $order->scopes;
-       
-            $users = User::whereHas('services.orders', function ($query) use ($orderId) {
-                $query->where('orders.id', $orderId);
-            })->with(['scopes' => function ($subquery) use ($scope) {
-                $subquery->whereIn('scopes.id', $scope);
-            }])->first();
-        
 
-            return response()->json([
-                'order' => new OrderDetailResource($order),
-                'scopes' => ScopeResource::collection($users->scopes)
-            ]);
-        
+        $order = Order::with('images', 'services','status')->find($orderId);
+
+        $scope = $order->scopes;
+
+        $users = User::whereHas('services.orders', function ($query) use ($orderId) {
+            $query->where('orders.id', $orderId);
+        })->with(['scopes' => function ($subquery) use ($scope) {
+            $subquery->whereIn('scopes.id', $scope);
+        }])->first();
+
+
+        return response()->json([
+            'order' => new OrderDetailResource($order),
+            'scopes' => ScopeResource::collection($users->scopes)
+        ]);
+    }
+    public function viewCustomerOrder($orderId)
+    {
+
+        $order = Order::with(['images', 'services', 'providers.profile','status'])->find($orderId);
+        $scope = $order->scopes;
+        $users = User::with(['scopes' => function ($subquery) use ($scope) {
+            $subquery->whereIn('scopes.id', $scope);
+        }])->find($order->provider_id);
+        return response()->json([
+            'order' => new ViewCustomerOrderResource($order),
+            'scopes' => ScopeResource::collection($users->scopes)
+        ]);
+    }
+
+
+    public function AcceptOrder($orderId)
+    {
+        Status::where('order_id', $orderId)->update(['isOrder' => true]);
+        return response()->json(
+            "susscessfully accepted"
+        );
+    }
+
+    public function CancelOrder($orderId)
+    {
+        Status::where('order_id', $orderId)->update(['isOCancel'=>true]);
+
+        return response()->json(
+            "susscessfully cancelled"
+        );
     }
 }

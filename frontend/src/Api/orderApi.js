@@ -6,9 +6,9 @@ export const orderApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/orders/" }),
   endpoints: (build) => ({
     placeOrder: build.mutation({
-      query: ({ formdata, customerId, serviceId }) => {
+      query: ({ formdata, customerId, serviceId,providerId }) => {
         return {
-          url: `create/${customerId}/service/${serviceId}`,
+          url: `create/${customerId}/service/${serviceId}/provider/${providerId}`,
           method: "POST",
           body: formdata,
         };
@@ -16,14 +16,35 @@ export const orderApi = createApi({
     }),
 
     getCustomerOrders: build.query({
-      query: (id) => `get/customer/${id}`,
+      query: (id) => `customer/${id}`,
     }),
     getProviderReceivedOrders: build.query({
-      query: (id) => `customer/all/${id}`,
+      query: (id) => `provider/${id}`,
     }),
-    viewOrderDetailsById: build.query({
-      query: (orderId) => `customer/${orderId}/details`,
+    viewCustomerOrderDetail: build.query({
+      query: (id) => `${id}/made`,
     }),
+    getProviderReceivedOrderDetail: build.query({
+      query: (orderId) => `${orderId}/received`,
+    }),
+
+    AcceptOrder: build.mutation({
+      query: (orderId) => (
+        {
+          url: `${orderId}/accept`,
+          method: "PUT",
+        }
+      )
+    }),
+    CancelOrder: build.mutation({
+      query: (orderId) => (
+        {
+          url: `${orderId}/cancel`,
+          method: "PUT",
+        }
+      )
+    }),
+
   }),
 });
 
@@ -31,5 +52,8 @@ export const {
   usePlaceOrderMutation,
   useGetCustomerOrdersQuery,
   useGetProviderReceivedOrdersQuery,
-  useViewOrderDetailsByIdQuery
+  useGetProviderReceivedOrderDetailQuery,
+  useViewCustomerOrderDetailQuery,
+  useAcceptOrderMutation,
+  useCancelOrderMutation
 } = orderApi;

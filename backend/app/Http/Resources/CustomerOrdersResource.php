@@ -14,12 +14,13 @@ class CustomerOrdersResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $service=$this->whenLoaded('services');
+        $service = $this->whenLoaded('services');
         return [
-            'id'=>$this->id,
-            'createdAt'=>$this->created_at,
-            'status'=>'In Progress',
-            'service'=>$service->name,
+            'id' => $this->id,
+            'service' => $service->name,
+            'provider' => new ProviderOrderProfileResource($this->whenLoaded('providers')),
+            'created'=>$this->created_at->format('Y-m-d'),
+            'status' => 'Working'
 
 
         ];

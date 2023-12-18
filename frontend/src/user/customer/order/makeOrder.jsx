@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 import Modal from "../../../components/mpdal";
 import Error from "../../../components/ErrorHandling/error";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFieldArray, useForm, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useGetProviderServiceScopeQuery } from "../../../Api/providerApi";
-import Loader from "./../../../components/Loader";
+import Loader from "../../../components/Loader";
 const Order = () => {
   const navigate = useNavigate();
   const { providerId, serviceId } = useParams();
@@ -24,11 +24,9 @@ const Order = () => {
         emergency: false,
         delay: null,
       },
-    
     });
 
   const [selectedScope, setSelectedScope] = useState([]);
-
   const handleSelectedScope = (e) => {
     const { checked, value } = e.target;
     if (checked) {
@@ -82,7 +80,7 @@ const Order = () => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
+    console.log('data',values);
     const userId = localStorage.getItem("userId");
 
     const formdata = new FormData();
@@ -95,7 +93,7 @@ const Order = () => {
       formdata.append("images[]", file.file);
     }
     for (const scope of selectedScope) {
-      formdata.append("scopes[]",scope );
+      formdata.append("scopes[]", scope);
     }
 
     formdata.append("service", values.service);
@@ -104,18 +102,17 @@ const Order = () => {
     formdata.append("name", values.name);
     formdata.append("email", values.email);
     formdata.append("number", values.number);
-    await placeOrder({ formdata, customerId, serviceId })
+    formdata.append("isAgreement",values.IsAgreement);
+    await placeOrder({ formdata, customerId, serviceId, providerId })
       .unwrap()
       .then((response) => {
-        console.log('response',response);
+        console.log("response", response);
         reset();
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-  const images = watch("images");
 
   console.log(error);
   const [delay, setDelay] = useState(false);
@@ -130,24 +127,29 @@ const Order = () => {
     return <Modal message={data?.message} navigation="/orders/customers" />;
   }
   return (
-    <section className="grid place-content-center p-2  bg-[#D6FFFF]   ">
+    <section className="   bg-[#D6FFFF]   ">
       <form
         action=""
-        className=" w-[60Vw] bg-white rounded-md grid grid-cols-1  p-4 gap-5 auto-rows-min shadow shadow-gray-800  text-gray-700"
+        className="   rounded-md grid grid-cols-1  p-8 gap-5 auto-rows-min shadow shadow-gray-800  text-gray-700"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h2 className="text-center  text-gray-400 p-5 font-bold text-2xl">
-          Your Service Order Form
-        </h2>
-        <div>
-          <p>Order Infromation</p>
+        <p className="text-center text-xl text-slate-400">Service Order Form</p>
+        <div className="grid grid-cols-2 gap-5">
           <div className="selected-field">
-            <label htmlFor="">Service For(Date)</label>
+            <label htmlFor="">Service On</label>
             <input type="date" {...register("date")} />
           </div>
-          <div className="">
-            <p className="m-3">Emergency Service</p>
-            <div className="flex gap-4 px-4">
+
+          <div className="selected-field">
+            <label htmlFor="">Delivery Location</label>
+            <input type="text" {...register("location")} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-5">
+          <div className="p-4 shadow shadow-gray-100">
+            <p className="mb-3"> Service Type</p>
+            <div className="flex gap-4 ">
               <div className="flex gap-3">
                 <input
                   type="radio"
@@ -160,7 +162,7 @@ const Order = () => {
                   }}
                   name="emergency"
                 />{" "}
-                <span>Yes</span>
+                <span>Emergency</span>
               </div>
               <div className="flex gap-3">
                 <input
@@ -174,55 +176,112 @@ const Order = () => {
                     }
                   }}
                 />{" "}
-                <span>No</span>
+                <span>Delay</span>
               </div>
             </div>
           </div>
 
+          <div className="selected-field">
+            <label htmlFor=""> Response Time Limit</label>
+            <input type="text" {...register("response")} />
+          </div>
           {delay && (
             <div className="selected-field">
               <label htmlFor="">Maximum Delay</label>
               <input type="text" {...register("delay")} />
             </div>
           )}
-          <div className="selected-field">
-            <label htmlFor="">Delivery Location</label>
-            <input type="text" {...register("location")} />
+        </div>
+        <div className="grid grid-cols-2 gap-5">
+          <div className="shadow shadow-gray-100 p-2">
+            <table
+              className="table-auto w-full border-collapse border border-slate-300 rounded-lg"
+              cellPadding={8}
+            >
+              <thead>
+                <tr className="text-left">
+                  <th>Select</th>
+                  <th>Fearured Services</th>
+                </tr>
+              </thead>
+              <tbody className=" ">
+                {scopes.map((scope, index) => {
+                  return (
+                    <tr className="mb-4 " key={scope.id}>
+                      <td className="">
+                        <input
+                          type="checkbox"
+                          value={scope.id}
+                          onChange={(e) => {
+                            handleSelectedScope(e);
+                          }}
+                          id={`scope${scope.id}`}
+                          className="cursor-pointer"
+                        />
+                      </td>
+                      <td className="">
+                        <label
+                          htmlFor={`scope${scope.id}`}
+                          className="cursor-pointer"
+                        >
+                          {scope.name}
+                        </label>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="p-4 shadow shadow-gray-100 ">
+            <h2 className="mb-3">
+              Upload Files <span className="text-red-600 text-xl">*</span>
+            </h2>
+
+            <div className="grid grid-cols-3 gap-4 mb-3">
+              {imagePreviews.map((preview, index) => (
+                <div key={preview.id} className="relative">
+                  <img
+                    key={index}
+                    src={preview.dataURL}
+                    alt={`Preview ${preview.id}`}
+                    className="w-full h-[120px] shadow shadow-gray-400"
+                    onClick={() => handleRemoveImage(preview.id)}
+                  />
+
+                  <button
+                    onClick={() => handleRemoveImage(preview.id)}
+                    type="button"
+                    className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+
+              <div className="h-[120px] w-[120px] rounded-md  flex place-content-center border-2  border-gray-400 shadow">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileInputChange}
+                  ref={fileInputRef}
+                  className="hidden"
+                />
+                <button
+                  onClick={handleAddButtonClick}
+                  type="button"
+                  className="text-[70px] text-blue-500"
+                >
+                  +
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div>
-          <p>Service Details</p>
-          <table className="w-full" cellPadding={2}>
-            <thead>
-              <tr>
-                <th>Select</th>
-                <th>Service</th>
 
-                <th>Price</th>
-                <th>Unit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scopes.map((scope, index) => {
-                return (
-                  <tr className="mb-4" key={scope.id}>
-                    <td className="text-center">
-                      <input
-                        type="checkbox"
-                        value={scope.id}
-                        onChange={(e) => {
-                          handleSelectedScope(e);
-                        }}
-                      />
-                    </td>
-                    <td className="text-center">{scope.name}</td>
-                    <td className="text-center">{scope.price}</td>
-                    <td className="text-center">{scope.unit}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-2 gap-5 ">
           <div className=" flex flex-col gap-5 selected-field  ">
             <label htmlFor="" className=" ">
               Require Service (Problem Details)
@@ -249,60 +308,12 @@ const Order = () => {
               {...register("size")}
             ></textarea>
           </div>
-
-          <div className=" ">
-            <h2 className="ml-4">
-              Upload Files <span className="text-red-600 ml-2 text-xl">*</span>
-            </h2>
-
-            <div className="grid grid-cols-6 ml-5 gap-4 mb-3">
-              {imagePreviews.map((preview, index) => (
-                <div key={preview.id} className="relative">
-                  <img
-                    key={index}
-                    src={preview.dataURL}
-                    alt={`Preview ${preview.id}`}
-                    className="w-[100px] h-[100px] shadow shadow-gray-400"
-                    onClick={() => handleRemoveImage(preview.id)}
-                  />
-
-                  <button
-                    onClick={() => handleRemoveImage(preview.id)}
-                    type="button"
-                    className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-
-              <div className="h-[100px] w-[100px]  flex place-content-center border-2  border-gray-400 shadow">
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileInputChange}
-                  ref={fileInputRef}
-                  className="hidden"
-                />
-                <button
-                  onClick={handleAddButtonClick}
-                  type="button"
-                  className="text-[70px] text-blue-500"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="selected-field">
-          <label htmlFor=""> Response Time Limit</label>
-          <input type="text" {...register("response")} />
         </div>
         <div>
-          <p>Contact Information</p>
-          <div>
+          <p className="text-center text-xl text-slate-400">
+            Contact Information
+          </p>
+          <div className="grid grid-cols-2 gap-5">
             <div className="selected-field">
               <label htmlFor=""> Name</label>
               <input type="text" {...register("name")} />
@@ -317,24 +328,47 @@ const Order = () => {
             </div>
           </div>
         </div>
+        <div>
+          <Controller
+            name="IsAgreement"
+            control={control}
+            defaultValue={false}
+            render={({ field }) => {
+              return (
+                <div className="flex gap-5 p-4">
+                  <input type="checkbox" name="" id="" 
+                  onChange={(e)=>{
+                    const {checked}=e.target;
+                    if(checked){
+                      setValue('IsAgreement',true)
+                    }
+                    else {
+                      setValue('IsAgreement',false)
+                    }
+                  }}
+                  />
+                  <p className="text-slate-700  ">
+                    Make Agreeement with Service Provider
+                  </p>
+                </div>
+              );
+            }}
+          />
+        </div>
 
         <div className="flex-1 flex justify-around">
           <button
-            className="bg-gray-800 text-white p-2  px-8 rounded-md "
+            className="order-button"
             type="button"
             onClick={() => {
-              reset();
-              navigate("/customer");
+              navigate(`/provider/${providerId}/service/${serviceId}`);
             }}
           >
             Cancel Order
           </button>
 
-          <button
-            className=" bg-gray-800 p-2 text-white rounded-md px-7"
-            type="submit"
-          >
-            Submit Orders
+          <button className="order-button" type="submit">
+            Submit Order
           </button>
         </div>
       </form>

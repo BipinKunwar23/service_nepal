@@ -16,9 +16,7 @@ import ServiceSetUp from "./user/provider/setup/home";
 import { useSelector } from "react-redux";
 import ProviderHome from "./user/provider/home/home";
 import Services from "./user/provider/services/service";
-
-import Order from "./user/customer/order/order";
-import OrderHistory from "./user/customer/order/orderHistory";
+import OrderHistory from "./user/customer/Booking/orderHistory";
 
 import ViewServices from "./user/provider/services/viewServices";
 import ViewProvider from "./user/customer/home/ViewProvider";
@@ -34,6 +32,10 @@ import ViewService from "./user/customer/home/ViewService";
 import CustomerOrder from "./user/provider/order/customerOrder";
 import ViewOrderDetail from "./user/provider/order/viewDetail";
 import Agreement from "./user/provider/agreement/agreement";
+import MakeOrder from "./user/customer/order/makeOrder";
+import DashboardHome from "./user/customer/Dashbaord/dashboardHome";
+import BookingDetails from "./user/customer/Booking/BookingDetails";
+import CheckAgreement from "./user/customer/Booking/checkAgreement";
 
 function App() {
   const selected = useSelector((state) => state.categorySlice.category);
@@ -47,20 +49,31 @@ function App() {
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/customer" element={<Home />}></Route>
         <Route path="/provider/:providerId/*" element={<ViewProvider />}>
-          <Route path="service/:serviceId" element={<ViewService />} />
+          <Route path="service/:serviceId/*" element={<ViewService />} >
+
+            <Route path="order" element={<MakeOrder/>}/>
+          </Route>
         </Route>
-        <Route
+        {/* <Route
           path="/order/service/:serviceId"
           element={
             <RequireCustomerAuth>
               <Order />
             </RequireCustomerAuth>
           }
-        />
+        /> */}
+
+        <Route path="dashboard/customer" element={<DashboardHome/>}/>
+        <Route path="booking/customer" element={<OrderHistory/>}/>
+        <Route path="booking/customer/order/:orderId" element={<BookingDetails/>}>
+        <Route path="agreement" element={<CheckAgreement/>}/>
+        </Route>
+
+
         <Route path="/join" element={<JoinService />} />
         <Route path="/notify" element={<Getstarted />} />
 
-        <Route path="/orders/customer" element={<Order />} />
+        {/* <Route path="/orders/customer" element={<Order />} /> */}
         <Route path="/status" element={<Status />} />
 
         <Route path="/user/*">
