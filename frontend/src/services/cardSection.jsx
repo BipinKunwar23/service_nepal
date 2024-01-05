@@ -15,11 +15,9 @@ const selected=useSelector((state)=>state.categorySlice.subcategory);
 
     {/* Provider-Card Section */}
     <section className=" col-start-2   gap-1 box-border  col-span-4 row-start-1 flex-1   ">
-      {/* {
-        Object.keys(selected).length===0 ? <AllSevice /> : <ServiceById/>
-      } */}
+   
       {
-        children 
+        children
       }
     </section>
 

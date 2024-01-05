@@ -37,9 +37,9 @@ endpoints:(builder)=>({
         query:(orderId)=>`check/final/${orderId}`
       }),
 
-      AcceptAgreement: builder.mutation({
+      AcceptInitialAgreement: builder.mutation({
         query: (orderId) => ({
-          url: `${orderId}/accept`,
+          url: `${orderId}/initial/accept`,
           method: "PUT",
         }),
   
@@ -54,5 +54,5 @@ useInitialAgreementMutation,
 useFinalAgreementMutation,
 useCheckInitialAgreementQuery,
 useCheckFinalAgreementQuery,
-useAcceptAgreementMutation
+useAcceptInitialAgreementMutation
 } = agreementApi;

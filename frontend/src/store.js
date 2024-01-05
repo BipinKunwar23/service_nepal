@@ -15,6 +15,7 @@ import RouteSliceReducer from "./redux/RouteSlice";
 import orderSliceReducer from "./redux/orderSlice";
 import { orderApi } from "./Api/orderApi";
 import { searchingApi } from "./Api/searchingApi";
+import { progressApi } from "./Api/progressApi";
 
 import { agreementApi } from "./Api/agreementApi";
 const middleware = getDefaultMiddleware({
@@ -34,6 +35,7 @@ const middleware = getDefaultMiddleware({
   orderApi.middleware,
   searchingApi.middleware,
   agreementApi.middleware,
+  progressApi.middleware,
 );
 export const store = configureStore({
   reducer: {
@@ -48,6 +50,7 @@ export const store = configureStore({
     [orderApi.reducerPath]:orderApi.reducer,
     [searchingApi.reducerPath]:searchingApi.reducer,
     [agreementApi.reducerPath]:agreementApi.reducer,
+    [progressApi.reducerPath]:progressApi.reducer,
     categorySlice:categorySliceReducer,
     catServiceSlice:catServiceSliceReducer,
     cardSlice:cardSliceReducer,

@@ -11,12 +11,12 @@ const SubCategory = ({subcategories}) => {
   const subcatg = useSelector((state) => state.categorySlice.subcategory);
 
   return (
-    <div className="flex flex-col font-semibold  ">
-    <ul className="flex flex-col mb-8 border-b p-5 ">
+    <div className="flex flex-col font-semibold text-gray-800   ">
+    <ul className="flex flex-col  px-4 py-2">
       <li>Departments</li>
       {
         subcategories.map((subcategory)=>{
-          return  <li className={`m-1  gap-3 hover:bg-gray-200 hover:cursor-pointer p-2 rounded-md ${subcatg===subcategory?.id && "shadow-sm shadow-gray-600 rounded-lg"}`} key={subcategory?.id} 
+          return  <li className={`m-1  gap-3 hover:bg-blue-600  hover:text-white hover:cursor-pointer p-3 rounded-md ${subcatg===subcategory?.id && "bg-blue-600 text-white  "}`} key={subcategory?.id} 
           
           >
           
@@ -24,7 +24,7 @@ const SubCategory = ({subcategories}) => {
              onClick={()=>{
               dispatch(setSubcategory(subcategory?.id))
             }}
-            className='text-[#554] font-semibold'
+            className=' font-semibold'
             >{subcategory?.name}</button>
 
             

@@ -57,24 +57,29 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'pivot.available_cities' => 'array'
+
     ];
-    public function services(){
-        return  $this->belongsToMany(Service::class,'service_user')
-        // ->using(CatserviceUser::class)
-        ->withPivot('description', 'days', 'time', 'experience','currency', 'cities','additional_info','experience_certificate','trainings','training_certificate','projects','project_certificate');
+    public function services()
+    {
+        return  $this->belongsToMany(Service::class, 'service_user')
+            // ->using(CatserviceUser::class)
+            ->withPivot('description', 'additional_info', 'terms', 'refund_policy');
     }
-    // public function categories()
-    // {
-    //     return $this->hasManyThrough(Category::class, Service::class);
-    // }
+    public function subcategory()
+    {
+        return $this->belongsToMany(Subcategory::class, 'subcategory_user')->using(SubcategoryUser::class)->withPivot('profession', 'description', 'available_time', 'available_days', 'available_cities', 'available_date', 'special_availability', 'payment_method', 'payment_structure', 'payment_instructions', 'currency_symbol', 'delivery_charge', 'delivery_method', 'education', 'experience', 'training', 'project', 'limitation', 'terms', 'measures');
+    }
     public function profile()
     {
-        return $this->hasOne(Profile::class,'user_id');
+        return $this->hasOne(Profile::class, 'user_id');
     }
-    public function orders(){
-        return $this->hasOne(User::class,'user_id');
+    public function orders()
+    {
+        return $this->hasOne(User::class, 'user_id');
     }
-    public function scopes(){
-        return $this->belongsToMany(Scope::class,'scope_user')->withPivot('price','unit');
+    public function scopes()
+    {
+        return $this->belongsToMany(Scope::class, 'scope_user')->withPivot('price', 'unit');
     }
 }

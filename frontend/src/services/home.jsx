@@ -12,7 +12,7 @@ const Home = () => {
   const dispatch=useDispatch()
 
   return (
-    <div className="grid grid-cols-5 gap-1 box-border p-1 ">
+    <div className="grid grid-cols-5 gap-1 box-border p-1 bg-[#1D438A]">
        <Category/>
       <section className="col-span-4 col-start-2 col-end-6 row-start-1 shadow flex flex-col bg-[rgba(0,0,0,0.6)] "
             onMouseEnter={()=>{

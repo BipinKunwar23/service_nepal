@@ -19,13 +19,12 @@ class ServiceDetailsResource extends JsonResource
             'name'=>$this->name,
             'icons'=>$this->icons,
             'description'=>$this->description,
-            'units'=>$this->units,
             'pivot'=>[
                 'description'=>$this->pivot->description,
-                'time'=>json_decode($this->pivot->time),
-                'days'=>json_decode($this->pivot->days),
-                'location'=>$this->pivot->cities,
-                'expereince'=>$this->pivot->experience,
+               'additional_info'=>$this->pivot->additional_info,
+               'refund_policy'=>$this->pivot->refund_policy,
+               'terms'=>$this->pivot->terms,
+
                 
 
             ],

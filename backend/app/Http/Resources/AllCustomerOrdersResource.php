@@ -23,7 +23,7 @@ class AllCustomerOrdersResource extends JsonResource
             'contact'=>$this->number,
             'service'=>$service->name,
             'icons'=>$service->icons,
-            'status'=>'Pending'
+            'status'=>$this->status
 
         ];
     }

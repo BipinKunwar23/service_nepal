@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('order_scope', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('scope_id');     
             $table->unsignedBigInteger('order_id');
-            $table->foreign('scope_id')->references('id')->on('scopes');
+            $table->unsignedBigInteger('scope_id');     
             $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('scope_id')->references('id')->on('scopes');
+            $table->string('size')->nullable();
             $table->timestamps();
         });
     }

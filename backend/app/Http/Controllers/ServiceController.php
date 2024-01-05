@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\serviceRequest;
 use App\Http\Resources\CatServiceResource;
 use App\Http\Resources\ServiceResource;
+use App\Http\Resources\ServiceScopeResource;
+use App\Http\Resources\SubCategoryResoruce;
+use App\Http\Resources\UnitScopeResource;
 use App\Models\Category;
 use App\Models\Scope;
 use Illuminate\Http\Request;
@@ -105,25 +108,36 @@ class ServiceController extends Controller
   {
     $services = Service::all();
     if ($services) {
-      return CatServiceResource::collection($services);
+      return response()->json([
+        'services'=>CatServiceResource::collection($services)
+      ]);
     }
   }
-  public function getById($id)
+  public function getBysubcategory($id)
   {
 
-    $service = Subcategory::find($id)->services;
+    $service=Subcategory::with('services')->find($id);
+
+    
     if ($service) {
-      return CatServiceResource::collection($service);
+      return new SubCategoryResoruce($service);
     }
   }
   public function getByCategory($id)
   {
+    
     $service = Service::whereHas('subcategory', function ($query) use ($id) {
       $query->where('category_id', $id);
     })
       ->get();
     if ($service) {
-      return CatServiceResource::collection($service);
+      return response()->json([
+        'services'=>CatServiceResource::collection($service)
+      ]);
     }
+  }
+  public function getScopes($serviceId){
+    $scopes=Service::with('scopes')->find($serviceId);
+    return new UnitScopeResource($scopes);
   }
 }

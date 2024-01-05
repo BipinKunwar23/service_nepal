@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\catservice_providerRequest;
+use App\Http\Resources\ProvideCardSubcatgResource;
 use App\Http\Resources\ProviderDetailsResource;
 use App\Http\Resources\ProviderResource;
 use App\Http\Resources\ScopeResource;
@@ -11,6 +12,7 @@ use App\Http\Resources\ServiceResource;
 use App\Http\Resources\ViewServiceResource;
 use App\Models\Category;
 use App\Models\Image;
+use App\Models\Scope;
 use App\Models\Service;
 use App\Models\Subcategory;
 use App\Models\User;
@@ -24,34 +26,34 @@ class ServiceProviderController extends Controller
     public function createServices(Request $request, $id)
     {
 
-        $imageNames = [];
-        if (isset($request->images)) {
+        // $imageNames = [];
+        // if (isset($request->images)) {
 
-            foreach ($request->images as $file) {
+        //     foreach ($request->images as $file) {
 
-                if (isset($file) && $file instanceof UploadedFile) {
+        //         if (isset($file) && $file instanceof UploadedFile) {
 
-                    $extension = $file->getClientOriginalExtension();
+        //             $extension = $file->getClientOriginalExtension();
 
-                    $name = time() . '_' . uniqid() . '.' . $extension;
+        //             $name = time() . '_' . uniqid() . '.' . $extension;
 
-                    $file->move('service', $name);
-                    $path = 'service/' . $name;
+        //             $file->move('service', $name);
+        //             $path = 'service/' . $name;
 
-                    $imageNames[] = $path;
-                }
-            }
-        }
+        //             $imageNames[] = $path;
+        //         }
+        //     }
+        // }
 
-        if (isset($imageNames)) {
-            foreach ($imageNames as $image) {
-                $data = new Image();
-                $data->service_id = $request->sid;
-                $data->name = $image;
-                $data->user_id = $id;
-                $data->save();
-            }
-        }
+        // if (isset($imageNames)) {
+        //     foreach ($imageNames as $image) {
+        //         $data = new Image();
+        //         $data->service_id = $request->sid;
+        //         $data->name = $image;
+        //         $data->user_id = $id;
+        //         $data->save();
+        //     }
+        // }
         $user = User::find($id);
         $data = json_decode($request->scopes);
         $collection = collect($data)->keyBy('id')
@@ -103,19 +105,11 @@ class ServiceProviderController extends Controller
             $file->move('service/project', $name);
             $project_path = 'service/project/' . $name;
         }
-        $user->services()->attach($request['sid'], [
-            'description' => $request['description'],
-            'time' => $request['time'],
-            'days' => $request['days'],
-            'currency' => $request['currency'],
-            'cities' => $request['cities'],
-            'additional_info' => $request['additional_info'],
-            'experience' => $request['experience'],
-            'experience_certificate' => $experience_path,
-            'trainings' => $request['trainings'],
-            'training_certificate' => $training_path,
-            'projects' => $request['projects'],
-            'project_certificate' => $project_path,
+        $user->services()->attach($request->sid, [
+            'description' => $request->description,
+            'additional_info' => $request->additional_info,
+            'refund_policy' => $request->refund_policy,
+            'terms' => $request->terms,
 
 
 
@@ -141,17 +135,14 @@ class ServiceProviderController extends Controller
         }
     }
 
-    public function getServiceById($providerId, $serviceId)
+    public function getCategoryDetailByProviderId($providerId, $categoryId)
     {
-        $services = User::find($providerId)->services->find($serviceId);
-
+        $services = User::find($providerId)->subcategory->find($categoryId);
         if ($services) {
 
-            return new ServiceDetailsResource($services);
+            return response()->json($services);
         }
-        $collection = Service::select(['id', 'name', 'description', 'icons', 'units'])->with('scopes:id,name,service_id')->find($serviceId);
-        $collection['pivot'] = null;
-        return response()->json($collection);
+        return false;
     }
 
     public function viewProviderServicesById($providerId, $serviceId)
@@ -251,10 +242,15 @@ class ServiceProviderController extends Controller
     public function getAllProvider()
     {
 
-        $providers = User::has('services')->with(['services' => function ($query) {
-            $query->take(3);
-        }, 'profile'])
-            ->get();
+
+
+        // $services=User::with('services')->pluck('id');
+        // $providers=User::with(['subcategory.services'=>function($query) use ($services){
+        //     $query->whereIn('services.id',$services);
+        // }])->get();
+        // return $providers;
+        $providers = User::with('subcategory', 'profile')->get();
+
         if ($providers) {
 
             return ProviderResource::collection($providers);
@@ -264,34 +260,113 @@ class ServiceProviderController extends Controller
 
     public function getProviderByCategory($categoryId)
     {
-        $providers = User::whereHas('services', function ($query) use ($categoryId) {
-            $query->whereHas('subcategory', function ($subquery) use ($categoryId) {
-                $subquery->where('category_id', $categoryId);
-            });
-        })->with(['services', 'profile'])->get();
+        $providers = User::whereHas('subcategory', function ($subquery) use ($categoryId) {
+            $subquery->where('category_id', $categoryId);
+        })
+
+            ->with('subcategory', 'profile')->get();
+
         if ($providers) {
 
-            return ProviderResource::collection(($providers));
+            return ProviderResource::collection($providers);
         }
+
+        // $providers = User::whereHas('services', function ($query) use ($categoryId) {
+        //     $query->whereHas('subcategory', function ($subquery) use ($categoryId) {
+        //         $subquery->where('category_id', $categoryId);
+        //     });
+        // })->with(['services', 'profile'])->get();
+        // if ($providers) {
+
+        //     return ProviderResource::collection(($providers));
+        // }
     }
 
     public function getProviderBySubCategory($subcategoryId)
     {
-        $providers = User::whereHas('services', function ($query) use ($subcategoryId) {
-            $query->where('subcategory_id', $subcategoryId);
-        })->with(['services', 'profile'])->get();
+        $serviceId = User::with('services')->pluck('id');
+        $users = User::whereHas('subcategory', function ($query) use ($subcategoryId) {
+            $query->where('subcategories.id', $subcategoryId);
+        })->with(['subcategory', 'services' => function ($query) use ($subcategoryId) {
+            $query->where('services.subcategory_id', $subcategoryId);
+        }, 'profile'])->get();
+
+
+        $providers = $users->map(function ($user) {
+            $user->category = $user->subcategory->first();
+            unset($user->subcategory); // Remove the 'subcategories' array
+            return $user;
+        });
+
+
+
         if ($providers) {
 
-            return ProviderResource::collection(($providers));
+            return ProvideCardSubcatgResource::collection(($providers));
         }
     }
 
 
 
 
-    public function getProviderDetails($providerId)
+    public function getProviderDetails($providerId, $categoryId)
     {
-        $user = User::with(['services.images', 'profile'])->find($providerId);
+        $scopeId = User::find($providerId)->scopes->pluck('id');
+
+        $services = User::with(['subcategory' => function ($query) use ($categoryId, $scopeId, $providerId) {
+            $query->with([
+                'services' => function ($query) use ($scopeId) {
+                    $query->has('scopes');
+                    $query->whereHas('scopes', function ($subquery) use ($scopeId) {
+                        $subquery->whereIn('scopes.id', $scopeId);
+                    });
+                },
+                'services.scopes' => function ($query) use ($scopeId) {
+                    $query->whereIn('scopes.id', $scopeId);
+                },
+                'services.scopes.users' => function ($query) use ($providerId) {
+                    $query->where('users.id', $providerId);
+                }
+
+            ])
+            ->where('subcategories.id', $categoryId)
+            ->first()
+            ;
+        }, 'profile'])
+
+            ->find($providerId);
+        if ($services) {
+            return new ProviderDetailsResource($services);
+        }
+
+
+        $services = Subcategory::whereHas('services', function ($mquery) use ($scopeId, $providerId) {
+            $mquery->whereHas('scopes', function ($query) use ($scopeId, $providerId) {
+                $query->whereIn('scopes.id', $scopeId);
+                $query->whereHas('users', function ($subquery) use ($providerId) {
+                    $subquery->where('users.id', $providerId);
+                });
+            });
+        })
+
+            ->with(['services' => function ($query) use ($scopeId) {
+                $query->whereHas('scopes', function ($subquery) use ($scopeId) {
+                    $subquery->whereIn('scopes.id', $scopeId);
+                });
+            }, 'services.scopes.users' => function ($query) use ($providerId) {
+                $query->where('users.id', $providerId);
+            }])->find($categoryId);
+        if ($services) {
+            return new ProviderDetailsResource($services);
+        }
+
+        $user = User::whereHas('subcategory', function ($query) use ($categoryId) {
+            $query->where('subcategories.id', $categoryId);
+        })->whereHas('services', function ($query) use ($categoryId) {
+            $query->where('services.subcategory_id', $categoryId);
+        })->with(['subcategory' => function ($query) use ($categoryId) {
+            $query->where('subcategories.id', $categoryId)->first();
+        }, 'services.images', 'profile'])->find($providerId);
         if ($user) {
             return new ProviderDetailsResource($user);
         }

@@ -13,6 +13,7 @@ use App\Models\OrderImage;
 use App\Models\Scope;
 use App\Models\Status;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\UploadedFile;
 
 
@@ -23,33 +24,39 @@ class OrderController extends Controller
     public function placeOrder(Request $req, $customerId, $serviceId, $providerId)
     {
 
+       
         $order =  Order::create([
 
             'customer_id' => $customerId,
             'service_id' => $serviceId,
             'provider_id' => $providerId,
+            
+            'service_date' => $req->service_date,
+            'response_time' => $req->response_time,
+            'emergency' => filter_var($req->emergency, FILTER_VALIDATE_BOOLEAN) ,
 
-            'date' => $req->date,
-            // 'emergency' => filter_var($req->emergency, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
-            'emergency'=>(bool)$req->emergency,
+            'max_delay' => $req->max_delay,
+            'delivery_location' => $req->delivery_location,
+            'service_detail' => $req->service_detail,
+            'requirements' => $req->requirements,
 
-            'delay' => $req->delay,
-            'location' => $req->location,
-            'scopes' => $req->scopes,
-            'service' => $req->service,
-            'size' => $req->size,
-            'response' => $req->response,
             'name' => $req->name,
 
             'email' => $req->email,
             'number' => $req->number,
+            'accept_terms'=>  filter_var($req->accept_terms, FILTER_VALIDATE_BOOLEAN)
 
         ]);
+        $data=json_decode($req->scopes);
+      
 
-        Status::create([
-            'order_id'=>$order->id,
-            'isAgreement'=>(bool) $req->isAgreement
-        ]);
+        $collection = collect($data)->keyBy('id')
+            ->map(function ($item) {
+                return collect($item)->except('id')->toArray();
+            });
+
+        $order->scopes()->syncWithoutDetaching($collection);
+
         $imageNames = [];
         if (isset($req->images)) {
 
@@ -86,7 +93,7 @@ class OrderController extends Controller
 
     public function getCustomerOrders($customerId)
     {
-        $orders = Order::with('services', 'providers.profile')->where('customer_id', $customerId)->orderBy('created_at', 'desc')->get();
+        $orders = Order::with('services', 'providers.profile','status')->where('customer_id', $customerId)->orderBy('created_at', 'desc')->get();
         // return $orders;
         if ($orders) {
             return CustomerOrdersResource::collection($orders);
@@ -106,49 +113,72 @@ class OrderController extends Controller
 
     public function viewOrderReceived($orderId)
     {
+        $order = Order::whereHas('providers', function ($query) use ($orderId) {
+            $query->where('id', Order::find($orderId)->provider_id);
+        })
+        ->with([
+            'images',
+            'services',
+            'status',
+            'providers.scopes' => function ($query) use ($orderId) {
+                $query->whereIn('scope_user.scope_id', function ($subquery) use ($orderId) {
+                    $subquery->select('scope_id')
+                        ->from('order_scope') // Adjust the pivot table name if needed
+                        ->where('order_id', $orderId);
+                });
+            },
+            'scopes'
+        ])
+        
+        ->find($orderId);
 
-        $order = Order::with('images', 'services','status')->find($orderId);
 
-        $scope = $order->scopes;
-
-        $users = User::whereHas('services.orders', function ($query) use ($orderId) {
-            $query->where('orders.id', $orderId);
-        })->with(['scopes' => function ($subquery) use ($scope) {
-            $subquery->whereIn('scopes.id', $scope);
-        }])->first();
-
-
-        return response()->json([
-            'order' => new OrderDetailResource($order),
-            'scopes' => ScopeResource::collection($users->scopes)
-        ]);
+return new OrderDetailResource($order);
     }
     public function viewCustomerOrder($orderId)
     {
+       
 
-        $order = Order::with(['images', 'services', 'providers.profile','status'])->find($orderId);
-        $scope = $order->scopes;
-        $users = User::with(['scopes' => function ($subquery) use ($scope) {
-            $subquery->whereIn('scopes.id', $scope);
-        }])->find($order->provider_id);
-        return response()->json([
-            'order' => new ViewCustomerOrderResource($order),
-            'scopes' => ScopeResource::collection($users->scopes)
-        ]);
+        $order = Order::whereHas('providers', function ($query) use ($orderId) {
+            $query->where('id', Order::find($orderId)->provider_id);
+        })
+        ->with([
+            'images',
+            'services',
+            'providers.profile',
+            'status',
+            'providers.scopes' => function ($query) use ($orderId) {
+                $query->whereIn('scope_user.scope_id', function ($subquery) use ($orderId) {
+                    $subquery->select('scope_id')
+                        ->from('order_scope') // Adjust the pivot table name if needed
+                        ->where('order_id', $orderId);
+                });
+            },
+            'scopes'
+        ])
+        
+        ->find($orderId);
+        // return $order;
+    
+    return new ViewCustomerOrderResource($order);
+
+        
+     
     }
 
 
     public function AcceptOrder($orderId)
     {
-        Status::where('order_id', $orderId)->update(['isOrder' => true]);
+        Order::find($orderId)->update(['status' => 'Accepted']);
         return response()->json(
             "susscessfully accepted"
         );
     }
 
+
     public function CancelOrder($orderId)
     {
-        Status::where('order_id', $orderId)->update(['isOCancel'=>true]);
+        Order::find($orderId)->update(['status' => 'Cancelled']);
 
         return response()->json(
             "susscessfully cancelled"

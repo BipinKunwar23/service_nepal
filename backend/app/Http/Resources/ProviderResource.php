@@ -14,13 +14,14 @@ class ProviderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $profile=$this->whenLoaded('profile');
         return [
             'id'=>$this->id,
             'name'=>$this->name,
-            'email'=>$this->email,
             'rating'=>5 ,
-            'services'=>ProviderServiceResource::collection($this->whenLoaded('services')),
-            'profile'=>new HomeprofileResource($this->whenLoaded('profile'))
+            'image'=>"http://localhost:8000/".$profile->photo,
+            'category'=>ProviderSubCategoryResource::collection($this->whenLoaded('subcategory')),
+
         ];
     }
     

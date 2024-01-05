@@ -30,10 +30,10 @@ getSubCategoryById:builder.query({
   :['subCategory'],
 }),
 addSubCategory: builder.mutation({
-  query: ({ id, ...subcategory }) => ({
+  query: ({formdata,id }) => ({
     url: `create/${id}`,
     method: "post",
-    body: subcategory,
+    body: formdata,
   }),
   invalidatesTags: ['subCategory'],
 

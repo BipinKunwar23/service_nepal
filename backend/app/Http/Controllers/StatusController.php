@@ -16,4 +16,6 @@ class StatusController extends Controller
     {
         Status::where('order_id', $orderId)->update('isOCancel', true);
     }
+
+    
 }

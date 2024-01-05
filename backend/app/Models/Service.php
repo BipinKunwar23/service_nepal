@@ -15,11 +15,11 @@ class Service extends Model
     {
         return $this->belongsTo(Subcategory::class,'subcategory_id');
     }
-    public function users()
-    {
-        return $this->belongsToMany(User::class)
-        ->withPivot('description', 'days', 'time',  'experience', 'cities');
-    }
+    // public function users()
+    // {
+    //     return $this->belongsToMany(User::class)
+    //     ->withPivot('description', 'days', 'time',  'experience', 'cities');
+    // }
     public function scopes(){
         return $this->hasMany(Scope::class);
     }
@@ -29,4 +29,9 @@ class Service extends Model
     public function orders(){
         return $this->hasMany(Order::class,'service_id');
     }
+   
+        public function users()
+        {
+            return $this->hasManyThrough(User::class, Scope::class);
+        }
 }

@@ -20,19 +20,22 @@ return new class extends Migration
             $table->foreign('service_id')->references('id')->on('services');
             $table->foreign('provider_id')->references('id')->on('users');
 
-            $table->date('date');
+            $table->date('service_date');
             $table->boolean('emergency');
-            $table->string('delay')->nullable();
-            $table->string('location');
-            $table->json('scopes');
-            $table->string('service')->nullable();
-            $table->string('size')->nullable();
+            $table->string('max_delay')->nullable();
+            $table->string('delivery_location');
+            $table->string('service_detail')->nullable();
+            $table->string('requirements')->nullable();
 
-            $table->string('response')->nullable();
+
+            $table->string('response_time')->nullable();
 
             $table->string('name', 40);
             $table->string('email');
             $table->string('number', 12);
+            $table->boolean('accept_terms')->default(false);
+            $table->string('status',30)->default("Pending");
+
             $table->timestamps();
 
         });

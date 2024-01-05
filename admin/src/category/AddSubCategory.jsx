@@ -9,7 +9,13 @@ const selected=useSelector((state)=>state.categorySlice.category);
   const [addSubCategory,{data,isLoading,isError,error}]=useAddSubCategoryMutation()
   const dispatch=useDispatch()
     const submitForm= async(values)=>{
-      await addSubCategory({...values,id:selected})
+      const formdata = new FormData();
+      formdata.append("name", values.name);
+      
+      formdata.append("description", values.description);
+      formdata.append("keywords", values.keywords);
+      formdata.append("icons", values.icons);
+      await addSubCategory({formdata,id:selected})
       .unwrap()
       .then((response)=>{
         dispatch(setCategoryAciton(""));

@@ -90,6 +90,11 @@ export const serviceApi = createApi({
       // :['Orders'],
 
   }),
+  getScope:builder.query({
+    query:(serviceId)=>`${serviceId}/scopes`,
+        
+
+}),
   
   }),
 });
@@ -102,6 +107,7 @@ export const {
   useGetProviderServiceByCategoryQuery,
   useGetProviderServiceByIdQuery,
   useDeleteServicesMutation,
-  useGetCustomerOrdersQuery
+  useGetCustomerOrdersQuery,
+  useGetScopeQuery
   
 } = serviceApi;

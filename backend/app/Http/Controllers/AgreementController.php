@@ -14,7 +14,7 @@ class AgreementController extends Controller
     {
         $collection = collect($request->all())->put('order_id', $orderId)->all();
         Initial::create($collection);
-        Status::where('order_id', $orderId)->update(['initial' => true]);
+        Status::where('order_id', $orderId)->update(['isInitial' => true]);
         return response()->json([
             'message' => 'Initial agreement successfull',
         ]);
@@ -23,6 +23,8 @@ class AgreementController extends Controller
     {
         $collection = collect($request->all())->put('order_id', $orderId)->all();
         Finals::create($collection);
+        Status::where('order_id', $orderId)->update(['isFinal' => true]);
+
         return response()->json([
             'message' => 'Final agreement successfull',
         ]);
@@ -30,18 +32,18 @@ class AgreementController extends Controller
 
     public function viewInitialAgreement($orderId)
     {
-        $initial = Initial::where('order_id',$orderId)->first();
+        $initial = Initial::where('order_id', $orderId)->first();
         return response()->json($initial);
     }
-    
+
     public function viewFinalAgreement($orderId)
     {
-        $final = Finals::where('order_id',$orderId)->first();
+        $final = Finals::where('order_id', $orderId)->first();
         return response()->json($final);
     }
-    public function AcceptAgreement($orderId)
+    public function AcceptInitialAgreement($orderId)
     {
-        Status::where('order_id', $orderId)->update(['isInitial'=>true]);
+        Status::where('order_id', $orderId)->update(['isIAccept' => true]);
 
         return response()->json(
             "susscessfully cancelled"

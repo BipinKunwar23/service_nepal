@@ -12,7 +12,6 @@ const dispatch=useDispatch()
   const location = useLocation();
 
   const [addCategory,{isLoading,isError,error}]=useAddCategoryMutation();
-
   // const [height,setHeight]=useState(200);
 
  const submitForm= async(values)=>{

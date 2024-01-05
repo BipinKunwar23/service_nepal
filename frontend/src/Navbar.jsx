@@ -19,7 +19,7 @@ export default function Naavbar() {
                   {navbars.map((navbar) => (
                     <li
                       key={navbar?.id}
-                      className="text-gray-300"
+                      className="text-gray-800 font-bold p-2"
                     >
                       <NavLink to={navbar.to} className="w-full">
                         {" "}
@@ -58,7 +58,7 @@ export default function Naavbar() {
       to: "/booking/customer",
     },
     {
-      id: 5,
+      id: 6,
       link: "My Profiles",
       to: "/user/profile",
     },
@@ -130,11 +130,10 @@ export default function Naavbar() {
   ];
   const role=localStorage.getItem('role')
   return (
-    <>
-      <nav className="flex sticky top-0 p-6 tracking-widest z-10 bg-[#C90000] shadow shadow-gray-500  ">
+      <nav className="flex sticky  top-0 p-6  z-10  bg-white border-t border-gray-400 rounded-t-xl  ">
         <div className="  flex ">
-          <p className="text-[1.3em] text-gray-300 font-bold">
-            SERVICE MARKET PLACE
+          <p className="text-[1.3em]  font-bold text-gray-600">
+            SkillSampark <span className="text-orange-600">Nepal</span>
           </p>
         </div>
         <div className="flex-1 flex  text-[0.9em] ">
@@ -145,6 +144,24 @@ export default function Naavbar() {
             )
           }
         </div>
+        {
+          role==='customer' ? <button className="bg-blue-600 text-white  p-2 rounded-lg"
+          onClick={()=>{
+            localStorage.setItem('role','provider')
+            navigate('/provider')
+          }}
+          >
+            Become A Service Provider
+          </button>:
+          <button className="bg-blue-600 text-white  p-2 rounded-lg"
+          onClick={()=>{
+            localStorage.setItem('role','customer')
+            navigate('/customer')
+          }}
+          >
+            Become A Customer
+          </button>
+        }
         {!logged ? (
           <div>
             <NavLink
@@ -176,11 +193,11 @@ export default function Naavbar() {
               className="rounded-full border h-[30px] w-[30px]"
             />
             {dropdown === "profile" && (
-              <ul className="text-white flex flex-col w-[200px]  font-bold absolute top-8 right-0  bg-black">
-                <li className="text-white border-b-2 p-3 hover:bg-red-700 border-gray-400">
+              <ul className="flex flex-col w-[200px]  font-bold absolute top-8 right-0  bg-black">
+                <li className="text-gray-600 border-b-2 p-3 hover:bg-red-700 border-gray-400">
                   <NavLink to="user/profile">Profile</NavLink>
                 </li>
-                <li className="text-white border-b-2 p-2 hover:bg-red-700 border-gray-400">
+                <li className="text-gray-600 border-b-2 p-2 hover:bg-red-700 border-gray-400">
                   <button
                     onClick={() => {
                       const value = confirm(
@@ -202,6 +219,5 @@ export default function Naavbar() {
           </div>
         )}
       </nav>
-    </>
   );
 }

@@ -17,12 +17,22 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('orders');
             $table->boolean('isOrder')->default(false);
             $table->boolean('isOCancel')->default(false);
-            $table->boolean('isAgreement')->default(false);
-            $table->boolean('isACancel')->default(false);
+            $table->boolean('isOAccept')->default(false);
+
+            $table->boolean('isCInitial')->default(false);
+            $table->boolean('isPInitial')->default(false);
             $table->boolean('isInitial')->default(false);
+
+
+            $table->boolean('isIAccept')->default(false);
             $table->boolean('isICancel')->default(false);
 
+            $table->boolean('isCFinal')->default(false);
+            $table->boolean('isPFinal')->default(false);
             $table->boolean('isFinal')->default(false);
+
+
+            $table->boolean('isFAccept')->default(false);
 
             $table->boolean('isFCancel')->default(false);
 

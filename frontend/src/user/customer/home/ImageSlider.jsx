@@ -16,7 +16,7 @@ console.log(images[currentImageIndex].id);
   return (
     <div className="">
     
-    <img className="w-[200px] transition-all object-cover h-[200px] delay-100 shadow rounded-md mx-2 " src={`${images[currentImageIndex].url}`} alt={`Image ${currentImageIndex}`} 
+    <img className="w-[200px] transition-all object-cover h-[200px] delay-100 shadow rounded-md " src={`${images[currentImageIndex].url}`} alt={`Image ${currentImageIndex}`} 
       
     />
    

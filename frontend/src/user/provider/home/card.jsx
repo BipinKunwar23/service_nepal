@@ -21,28 +21,31 @@ const Card = ({ cards }) => {
 
   return (
     <section className=" ">
-      <section className="grid grid-cols-3 gap-16 p-10 ">
+      <section className="grid grid-cols-3 gap-4 p-10 ">
         {cards.map((card) => {
           console.log("cardId", card?.id);
           return (
             <div
-              className="     bg-[#fff] p-3 rounded-lg transition-all text-center hover:scale-105 shadow shadow-gray-600 "
+              className="     bg-[#fff] p-6 rounded-lg transition-all text-center hover:scale-105 shadow-xl shadow-gray-400 "
               key={card?.id}
             >
+              <div className="flex">
+
               <img
                 src={`http://localhost:8000/${card?.icons}`}
                 alt=""
-                className="h-[200px] w-full object-cover mb-3"
+                className="h-[80px] w-[80px] object-cover mb-3 rounded-full shadow"
               />
-              <div className="text-lg font-bold text-[#666] mb-3">
-                {card?.name}
+              <div className="text-lg font-bold text-[#666] mb-3 flex-1 grid place-content-center">
+                <h2 className="text-center">{card?.name}</h2>
+              </div>
               </div>
               <div className="">
-                <p className="line-clamp-2  ">{card?.description}</p>
+                <p className="line-clamp-2 text-center  ">{card?.description}</p>
               </div>
-              <div className="flex place-content-center ">
+              <div className=" grid flex-1  p-4">
                 <button
-                  className="bg-green-600 p-1 px-6 w-full m-5 rounded-lg text-white font-bold text-md"
+                  className="bg-green-600 p-2 w-full  rounded-md text-white font-bold text-md"
                  onClick={()=>{
                   navigate(`/provider/service/join/${card?.id}`)
 

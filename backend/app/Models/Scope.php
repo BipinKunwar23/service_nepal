@@ -12,12 +12,12 @@ class Scope extends Model
     public $fillable=['name'];
 
     public function users(){
-        return $this->belongsToMany(User::class,'scope_user');
+        return $this->belongsToMany(User::class,'scope_user')->withPivot('price','unit');
     }
     public function services(){
         return $this->belongsTo(Service::class,'service_id');
     }
     public function orders(){
-        return $this->belongsTo(Order::class,'order_scope');
+        return $this->belongsToMany(Order::class,'order_scope');
     }
 }

@@ -20,7 +20,7 @@ class ProviderDetailsResource extends JsonResource
             'email'=>$this->email,
             'rating'=>5,
             'profile'=> new HomeprofileResource($this->whenLoaded('profile')),
-            'services'=> ServiceResource::collection($this->whenLoaded('services'))
+            'category'=>new PorviderCategoryDetailResource($this->whenLoaded('subcategory')[0])
         ];
     }
 }

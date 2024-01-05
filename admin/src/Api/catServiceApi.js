@@ -57,10 +57,7 @@ tagTypes:['services'],
           ? `category/${category}`
           : `${subcategory}`;
       },
-      providesTags:(result)=>
-      result ?
-      [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
-      :['services'],
+      providesTags:['services'],
     }),
 
     

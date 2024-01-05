@@ -20,7 +20,7 @@ class CustomerOrdersResource extends JsonResource
             'service' => $service->name,
             'provider' => new ProviderOrderProfileResource($this->whenLoaded('providers')),
             'created'=>$this->created_at->format('Y-m-d'),
-            'status' => 'Working'
+            'status' => $this->status
 
 
         ];

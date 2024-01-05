@@ -18,12 +18,14 @@ class ServiceResource extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->name,
-            'icons'=>$this->icons,
+            'icons'=>"http://localhost:8000/".$this->icons,
             // 'pivot'=>[
             //     'description'=>$this->pivot->description,
 
-            // ]
-            'images'=>ImageResource::collection($this->whenLoaded('images')),
+            // ],
+            // 'images'=>ImageResource::collection($this->whenLoaded('images')),
+            'scopes'=>UserScopeResource::collection($this->whenLoaded('scopes')),
+
 
            
         ];

@@ -16,7 +16,6 @@ class ScopeResource extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'name'=>$this->name,
             'price'=>$this->pivot->price,
             'unit'=>$this->pivot->unit,
         ];

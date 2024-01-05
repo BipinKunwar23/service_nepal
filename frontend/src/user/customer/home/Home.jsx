@@ -13,6 +13,7 @@ import Provider from "./searching/provider";
 
 import Card from "./Card";
 import Loader from "../../../components/Loader";
+import AllCards from "./AllCards";
 const Home = () => {
   const dispatch = useDispatch();
   const [showItemList, setShowItemList] = useState(false);
@@ -60,6 +61,7 @@ const Home = () => {
     error: serviceError,
   } = useGetProviderQuery({ categoryId, subcategoryId, service });
 
+
   const navigate = useNavigate();
   const {
     data: categories,
@@ -72,18 +74,15 @@ const Home = () => {
     return <Loader/>
   }
   return (
-    <>
-      <div className="">
-        <section className="p-5 grid grid-cols-6  mx-auto   ">
-          <div
-          // onClick={() => {
-          //   setShowSearch(false);
-          // }}
-          ></div>
-          <div className="flex col-span-4 mb-5 w-[60Vw] justify-self-center relative ">
+    <section className=" ">
+      <div className=" shadow-xl shadow-slate-400 p-5   rounded-2xl ">
+        <section className="  shadow shadow-gray-300 mb-1 py-3  ">
+
+        
+          <div className="flex col-span-4 mb-5 w-[60Vw]  mx-auto justify-self-center relative  ">
             <input
               type="search"
-              className="border border-gray-600 w-full rounded-full p-2 focus:outline-none "
+              className="w-full rounded-full p-2 focus:outline-none shadow shadow-gray-600 "
               placeholder="Find Your Srevices"
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
@@ -95,26 +94,28 @@ const Home = () => {
             />
             {showItemList && <Provider />}
           </div>
-          <div
-          // onClick={() => {
-          //   setShowSearch(false);
-          // }}
-          ></div>
-        </section>
-        <section className="shadow ">
+      
+        <section className=" py-4 ">
           <Category
             categories={categories}
             setCategory={setCategory}
             selected={categoryId}
           />
         </section>
-        <section>
-          <CardSection subcategories={subcategories}>
-            <Card cards={services} />
+        </section>
+
+        <section className="">
+          <CardSection subcategories={subcategories} >
+            {
+             subcategoryId ? 
+             <Card cards={services} />
+             :
+             <AllCards cards={services}/>
+            }
           </CardSection>
         </section>
       </div>
-    </>
+    </section>
   );
 };
 

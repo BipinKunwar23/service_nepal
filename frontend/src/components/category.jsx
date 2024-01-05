@@ -10,7 +10,7 @@ console.log('button is',button);
 
 
   return (
-    <section className="flex   ">
+    <section className="flex bg-[#1D438A]  ">
       {
         categories.map((category)=>{
           return <div key={category?.id} className={`px-5 ${selected?.id===category?.id && 'shadow shadow-slate-300 '}`}

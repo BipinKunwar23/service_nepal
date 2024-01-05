@@ -11,7 +11,8 @@ class Subcategory extends Model
 {
     // protected $table='subcategories';
     use HasFactory;
-    public $fillable = ['name', 'category_id', 'description', 'keywords'];
+    public $fillable = ['name', 'category_id', 'description', 'keywords','icons'];
+  
 
     public function category()
     {
@@ -21,5 +22,8 @@ class Subcategory extends Model
     public function services()
     {
         return $this->hasMany(Service::class);
+    }
+    public function users(){
+        return $this->belongsToMany(User::class,'subcategory_user');
     }
 }

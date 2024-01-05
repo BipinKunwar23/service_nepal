@@ -16,9 +16,24 @@ class SubCategoryController extends Controller
             'name' => ['required', 'unique:subcategories,name'],
             'keywords' => ['required'],
         ]);
-        $collection = collect($validate)->put('category_id', $id)->all();
+        $path = null;
 
-        Subcategory::create($collection);
+
+        if ($request->hasFile('icons')) {
+            $file = $request->file('icons');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('subcategory/icons', $name);
+            $path = 'subcategory/icons/' . $name;
+        }
+        Subcategory::create([
+            'name' => $request->name,
+            'category_id'=>$id,
+            'description' => $request->description,
+            'keywords' => $request->keywords,
+            'icons' => $path,
+
+        ]);
         return response()->json([
             'message' => 'successfulluy create sub category',
         ]);
@@ -29,26 +44,43 @@ class SubCategoryController extends Controller
         return response()->json($subcategories);
     }
 
-    public function viewSubCategoryById($id){
-        $subcategory=Subcategory::find($id);
+    public function viewSubCategoryById($id)
+    {
+        $subcategory = Subcategory::find($id);
         return response()->json($subcategory);
-       }
-    
+    }
+
+
     public function getById($id)
     {
         $subcategories = Category::find($id)->subcategories()->get(['id', 'name', 'category_id']);
         return response()->json($subcategories);
     }
-public function getSubCategoryByProviderId( $providerId){
-    $user = User::find($providerId)->services->pluck('id');
-    $subcategories=Subcategory::whereHas('services',function($query) use($user){
-        $query->whereIn('id',$user);
-    })->get();
-
-    if ($subcategories) {
+    public function getAllSubCategoryByProvider()
+    {
+        
+        $subcategories = Subcategory::with('services:id,subcategory_id,name,icons')->get();
+        if ($subcategories) {
+            return response()->json($subcategories);
+        }
+    }
+    public function getSubCategoryByProviderCategory($categoryId)
+    {
+        
+        $subcategories = Subcategory::with('services:id,subcategory_id,name,icons')->where('category_id',$categoryId)->get();
         return response()->json($subcategories);
     }
-}
+    public function getSubCategoryByProviderId($providerId)
+    {
+        $user = User::find($providerId)->services->pluck('id');
+        $subcategories = Subcategory::whereHas('services', function ($query) use ($user) {
+            $query->whereIn('id', $user);
+        })->get();
+
+        if ($subcategories) {
+            return response()->json($subcategories);
+        }
+    }
 
     public function getSubCategoryByProviderCategoryId($categoryId, $providerId)
     {
@@ -66,18 +98,23 @@ public function getSubCategoryByProviderId( $providerId){
         }
     }
 
-    public function updateSubCategory(Request $req, $id){
+    public function updateSubCategory(Request $req, $id)
+    {
         $validate = $req->validate([
             'name' => ['required', Rule::unique('subcategories', 'name')->ignore($id)],
-            'description'=>'sometimes',
-            'keywords'=>'required',
-            'category_id'=>'required'
+            'description' => 'sometimes',
+            'keywords' => 'required',
+            'category_id' => 'required'
         ]);
-        $category= Subcategory::find($id)->first();
+        $category = Subcategory::find($id)->first();
         $category->fill($validate)->save();
         return response()->json([
-            'message'=>'successfully updated'
-          ],200);
+            'message' => 'successfully updated'
+        ], 200);
+    }
 
+    public function getCategoryServiceScopes($categoryId){
+        $detail=Subcategory::with('services.scopes')->find($categoryId);
+        return $detail;
     }
 }

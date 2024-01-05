@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { FaStar } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,124 +6,181 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { setServiceId } from "../../../redux/cardSlice";
 import ImageSlider from "./ImageSlider";
-const Provider = ({services}) => {
+import { setAvailableDate } from "../../../redux/serviceSlice";
+const Provider = ({ data }) => {
   const serviceId = useSelector((state) => state.cardSlice.serviceId);
+  const { detail } = data;
+  console.log("cards", data);
+  const navigate = useNavigate();
+  const [view, setView] = useState(false);
+  const dispatch = useDispatch();
+  const [viewItem, setviewItem] = useState(null);
+  const actions = [
+    {
+      name: "Descriptions",
+    },
+    {
+      name: "Education and Training",
+    },
+    {
+      name: "Skills and Experience",
+    },
+    {
+      name: "Payment Policy",
+    },
+    {
+      name: "Service Terms",
+    },
+    {
+      name: "Deliverable and Limitation",
+    },
+  ];
 
-  console.log("cards", serviceId);
-const navigate= useNavigate();
+  const handleItem = () => {
+    console.log("vieitem", viewItem);
 
-
-    return (
-      <section >
-     
-            <section className="grid grid-cols-2   ">
-              {services.map((service) => (
-                <div
-                  key={service?.id}
-                  className=" p-3 shadow shadow-gray-800 grid grid-cols-2  cursor-pointer text-center m-5  border-gray-600 rounded-lg box-border"
-                  onClick={()=>{
-                    navigate(`service/${service.id}`);
-                  }}
-                >
-                  <div>
-                   <ImageSlider images={service?.images}/>
-                  
-                  </div>
-                  <div className="mr-2">
-                    <p className="justify-between flex mb-2">
-                      <span className="text-sm font-bold">Gaindakot</span>
-                      <span className="text-gray-500 text-md">$ 200 USD</span>
-                    </p>
-                    <p className="text-sm  text-gray-600 mb-2">
-                      <span>10:00 AM - 5:00 PM</span>
-                    </p>
-                    <p className="text-center mb-2">
-                      <span className=" text-gray-600 text-sm">
-                        SUN MON TUE WED FRI SAT
-                      </span>
-                    </p>
-                    <h2 className=" text-gray-700 font-semibold text-lg mb-2">
-                      {service?.name}
-                    </h2>
-                    <p className="text-center mb-2">
-                      <a href="" className="underline text-gray-600">see more</a>
-                    </p>
-                    <div className="flex flex-col gap-4 ">
-                  <div className=" flex place-content-center">
-                    {Array(4)
-                      .fill()
-                      .map((_, index) => (
-                        <i key={index} className=" ">
-                          <FaStar className=" text-[#FA130C] text-[1.4em]" />
-                        </i>
-                      ))}
-                  </div>
-                </div>
-                    
-                  </div>
-
-               
-                </div>
-              ))}
-            </section>
-        <section>
-          <div className=" flex gap-10 bg-white p-8 mx-10 shadow shadow-gray-200 mt-1 box-border">
-            <div className=" flex-1 border border-gray-300 p-6 ">
-              <form action="" className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="" className="text-[1.2em] font-semibold">
-                    Feedback
-                  </label>
-                  <textarea
-                    name=""
-                    id=""
-                    cols="30"
-                    rows="4"
-                    className="border-2 border-gray-300"
-                  ></textarea>
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className="bg-orange-600 text-white p-2 w-full"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div className="flex-1 grid bg-white place-content-center ">
-              <div className="flex flex-col gap-10">
-                <h2 className="text-center text-[1.5em] font-semibold text-orange-600">
-                  Rate Service Provider
-                </h2>
-                <div className=" flex justify-center gap-2 ">
-                  {Array(4)
-                    .fill()
-                    .map((_, index) => (
-                      <i key={index} className=" ">
-                        <FaStar
-                          className=" text-[rgba(0,0,0,0.6)] hover:cursor-pointer text-[2em]"
-                          onClick={() => {}}
-                        />
-                      </i>
-                    ))}
-                </div>
-                <div>
-                  <button
-                    type="submit "
-                    className="bg-green-600 text-white p-2 w-full"
-                  >
-                    SUBMIT
-                  </button>
-                </div>
-              </div>
-            </div>
+    switch (viewItem) {
+      case "Descriptions":
+        return (
+          <div className="p-3">
+            <p>{detail?.description}</p>
           </div>
-        </section>
+        )
+        break;
+      case "Education and Training":
+        return (
+            <div className="p-3">
+              <p>{detail?.education}</p>
+          </div>
+        );
+        break;
+
+      case "Skills and Experience":
+        return (
+            <div className="p-3">
+              <p>{detail?.experience}</p>
+            </div>
+        );
+        break;
+      case "Service Terms":
+        return (
+            <div>
+              <p className="p-3">{detail?.terms}</p>
+            </div>
+        );
+        break;
+      case "Payment Policy":
+        return (
+             <div>
+              <p className="p-3">{detail?.measures}</p>
+            </div>
+        );
+        break;
+      case "Deliverable and Limitation":
+        return (
+            <div>
+              <p className="p-3">{detail?.limitation}</p>
+          </div>
+        );
+        break;
+      default:
+        return null;
+        break;
+    }
+  };
+
+  return (
+    <section className=" rounded-lg shadow">
+      {/* <h2 className="text-center font-semibold text-lg mt-3 text-gray-800">
+        Service Details
+      </h2>
+     */}
+
+      <section className="    flex flex-col shadow rounded-lg ">
+        <div>
+          {/* <div className="grid grid-cols-2">
+                <strong>Category</strong>
+                <p>{data?.name}</p>
+              </div> */}
+        </div>
+        {/* <div>
+              <p>About Profession</p>
+              <div>
+                <strong>Professon</strong>
+                <p>{detail?.profession}</p>
+              </div>
+              <div>
+                <strong>Description</strong>
+                <p>{detail?.description}</p>
+              </div>
+            
+            </div> */}
+
+        <div className="">
+          <p className="text-[1.2em] font-bold text-gray-800 p-2 ">Availability</p>
+          <div className="provider-catgory-column">
+            <strong> Time</strong>
+            <p>
+              <span>{detail?.available_time?.start}</span>-{" "}
+              <span>{detail?.available_time?.end}</span>
+            </p>
+          </div>
+          <div className="provider-catgory-column">
+            <strong> Days</strong>
+            <ul className="flex flex-wrap gap-4 text-blue-600 font-semibold col-span-2">
+              {detail?.available_days.map((day) => (
+                <li key={day}>{day}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="provider-catgory-column">
+            <strong> Cities</strong>
+            <ul className="flex gap-4 text-blue-600 font-semibold">
+              {detail?.available_cities.map((city, index) => (
+                <li key={index}>{city.city}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="provider-catgory-column">
+            <strong> Date</strong>
+            <p>
+              <span>{detail?.available_date}</span>
+            </p>
+          </div>
+          <div className="px-2">
+                  <button className="bg-orange-800 p-2 w-full text-white rounded-md my-4"
+                  onClick={()=>{
+                    navigate("order")
+                  }}
+                  >Order Now</button>
+                  </div>
+        </div>
+
+        <div>
+          <ul className="flex flex-col gap-2 border-t border-gray-400 mt-4 shadow">
+            {actions.map((action) => {
+              return (
+                  <li
+                    className=" grid grid-cols-1 border-b border-gray-400  p-2 "
+                    key={action.name}
+                    onClick={() => {
+                      viewItem && viewItem===action.name ? setviewItem(null) :
+                      setviewItem(action.name)
+                      
+                    }}
+                  >
+                    <button className=" font-semibold text-left ">
+                      {action.name}
+                    </button>
+                    {action.name === viewItem && handleItem()}
+                  </li>
+              );
+            })}
+          </ul>
+        </div>
       </section>
-    );
-  
+    </section>
+  );
 };
 
 export default Provider;

@@ -30,10 +30,26 @@ getSubCategory:builder.query({
     return !categoryId? "viewAll" : `view/${categoryId}`
   }
 }),
+getSubCategoryByProvider:builder.query({
+  query:(categoryId)=>{
+    return !categoryId? "provider/all" : `provider/category/${categoryId}`
+  }
+}),
 getProviderSubCategory:builder.query({
   query:({categoryId,providerId})=>{
     return !categoryId ? `provider/${providerId}` : `provider/${providerId}/category/${categoryId}`
   }
+}),
+
+joinSubcategory: builder.mutation({
+  query: ({formdata,providerId,subcategoryId }) => ({
+    url: `user/join/${providerId}/${subcategoryId}`,
+    method: "post",
+    body: formdata,
+  }),
+}),
+getSubcatgoryAllDetails:builder.query({
+  query:(categoryId)=>`${categoryId}/details`
 })
   
 })
@@ -44,5 +60,8 @@ export const {
  useGetSubCategoryByIdQuery,
  useAddSubCategoryMutation,
  useGetSubCategoryQuery,
- useGetProviderSubCategoryQuery
+ useGetProviderSubCategoryQuery,
+ useJoinSubcategoryMutation,
+ useGetSubCategoryByProviderQuery,
+ useGetSubcatgoryAllDetailsQuery
 } = subCategoryApi;

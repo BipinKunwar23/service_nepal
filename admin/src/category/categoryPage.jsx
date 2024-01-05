@@ -54,7 +54,7 @@ export const CategoryPage = () => {
           />
         </section>
         <section>
-          <CardSection subcategories={subcategories} cards={services} />
+          <CardSection subcategories={subcategories} cards={services?.services} />
         </section>
         <section>
           <AllForm />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import image from "../images/Plumber.png";
+import image from "../images/landing-image.jpg";
 import image1 from "../images/plumber.jpg";
 import { useNavigate } from "react-router-dom";
 const landing = () => {
@@ -7,105 +7,53 @@ const landing = () => {
   const [role,setRole]=useState(null);
   const navigate=useNavigate();
   return (
-    <section className=" bg-gray-100 grid-cols-1 gap-2 grid justify-items-center shadow shadow-gray-600    ">
-      <div className="max-w-[60Vw]">
-        <article className=" text-gray-600 bg-white flex flex-col gap-5 border-b border-gray-400  px-20 py-10 box-border">
-          <h2 className="font-bold text-[2em]  text-orange-600 w-[50Vw]">
+    <section className="  text-gray-600   px-10 -z-10 ">
+      <div className="  rounded-b-lg    ">
+        <article className=" text-gray-600    grid grid-cols-2 gap-10  box-border    bg-[#1D438A] rounded-br-full   ">
+        
+          <div className=" flex-1 p-20 ">
+          
+            <div className="w-[30Vw] flex flex-col flex-1 gap-4">
+            <h2 className="font-bold text-[1.5em]  text-center text-gray-300">
             CREATE YOUR OWN SERVICES AND SELL YOUR SERVICES ONLINE
           </h2>
-          <div className="flex gap-5">
-            <div className="w-[30Vw] flex flex-col gap-10 ">
-              <p className="m-1">
+              <p className="m-4 text-center text-[#EF351F]">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
                 tenetur veritatis magni cumque corrupti quaerat eius est aperiam
                 eos optio velit, fugit sapiente mollitia saepe perferendis,
               </p>
-              <div className=" flex flex-col gap-2  w-[200px]">
-                <button className="bg-[#EF351B] rounded-full p-2 w-full text-white font-semibold tracking-wider"
-                onClick={()=>{
-                  setStarted(true)
+              <div className="flex justify-center">
+              <button className="bg-[#00A193] shadow shadow-gray-700 hover:text-white rounded-full p-2 w-[80%] hover:bg-[#00E6D7]  text-white  font-semibold tracking-wider"
+                onClick={()=>{ 
+                  localStorage.setItem('role','customer')
+                  navigate('/customer',{replace:true});
                 }}
                 >
                Get Started 
                 </button>
-              
-                  {
-                    started && 
-                      <ul className="flex  w-[200px] flex-col gap-2 bg-[#262666]  p-3 rounded-lg  text-white shadow shadow-gray-800 ">
-                        <li className="shadow shadow-gray-100 rounded-lg hover:bg-blue-600 hover:text-white ">
-                     <button className="  m-2 rounded-md "
-                     onClick={()=>{
-                      localStorage.setItem('role','customer')
-                      navigate('/customer',{replace:true});
-
-                     }}
-                     >Customer</button>
-
-                        </li>
-                      <li className="shadow shadow-gray-100 rounded-lg hover:bg-blue-600 hover:text-white">
-                     <button className=" m-2 rounded-md"
-                     onClick={()=>{
-                      localStorage.setItem('role','provider');
-                      navigate('/provider',{replace:true});
-
-                     }}
-                     >Service Provider</button>
-
-                      </li>
-                      </ul>
-                  }
               </div>
+
+       
             </div>
-            <div>
+          </div>
+            <div className="w-full   ">
               <img
                 src={image}
-                className="h-[40Vh] w-full object-contain"
+                className="w-[400px] h-[400px] object-cover rounded-full"
                 
                 alt=""
               />
+              
             </div>
-          </div>
         </article>
 
-        <article className="bg-white border-b border-gray-400 text-[#666] flex flex-col gap-5 p-10 box-border">
-          <h1 className="text-lg font-semibold text-center text-green-400">
-            ABOUT US
-          </h1>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid grid-cols-1 gap-5 ">
-              <p className="m-1">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
-                tenetur veritatis magni cumque corrupti quaerat eius est aperiam
-                eos optio velit, fugit sapiente mollitia saepe perferendis,
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptatem, adipisci. Aperiam veritatis vel itaque, quidem quo
-                quas ipsum sint eligendi quasi! Iusto ipsum facere ipsa ut
-                laboriosam. Itaque, ab consequuntur.
-              </p>
-              <div className=" flex-1">
-                <button className="bg-[#EF351B] rounded-md p-2 w-[150px] text-white font-semibold ">
-                  {" "}
-                  SEE MORE
-                </button>
-              </div>
-            </div>
-            <div>
-              <img
-                src={image1}
-                className="max-h-[30Vh] w-full object-cover"
-                alt=""
-              />
-            </div>
-          </div>
-        </article>
-
-        <article className=" bg-white  p-5 border-b border-gray-400   ">
-          <h2 className=" text-[1.2em] font-bold  m-8 text-center text-green-400 ">
+     
+        <article className="       ">
+          <h2 className=" text-[1.2em] font-bold  p-8 text-center text-gray-900 ">
             DISCOVER SERVICES
           </h2>
-          <div className="featured-services  m-5  bg-[#fff]  rounded-lg flex gap-10">
-            <div className="service-card">
+          <div className="grid grid-cols-4 gap-5  rounded-lg ">
+            <div className="service-card  ">
               <img src={image1} alt="" />
               <div className="service-title">Graphic Design</div>
               <div className="service-description">
@@ -115,6 +63,17 @@ const landing = () => {
                 Learn More
               </a>
             </div>
+            <div className="service-card ">
+              <img src={image1} alt="" />
+              <div className="service-title">Graphic Design</div>
+              <div className="service-description">
+                Eye-catching visuals for your brand.
+              </div>
+              <a href="#" className="learn-more-btn">
+                Learn More
+              </a>
+            </div>
+
 
             <div className="service-card">
               <img src={image1} alt="" />
@@ -231,6 +190,39 @@ const landing = () => {
             </div>
           </div>
         </article>
+        <article className="bg-white border-b border-gray-400 text-[#666] flex flex-col gap-5 p-10 box-border">
+          <h1 className="text-lg font-semibold text-center text-green-400">
+            ABOUT US
+          </h1>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-5 ">
+              <p className="m-1">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
+                tenetur veritatis magni cumque corrupti quaerat eius est aperiam
+                eos optio velit, fugit sapiente mollitia saepe perferendis,
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Voluptatem, adipisci. Aperiam veritatis vel itaque, quidem quo
+                quas ipsum sint eligendi quasi! Iusto ipsum facere ipsa ut
+                laboriosam. Itaque, ab consequuntur.
+              </p>
+              <div className=" flex-1">
+                <button className="bg-[#EF351B] rounded-md p-2 w-[150px] text-white font-semibold ">
+                  {" "}
+                  SEE MORE
+                </button>
+              </div>
+            </div>
+            <div>
+              <img
+                src={image1}
+                className="max-h-[30Vh] w-full object-cover"
+                alt=""
+              />
+            </div>
+          </div>
+        </article>
+
         <section className="bg-white p-10">
           <h2 className="text-lg font-semibold text-center text-green-400">Frequently Asked Questions</h2>
           <div className=" mt-5 ">

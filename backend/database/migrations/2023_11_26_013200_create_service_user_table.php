@@ -18,17 +18,11 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('service_id')->references('id')->on('services');
             $table->text('description')->nullable()->default(null);
-            $table->string('time')->nullable();
-            $table->json('days')->nullable();
-            $table->string('currency',40)->nullable();
-            $table->string('cities')->nullable();
             $table->string('additional_info')->nullable();
-            $table->string('experience')->nullable();
-            $table->string('experience_certificate')->nullable();
-            $table->string('trainings')->nullable();
-            $table->string('training_certificate')->nullable();
-            $table->string('projects')->nullable();
-            $table->string('project_certificate')->nullable();
+            $table->string('refund_policy')->nullable();
+            $table->string('terms')->nullable();
+
+
             $table->timestamps();
         });
     }

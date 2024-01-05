@@ -11,8 +11,8 @@ export default function Category({categories}) {
 
 
   return (
-    <section className="grid shadow-sm shadow-gray-200  m-5 p-5 ">
-      <section className="flex w-full overflow-y-scroll p-5">
+    <section className="grid  mb-5  ">
+      <section className="flex gap-4 w-full overflow-x-auto ">
 
       {
         categories.map((category)=>{
@@ -25,9 +25,9 @@ export default function Category({categories}) {
 
           
           >
-            <div className="max-w-[150px] m-5  box-border hover:cursor-pointer hover:scale-105 transition">
-            <img src={`http://localhost:8000/${category?.icons}`} className="max-w-[120px] h-[120px] rounded-full border border-gray-300 mb-5 " alt="" />
-            <p className="text-center mt-5 text-gray-600 font-semibold ">{category?.name}</p>
+            <div className="  box-border hover:cursor-pointer hover:scale-105 transition ">
+            <img src={`http://localhost:8000/${category?.icons}`} className="max-w-[80px] h-[80px]  rounded-full border border-gray-600 shadow-inner shadow-gray-700  mb-5 " alt="" />
+            <p className="text-center mt-5 text-gray-800  font-semibold ">{category?.name}</p>
 
             </div>
     </div>

@@ -1,41 +1,75 @@
 import React, { useState } from "react";
 import { usePlaceOrderMutation } from "../../../Api/orderApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../../../components/mpdal";
 import Error from "../../../components/ErrorHandling/error";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useGetProviderServiceScopeQuery } from "../../../Api/providerApi";
+import { setSelectedScope } from "../../../redux/serviceSlice";
 import Loader from "../../../components/Loader";
 const Order = () => {
   const navigate = useNavigate();
   const { providerId, serviceId } = useParams();
-  const customerId = localStorage.getItem("userId");
+  const dispatch = useDispatch();
+  const selectedScope = useSelector((state) => state.serviceSlice.scopes);
   console.log("services", serviceId);
-  const { data: scopes, isLoading: scopeLoading } =
-    useGetProviderServiceScopeQuery({ providerId, serviceId });
-  console.log(scopes);
+  // const { data: userScopes, isLoading: scopeLoading } =
+  //   useGetProviderServiceScopeQuery({ providerId, serviceId });
   const [placeOrder, { data, isLoading, isSuccess, isError, error }] =
     usePlaceOrderMutation();
-
-  const { register, control, setValue, handleSubmit, getValues, watch } =
+  // const service_date = useSelector(
+  //   (state) => state.serviceSlice.available_date
+  // );
+  // console.log("date", service_date);
+  const { register, control, setValue, handleSubmit, watch, formState } =
     useForm({
       defaultValues: {
         emergency: false,
         delay: null,
+        scopes: [],
+        originalValues: [],
+        items: selectedScope.map((selected)=>{
+          return {
+            id:selected.id,
+            size:""
+          }
+        }) ,
       },
     });
+  // const scopes = watch("scopes");
+  // console.log("selected", scopes);
+  // const originalValues = watch("originalValues");
+  // console.log("original", originalValues);
 
-  const [selectedScope, setSelectedScope] = useState([]);
-  const handleSelectedScope = (e) => {
-    const { checked, value } = e.target;
-    if (checked) {
-      setSelectedScope([...selectedScope, value]);
-    } else {
-      const updatedScope = selectedScope.filter((s) => s !== value);
-      setSelectedScope([...updatedScope]);
-    }
-  };
+  // const handleCheckboxChange = (e, scope) => {
+  //   const { checked, value } = e.target;
+  //   const Scopes = watch("scopes");
+  //   const originalValues = watch("originalValues");
+  //   console.log("unchecked", Scopes);
+
+  //   if (checked) {
+  //     setValue("scopes", [
+  //       ...Scopes,
+  //       {
+  //         id: scope.id,
+  //         size: originalValues.find((o) => o.id === scope.id)?.size || null,
+  //       },
+  //     ]);
+  //   } else {
+  //     console.log("id", scope.id);
+  //     const updatedScope = Scopes.filter(
+  //       (selectedScope) => selectedScope.id !== scope.id
+  //     );
+
+  //     setValue("originalValues", [
+  //       ...scopes,
+  //       ...originalValues.filter((o) => !scopes.some((s) => o.id === s.id)),
+  //     ]);
+
+  //     setValue("scopes", [...updatedScope]);
+  //   }
+  // };
 
   const [imagePreviews, setImagePreviews] = useState([]);
 
@@ -79,30 +113,35 @@ const Order = () => {
     );
   };
 
+  const items = watch("items");
+  console.log("items", items);
+
   const onSubmit = async (values) => {
-    console.log('data',values);
-    const userId = localStorage.getItem("userId");
+    console.log("data", values);
+    const customerId = localStorage.getItem("userId");
 
     const formdata = new FormData();
     formdata.append("pid", providerId);
-    formdata.append("date", values.date);
+    // formdata.append("service_date", service_date);
     formdata.append("emergency", values.emergency);
-    formdata.append("delay", values.delay);
-    formdata.append("location", values.location);
+    formdata.append("max_delay", values.max_delay);
+    formdata.append("delivery_location", values.delivery_location);
     for (const file of imagePreviews) {
       formdata.append("images[]", file.file);
     }
-    for (const scope of selectedScope) {
-      formdata.append("scopes[]", scope);
-    }
+    // for (const scope of scopes) {
+    //   formdata.append("scopes[]", scope);
+    // }
+    formdata.append("scopes", JSON.stringify(scopes));
 
-    formdata.append("service", values.service);
-    formdata.append("size", values.size);
-    formdata.append("response", values.response);
+    formdata.append("service_detail", values.service_detail);
+    formdata.append("response_time", values.response_time);
+    formdata.append("requirements", values.requirements);
     formdata.append("name", values.name);
     formdata.append("email", values.email);
     formdata.append("number", values.number);
-    formdata.append("isAgreement",values.IsAgreement);
+    formdata.append("accept_terms", values?.accept_terms);
+
     await placeOrder({ formdata, customerId, serviceId, providerId })
       .unwrap()
       .then((response) => {
@@ -117,32 +156,33 @@ const Order = () => {
   console.log(error);
   const [delay, setDelay] = useState(false);
 
-  if (isLoading || scopeLoading) {
+  if (isLoading) {
     return <Loader />;
   }
   if (isError) {
     return <Error error={error} />;
   }
-  if (isSuccess) {
-    return <Modal message={data?.message} navigation="/orders/customers" />;
-  }
+  // if (isSuccess) {
+  //   return <Modal message={data?.message} navigation="/orders/customers" />;
+  // }
+  // bg-[#CDF4F3]
+  console.log("selected", selectedScope);
   return (
-    <section className="   bg-[#D6FFFF]   ">
+    <section className="    w-2/3  ">
       <form
         action=""
-        className="   rounded-md grid grid-cols-1  p-8 gap-5 auto-rows-min shadow shadow-gray-800  text-gray-700"
+        className="    grid grid-cols-1  p-8 gap-5 auto-rows-min shadow shadow-gray-300  text-gray-700"
         onSubmit={handleSubmit(onSubmit)}
       >
         <p className="text-center text-xl text-slate-400">Service Order Form</p>
         <div className="grid grid-cols-2 gap-5">
           <div className="selected-field">
-            <label htmlFor="">Service On</label>
-            <input type="date" {...register("date")} />
+            <label htmlFor="">Service Delivery Place</label>
+            <input type="text" {...register("delivery_location")} />
           </div>
-
           <div className="selected-field">
-            <label htmlFor="">Delivery Location</label>
-            <input type="text" {...register("location")} />
+            <label htmlFor=""> Response Time (Provider)</label>
+            <input type="text" {...register("response_time")} />
           </div>
         </div>
 
@@ -181,102 +221,113 @@ const Order = () => {
             </div>
           </div>
 
-          <div className="selected-field">
-            <label htmlFor=""> Response Time Limit</label>
-            <input type="text" {...register("response")} />
-          </div>
           {delay && (
             <div className="selected-field">
               <label htmlFor="">Maximum Delay</label>
-              <input type="text" {...register("delay")} />
+              <input type="text" {...register("max_delay")} />
             </div>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-5">
-          <div className="shadow shadow-gray-100 p-2">
-            <table
-              className="table-auto w-full border-collapse border border-slate-300 rounded-lg"
-              cellPadding={8}
-            >
-              <thead>
-                <tr className="text-left">
-                  <th>Select</th>
-                  <th>Fearured Services</th>
-                </tr>
-              </thead>
-              <tbody className=" ">
-                {scopes.map((scope, index) => {
-                  return (
-                    <tr className="mb-4 " key={scope.id}>
-                      <td className="">
-                        <input
-                          type="checkbox"
-                          value={scope.id}
-                          onChange={(e) => {
-                            handleSelectedScope(e);
-                          }}
-                          id={`scope${scope.id}`}
-                          className="cursor-pointer"
-                        />
-                      </td>
-                      <td className="">
-                        <label
-                          htmlFor={`scope${scope.id}`}
-                          className="cursor-pointer"
-                        >
-                          {scope.name}
-                        </label>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="p-4 shadow shadow-gray-100 ">
-            <h2 className="mb-3">
-              Upload Files <span className="text-red-600 text-xl">*</span>
-            </h2>
-
-            <div className="grid grid-cols-3 gap-4 mb-3">
-              {imagePreviews.map((preview, index) => (
-                <div key={preview.id} className="relative">
-                  <img
-                    key={index}
-                    src={preview.dataURL}
-                    alt={`Preview ${preview.id}`}
-                    className="w-full h-[120px] shadow shadow-gray-400"
-                    onClick={() => handleRemoveImage(preview.id)}
-                  />
-
-                  <button
-                    onClick={() => handleRemoveImage(preview.id)}
-                    type="button"
-                    className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
-                  >
-                    X
-                  </button>
+        <div className="shadow shadow-gray-100 p-2">
+          <h2 className="font-bold text-black"> Service Scopes</h2>
+          <p className="p-2 text-gray-500">
+            You can add the quanity only if you can measure.Otherwise it is
+            measured by the service provider on the field.
+          </p>
+          {selectedScope.map((selected, index) => {
+            return (
+              <div
+                key={selected.id}
+                className=" border border-gray-300 p-2 my-1"
+              >
+                <p className="text-gray-800 font-bold text-[1.2em] mb-1">
+                  {selected?.name}
+                </p>
+                <div className="grid grid-cols-4 ">
+                  <div className="grid content-end">
+                    <p className="">
+                      <span>{selected.price}</span>
+                      <span className="text-orange-600">/{selected.unit}</span>
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                
+                 
+                            <input
+                              type="number"
+                              className=" px-2 border-b-2 w-full border-gray-700 focus:outline-none "
+                              onChange={(e) => {
+                                setValue(
+                                  `items.${index}.size`,
+                                  e.target.value
+                                );
+                              }}
+                              placeholder={`Quantity of ${selected.unit}`}
+                     
+                    />
+                    <div className="grid place-items-end">
+                      <button
+                        onClick={() => {
+                          const updtedScope = selectedScope.filter(
+                            (scope) => selected.id !== scope.id
+                          );
+                          dispatch(setSelectedScope(updtedScope));
+                          const upadtedItems=items.filter((item)=>item.id!==selected.id);
+                          setValue("items", upadtedItems);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              ))}
+              </div>
+            );
+          })}
+        </div>
 
-              <div className="h-[120px] w-[120px] rounded-md  flex place-content-center border-2  border-gray-400 shadow">
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileInputChange}
-                  ref={fileInputRef}
-                  className="hidden"
+        <div className="p-4 shadow shadow-gray-100 ">
+          <h2 className="mb-3">
+            Upload Files <span className="text-red-600 text-xl">*</span>
+          </h2>
+
+          <div className="grid grid-cols-3 gap-4 mb-3">
+            {imagePreviews.map((preview, index) => (
+              <div key={preview.id} className="relative">
+                <img
+                  key={index}
+                  src={preview.dataURL}
+                  alt={`Preview ${preview.id}`}
+                  className="w-full h-[120px] shadow shadow-gray-400"
+                  onClick={() => handleRemoveImage(preview.id)}
                 />
+
                 <button
-                  onClick={handleAddButtonClick}
+                  onClick={() => handleRemoveImage(preview.id)}
                   type="button"
-                  className="text-[70px] text-blue-500"
+                  className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
                 >
-                  +
+                  X
                 </button>
               </div>
+            ))}
+
+            <div className="h-[120px] w-[120px] rounded-md  flex place-content-center border-2  border-gray-400 shadow">
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileInputChange}
+                ref={fileInputRef}
+                className="hidden"
+              />
+              <button
+                onClick={handleAddButtonClick}
+                type="button"
+                className="text-[70px] text-blue-500"
+              >
+                +
+              </button>
             </div>
           </div>
         </div>
@@ -292,12 +343,12 @@ const Order = () => {
               cols="30"
               rows="2"
               className="  focus:outline-none hover:bg-gray-200 p-2"
-              {...register("service")}
+              {...register("service_detail")}
             ></textarea>
           </div>
           <div className=" flex flex-col gap-5 selected-field  ">
             <label htmlFor="" className=" ">
-              Service Amount (Work Load)
+              Special Requirements
             </label>
             <textarea
               name=""
@@ -305,7 +356,7 @@ const Order = () => {
               cols="30"
               rows="2"
               className="  focus:outline-none hover:bg-gray-200 p-2"
-              {...register("size")}
+              {...register("requirements")}
             ></textarea>
           </div>
         </div>
@@ -328,27 +379,27 @@ const Order = () => {
             </div>
           </div>
         </div>
-        <div>
+        <div className="p-5">
           <Controller
-            name="IsAgreement"
+            name="accept_terms"
             control={control}
             defaultValue={false}
-            render={({ field }) => {
+            render={() => {
               return (
-                <div className="flex gap-5 p-4">
-                  <input type="checkbox" name="" id="" 
-                  onChange={(e)=>{
-                    const {checked}=e.target;
-                    if(checked){
-                      setValue('IsAgreement',true)
-                    }
-                    else {
-                      setValue('IsAgreement',false)
-                    }
-                  }}
+                <div className="flex gap-4 p-5 border border-gray-400">
+                  <input
+                    type="checkbox"
+                    onChange={(e) => {
+                      const { checked } = e.target;
+                      if (checked) {
+                        setValue("accept_terms", true);
+                      } else {
+                        setValue("accept_terms", false);
+                      }
+                    }}
                   />
                   <p className="text-slate-700  ">
-                    Make Agreeement with Service Provider
+                    I will Accept the all standard service terms and condtions
                   </p>
                 </div>
               );

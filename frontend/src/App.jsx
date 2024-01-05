@@ -16,7 +16,7 @@ import ServiceSetUp from "./user/provider/setup/home";
 import { useSelector } from "react-redux";
 import ProviderHome from "./user/provider/home/home";
 import Services from "./user/provider/services/service";
-import OrderHistory from "./user/customer/Booking/orderHistory";
+import BookingSummary from "./user/customer/Booking/Summary";
 
 import ViewServices from "./user/provider/services/viewServices";
 import ViewProvider from "./user/customer/home/ViewProvider";
@@ -26,35 +26,50 @@ import RequireCustomerAuth from "./RequireCustomerAuth";
 import RequireProviderAuth from "./RequireProviderAuth";
 import JoinService from "./user/provider/setup/JoinService";
 import Getstarted from "./user/provider/setup/getstarted";
-import Status from "./user/provider/order/status";
 import ViewService from "./user/customer/home/ViewService";
 
-import CustomerOrder from "./user/provider/order/customerOrder";
-import ViewOrderDetail from "./user/provider/order/viewDetail";
-import Agreement from "./user/provider/agreement/agreement";
+import OrderSummary from "./user/provider/order/Summary";
+import ViewAgreement from "./user/provider/order/agreement/ViewAgreement";
 import MakeOrder from "./user/customer/order/makeOrder";
 import DashboardHome from "./user/customer/Dashbaord/dashboardHome";
 import BookingDetails from "./user/customer/Booking/BookingDetails";
-import CheckAgreement from "./user/customer/Booking/checkAgreement";
+import CheckAgreement from "./user/customer/Booking/quotation/checkAgreement";
+import AddStatus from "./user/provider/order/progress/AddStatus";
+import ViewStatus from "./user/provider/order/progress/ViewStatus";
+import OrderDetail from "./user/provider/order/ViewDetails";
+import StatusDetail from "./user/provider/order/progress/StatusDetail";
+import UpdateStatus from "./user/provider/order/progress/UpdateStatus";
+import ViewProgress from "./user/customer/Booking/progress/ViewStatus";
+import ViewCategory from "./user/provider/home/viewCategory";
 
 function App() {
   const selected = useSelector((state) => state.categorySlice.category);
 
   return (
-    <>
+    <section className=" mx-auto shadow-xl shadow-current rounded-t-xl  border border-gray-400 w-[90Vw] min-h-screen ">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/register" element={<SignUp />}></Route>
-        <Route path="/signin" element={<SignIn />}></Route>
-        <Route path="/customer" element={<Home />}></Route>
-        <Route path="/provider/:providerId/*" element={<ViewProvider />}>
-          <Route path="service/:serviceId/*" element={<ViewService />} >
-
-            <Route path="order" element={<MakeOrder/>}/>
+      <section className="-z-0 ">
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/register" element={<SignUp />}></Route>
+          <Route path="/signin" element={<SignIn />}></Route>
+          <Route path="/customer" element={<Home />}></Route>
+          <Route
+            path="/provider/:providerId/category/:categoryId"
+            element={<ViewProvider />}
+          >
+           
+            <Route
+              path="service/:serviceId/*"
+              element={<ViewService />}
+            ></Route>
           </Route>
-        </Route>
-        {/* <Route
+          <Route
+              path="/provider/:providerId/category/:categoryId/order"
+              element={<MakeOrder />}
+            />
+
+          {/* <Route
           path="/order/service/:serviceId"
           element={
             <RequireCustomerAuth>
@@ -63,61 +78,73 @@ function App() {
           }
         /> */}
 
-        <Route path="dashboard/customer" element={<DashboardHome/>}/>
-        <Route path="booking/customer" element={<OrderHistory/>}/>
-        <Route path="booking/customer/order/:orderId" element={<BookingDetails/>}>
-        <Route path="agreement" element={<CheckAgreement/>}/>
-        </Route>
-
-
-        <Route path="/join" element={<JoinService />} />
-        <Route path="/notify" element={<Getstarted />} />
-
-        {/* <Route path="/orders/customer" element={<Order />} /> */}
-        <Route path="/status" element={<Status />} />
-
-        <Route path="/user/*">
-          <Route path="profile/" element={<Profile />} />
-          <Route path="profile/create" element={<Edit />} />
-
-          <Route path="category/" element={<CategoryPage />}>
-            <Route path=":name/:subname" element={<EditCategory />} />
-            <Route path=":name/:subname/:child" element={<EditCategory />} />
+          <Route path="dashboard/customer" element={<DashboardHome />} />
+          <Route path="booking/customer" element={<BookingSummary />}>
+            <Route path="order/:orderId" element={<BookingDetails />}>
+              <Route path="status" element={<ViewProgress />} />
+            </Route>
+            <Route path="agreement/:orderId" element={<CheckAgreement />} />
           </Route>
-        </Route>
 
-        <Route path="received/orders" element={<CustomerOrder />} />
-        <Route path="received/orders/:orderId/*" element={<ViewOrderDetail />}>
-          <Route path="agreement" element={<Agreement />} />
-        </Route>
+          <Route path="/join" element={<JoinService />} />
+          <Route path="/notify" element={<Getstarted />} />
 
-        <Route
-          path="provider"
-          element={
-            <RequireAuth>
-              <ProviderHome />
-            </RequireAuth>
-          }
-        />
+          {/* <Route path="/orders/customer" element={<Order />} /> */}
+          {/* <Route path="/status" element={<Status />} /> */}
 
-        <Route
-          path="/provider/service/join/:serviceId"
-          element={
-            <RequireProviderAuth>
-              <ServiceSetUp />
-            </RequireProviderAuth>
-          }
-        />
-        <Route path="services/provider" element={<Services />} />
+          <Route path="/user/*">
+            <Route path="profile/" element={<Profile />} />
+            <Route path="profile/create" element={<Edit />} />
 
-        {/* <Route
+            <Route path="category/" element={<CategoryPage />}>
+              <Route path=":name/:subname" element={<EditCategory />} />
+              <Route path=":name/:subname/:child" element={<EditCategory />} />
+            </Route>
+          </Route>
+
+          <Route path="received/orders/*" element={<OrderSummary />}>
+            <Route path=":orderId" element={<OrderDetail />}>
+              <Route path="progress/*" element={<ViewStatus />}>
+                <Route path=":progressId/more" element={<StatusDetail />} />
+                <Route path="create" element={<AddStatus />} />
+                <Route path=":progressId/update" element={<UpdateStatus />} />
+              </Route>
+            </Route>
+            <Route path="agreement/:orderId" element={<ViewAgreement />} />
+          </Route>
+
+          <Route
+            path="provider"
+            element={
+              <RequireAuth>
+                <ProviderHome />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/provider/category/:categoryId"
+            element={<ViewCategory />}
+          />
+          <Route
+            path="/provider/service/join/:serviceId"
+            element={
+              <RequireProviderAuth>
+                <ServiceSetUp />
+              </RequireProviderAuth>
+            }
+          />
+          <Route path="services/provider" element={<Services />} />
+
+          {/* <Route
           path="/provider/services/:serviceId"
           element={<ViewServices />}
         /> */}
-      </Routes>
+        </Routes>
 
-      <Footer />
-    </>
+        <Footer />
+      </section>
+    </section>
   );
 }
 

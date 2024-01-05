@@ -6,6 +6,7 @@ use App\Http\Controllers\CusotmerProviderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderScopeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QualificationController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\SubCateogryUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,19 +71,34 @@ Route::prefix('category')->controller(CategoryController::class)->group(function
 Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
     Route::post('create/{id}', 'create');
     Route::get('viewAll', 'getAll');
+    Route::get('provider/all', 'getAllSubCategoryByProvider');
     Route::get('view/{id}', 'getById');
+
+    Route::get('provider/category/{categoryId}', 'getSubCategoryByProviderCategory');
+
     Route::get('view/detail/{id}', 'viewSubCategoryById');
     Route::get('provider/{providerId}/category/{categoryId}', 'getSubCategoryByProviderCategoryId');
     Route::get('provider/{providerId}', 'getSubCategoryByProviderId');
     Route::put('edit/{id}', 'updateSubCategory');
+
+    Route::get('{categoryId}/details', 'getCategoryServiceScopes');
+
+    
+});
+Route::prefix('subcategory/user')->controller(SubCateogryUserController::class)->group(function () {
+
+    Route::post('join/{providerId}/{subcategoryId}', 'joinSubCategory');
+    Route::get('get/{providerId}/{subcategoryId}','getSubCategory');
 });
 
 Route::prefix('services')->controller(ServiceController::class)->group(function () {
     Route::post('create/{id}', 'create');
     Route::get('all', 'getAll');
-    Route::get('{id}', 'getById');
+    Route::get('{id}', 'getBysubcategory');
     Route::get('view/{id}', 'viewServiceById');
     Route::get('category/{id}', 'getByCategory');
+    Route::get('{serviceId}/scopes', 'getScopes');
+
     Route::post('edit/{service}', 'updateService');
 });
 
@@ -92,7 +109,7 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
     Route::get('{providerId}/subcategory/{subcategoryid}', 'getServicesBySubCategory');
     Route::post('services/update/{providerId}', 'editProviderService');
     Route::delete('{providerId}/delete/{serviceId}', 'deleteServiceByServiceId');
-    Route::get('{providerId}/services/{serviceId}', 'getServiceById');
+    Route::get('{providerId}/category/{categoryId}/join', 'getCategoryDetailByProviderId');
     Route::get('{providerId}/service/{serviceId}/view', 'viewProviderServicesById');
 
     Route::get('{providerId}/{serviceId}/scope', 'getProviderServiceScope');
@@ -102,7 +119,7 @@ Route::prefix('provider')->controller(ServiceProviderController::class)->group(f
     Route::get('all', 'getAllProvider');
     Route::get('category/{categoryId}', 'getProviderByCategory');
     Route::get('subcategory/{subcategoryid}', 'getProviderBySubCategory');
-    Route::get('{providerId}/details', 'getProviderDetails');
+    Route::get('{providerId}/category/{categoryId}/details', 'getProviderDetails');
 
     Route::get('search/service', 'searchByService');
 });
@@ -156,8 +173,7 @@ Route::prefix('order/agreement')->controller(AgreementController::class)->group(
     Route::post('final/{orderId}', 'finalAgreement');
     Route::get('check/initial/{orderId}', 'viewInitialAgreement');
     Route::get('check/final/{orderId}', 'viewFinalAgreement');
-    Route::put('{orderId}/accept', 'AcceptAgreement');
-
+    Route::put('{orderId}/initial/accept', 'AcceptInitialAgreement');
 });
 
 Route::prefix('status')->controller(StatusController::class)->group(function () {
@@ -166,4 +182,13 @@ Route::prefix('status')->controller(StatusController::class)->group(function () 
     Route::post('order/{orderId}/cancel', 'CancelOrder');
     Route::get('check/initial/{orderId}', 'viewInitialAgreement');
     Route::get('check/final/{orderId}', 'viewFinalAgreement');
+});
+
+Route::prefix('progress')->controller(ProgressController::class)->group(function () {
+
+    Route::post('status/{orderId}', 'workStatus');
+    Route::get('customerTask/{orderId}', 'getCustomerTask');
+    Route::get('view/status/{orderId}', 'viewStatus');
+    Route::get('{progressId}/status/details', 'viewStatusDetails');
+    Route::post('{progressId}/update', 'updateWorkStatus');
 });

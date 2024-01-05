@@ -58,6 +58,11 @@ export const providerApi = createApi({
       providesTags:['Services'],
 
     }),
+    getJoinedCategory: builder.query({
+      query: ({providerId,categoryId}) =>`${providerId}/category/${categoryId}/join`,
+      providesTags:['Services'],
+
+    }),
     viewProviderServiceDetailsById: builder.query({
       query: ({providerId,serviceId}) =>`${providerId}/service/${serviceId}/view`,
       providesTags:['Services'],
@@ -94,11 +99,13 @@ export const providerApi = createApi({
         :['Services'],
     }),
     getProviderDetails:builder.query({
-      query:(providerId)=>`${providerId}/details`
+      query:({providerId,categoryId})=>`${providerId}/category/${categoryId}/details`
     }),
     getProviderServiceScope:builder.query({
       query:({providerId,serviceId})=>`${providerId}/${serviceId}/scope`
-    })
+    }),
+
+    
    
   }),
 
@@ -114,7 +121,8 @@ export const {
   useGetProviderQuery,
   useGetProviderDetailsQuery,
   useViewProviderServiceDetailsByIdQuery,
-  useGetProviderServiceScopeQuery
+  useGetProviderServiceScopeQuery,
+  useGetJoinedCategoryQuery
   
   
   
