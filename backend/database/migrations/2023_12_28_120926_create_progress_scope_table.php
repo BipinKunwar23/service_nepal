@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('scope_id');     
             $table->foreign('progress_id')->references('id')->on('progresses');
             $table->foreign('scope_id')->references('id')->on('scopes');
-            $table->string('work')->nullable();
+            $table->text('work')->nullable();
             $table->timestamps();
         });
     }

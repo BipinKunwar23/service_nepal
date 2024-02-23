@@ -20,7 +20,8 @@ class ProviderResource extends JsonResource
             'name'=>$this->name,
             'rating'=>5 ,
             'image'=>"http://localhost:8000/".$profile->photo,
-            'category'=>ProviderSubCategoryResource::collection($this->whenLoaded('subcategory')),
+            'subcategory'=> new ProviderSubCategoryResource($this->whenLoaded('subcategories')[0]),
+            'feedback' => $this->whenLoaded('feedbacks')
 
         ];
     }

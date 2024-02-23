@@ -17,6 +17,14 @@ class ProviderSubCategoryResource extends JsonResource
         return [
             'id'=>$this->id,
             'profession'=>$this->pivot->profession,
+            'description'=>$this->pivot->description,
+            'available_time'=>$this->pivot->available_time,
+            'available_days'=>$this->pivot->available_days,
+            'available_date'=>$this->pivot->available_date,
+            'available_cities'=>$this->whenLoaded('locations'),
+
+
+            
 
             
         ];

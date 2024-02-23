@@ -16,7 +16,7 @@ class LocationResource extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'locaiton'=>$this->pivot->address
+            'city'=>$this->city
         ];
     }
 }

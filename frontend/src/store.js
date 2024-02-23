@@ -1,64 +1,56 @@
-import { configureStore,getDefaultMiddleware } from "@reduxjs/toolkit";
-import { authApi } from "./Api/AuthSlice";
-import { subCategoryApi } from "./Api/subCategoryApi";
-import { ProfileApi } from "./Api/ProfileApi";
-import { categoryApi } from "./Api/categoryApi";
-import { serviceApi } from "./Api/serviceApi";
-import {cardApi} from './Api/cardApi'
-import categorySliceReducer from './redux/categorySlice'
-import catServiceSliceReducer from "./redux/catServiceSlice";
-import cardSliceReducer from "./redux/cardSlice";
-import { catServiceAPi } from "./Api/catServiceApi";
-import { providerApi } from "./Api/providerApi";
-import serviceSliceReducer from "./redux/serviceSlice";
-import RouteSliceReducer from "./redux/RouteSlice";
-import orderSliceReducer from "./redux/orderSlice";
-import { orderApi } from "./Api/orderApi";
-import { searchingApi } from "./Api/searchingApi";
-import { progressApi } from "./Api/progressApi";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { authApi } from "./api/authApi";
+import { chatApi } from "./Api/chatApi";
+import { profileApi } from "./api/ProfileApi";
 
-import { agreementApi } from "./Api/agreementApi";
-const middleware = getDefaultMiddleware({
-  serializableCheck:{
-    ignoreActions:['profile/basicDetails'],
-    ignoredPaths: ['profile.basic.profile'],
-  }
-}).concat(
+import { buyerCatalogApi } from "./api/buyer/catalogApi";
+import { buyerServiceApi } from "./api/buyer/serviceApi";
+import { buyerOrderApi } from "./api/buyer/orderApi";
+import { filterApi } from "./api/buyer/filterApi";
+import { buyerProgressApi } from "./api/buyer/progressApi";
+
+import { sellerCatalogApi } from "./api/seller/catalogApi";
+import { sellerServiceApi } from "./api/seller/serviceApi";
+import { sellerProfileApi } from "./api/seller/profileApi";
+import { sellerFeedbackApi } from "./api/seller/feedbackApi";
+
+import buyerCardSliceReducer from "./redux/buyer/cardSlice";
+import buyerServiceSliceReducer from "./redux/buyer/serviceSlice";
+import sellerServiceSliceReducer from "./redux/seller/serviceSlice";
+
+const middleware = getDefaultMiddleware().concat(
   authApi.middleware,
-  ProfileApi.middleware,
-  categoryApi.middleware,  
-  serviceApi.middleware,
-  catServiceAPi.middleware,
-  cardApi.middleware,
-  subCategoryApi.middleware,
-  providerApi.middleware,
-  orderApi.middleware,
-  searchingApi.middleware,
-  agreementApi.middleware,
-  progressApi.middleware,
+  profileApi.middleware,
+  chatApi.middleware,
+  buyerCatalogApi.middleware,
+  buyerServiceApi.middleware,
+  buyerOrderApi.middleware,
+  buyerProgressApi.middleware,
+  filterApi.middleware,
+  sellerCatalogApi.middleware,
+  sellerServiceApi.middleware,
+  sellerProfileApi.middleware,
+  sellerFeedbackApi.middleware
 );
 export const store = configureStore({
   reducer: {
     [authApi.reducerPath]: authApi.reducer,
-    [ProfileApi.reducerPath]: ProfileApi.reducer,
-    [categoryApi.reducerPath]:categoryApi.reducer,
-    [serviceApi.reducerPath]:serviceApi.reducer,
-    [catServiceAPi.reducerPath]:catServiceAPi.reducer,
-    [cardApi.reducerPath]:cardApi.reducer,
-    [subCategoryApi.reducerPath]:subCategoryApi.reducer,
-    [providerApi.reducerPath]:providerApi.reducer,
-    [orderApi.reducerPath]:orderApi.reducer,
-    [searchingApi.reducerPath]:searchingApi.reducer,
-    [agreementApi.reducerPath]:agreementApi.reducer,
-    [progressApi.reducerPath]:progressApi.reducer,
-    categorySlice:categorySliceReducer,
-    catServiceSlice:catServiceSliceReducer,
-    cardSlice:cardSliceReducer,
-    serviceSlice:serviceSliceReducer,
-    routeSlice:RouteSliceReducer,
-    orderSlice:orderSliceReducer,
+    [profileApi.reducerPath]: profileApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
+    [buyerCatalogApi.reducerPath]: buyerCatalogApi.reducer,
+    [buyerServiceApi.reducerPath]: buyerServiceApi.reducer,
+    [buyerProgressApi.reducerPath]: buyerProgressApi.reducer,
+    [buyerOrderApi.reducerPath]: buyerOrderApi.reducer,
+    [filterApi.reducerPath]: filterApi.reducer,
+    [sellerCatalogApi.reducerPath]: sellerCatalogApi.reducer,
+    [sellerServiceApi.reducerPath]: sellerServiceApi.reducer,
+    [sellerProfileApi.reducerPath]: sellerProfileApi.reducer,
+    [sellerFeedbackApi.reducerPath]: sellerFeedbackApi.reducer,
+
+    buyerCardSlice: buyerCardSliceReducer,
+    buyerServiceSlice: buyerServiceSliceReducer,
+    sellerServiceSlice: sellerServiceSliceReducer,
   },
 
-  middleware
- 
+  middleware,
 });

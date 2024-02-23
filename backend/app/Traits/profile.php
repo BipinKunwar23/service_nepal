@@ -10,16 +10,15 @@ trait profile
     {
         return [
             'name' => ['required', 'string'],
-            'email' => ['required', 'string'],
             'bio' => ['string', 'sometimes'],
+            'photo' => ['required','image','mimes:jpeg,png,jpg'],
 
 
-            'district' => ['string','sometimes'],
-            'muncipility' => ['string','sometimes'],
 
-            'ward' => ['sometimes'],
+            'address' => ['string','sometimes'],
+            'language' => ['string','sometimes'],
 
-            'chowk' => ['string','sometimes'],
+           
 
 
 

@@ -1,23 +1,35 @@
 <?php
 
-use App\Http\Controllers\AgreementController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CusotmerProviderController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\SubServiceController;
+
+use App\Http\Controllers\AvailabilityController;
+use App\Http\Controllers\Buyer\BuyerCatalogController;
+use App\Http\Controllers\Buyer\BuyerOrderController;
+use App\Http\Controllers\Buyer\BuyerServiceController;
+use App\Http\Controllers\Buyer\FilterSearchController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\FAQController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\OrderScopeController;
+use App\Http\Controllers\PriceController;
+use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProgressController;
-use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\QualificationController;
-use App\Http\Controllers\ScopeController;
+use App\Http\Controllers\RequirementsController;
 use App\Http\Controllers\ScopeUserController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\Seller\SellerFeedbackController;
+use App\Http\Controllers\Seller\SellerOrderController;
+use App\Http\Controllers\Seller\SellerProfileController;
+use App\Http\Controllers\Seller\SellerServiceController;
 use App\Http\Controllers\ServiceProviderController;
-use App\Http\Controllers\StatusController;
-use App\Http\Controllers\SubCategoryController;
-use App\Http\Controllers\SubCateogryUserController;
+
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,164 +43,161 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::post('/create', 'create');
-    Route::post('/login', 'login');
     Route::middleware('auth:sanctum')->get('/get', [UserController::class, 'get']);
+    Route::post('/login', 'login');
     Route::get('/view', 'viewAll');
-    Route::get('/view/{user}', 'viewById');
+    Route::get('/view/{userId}', 'viewById');
     Route::put('/update/{user}', 'update');
-    Route::delete('/delete/{user}', 'delete');
-    Route::get('/profile/auth/{id}', 'providerAuth');
+    Route::delete('/delete/{userId}', 'delete');
+    Route::get('/profile/auth/{userId}', 'providerAuth');
 });
-Route::prefix('profile')->controller(ProfileController::class)->group(function () {
+
+Route::prefix('provider')->controller(LandingPageController::class)->group(function () {
+
+    Route::post('stories/{userId}/create', 'successStoreis');
+    Route::post('questions/{userId}/create', 'askquestions');
+    Route::post('about/create', 'aboutUs');
+    Route::post('contact/create', 'contactUs');
+    Route::post('header/create', 'headers');
+    Route::post('legal/create', 'legals');
+
+    Route::get('stories/{userId}/get', 'getSuccessStoreis');
+    Route::get('questions/{userId}/get', 'getAskquestions');
+    Route::get('about/get', 'getAboutUs');
+    Route::get('contact/get', 'getcontactUs');
+    Route::get('header/get', 'getHeaders');
+    Route::get('legal/get', 'getlegals');
+});
+
+Route::prefix('profile')->middleware('auth:sanctum')->controller(ProfileController::class)->group(function () {
 
     // Route::middleware('auth:sanctum')->get('/get',[UserController::class,'get']);
 
-    Route::get('/view/{id}', 'viewProfile');
-    Route::post('/edit/{id}', 'createOrUpdate');
+    Route::get('/view', 'viewProfile');
+    Route::post('/create', 'create');
+    Route::post('/security', 'addSecurity');
+
     Route::delete('/delete/{profile}', 'delete');
 });
 
-Route::prefix('qualification')->controller(QualificationController::class)->group(function () {
-    Route::post('/create/{id}', 'create');
-    Route::get('/view/{qualification}', 'view');
-    Route::put('/update/{qualification}', 'update');
-    Route::delete('/dele{te/{qualification}', 'delete');
-});
-Route::prefix('category')->controller(CategoryController::class)->group(function () {
-    Route::post('create', 'category');
-    Route::get('view', 'viewCategory');
-    Route::get('view/{id}', 'viewCategoryById');
-    Route::get('search', 'search');
-    Route::get('services/{id}', 'getCategoryById');
-    Route::get('service/{id}', 'getServices');
-    Route::get('All/{id}', 'getAllCategory');
-    Route::get('provider/{id}', 'getCategoryByProviderId');
-    Route::post('edit/{id}', 'updateCategory');
-});
-Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
-    Route::post('create/{id}', 'create');
-    Route::get('viewAll', 'getAll');
-    Route::get('provider/all', 'getAllSubCategoryByProvider');
-    Route::get('view/{id}', 'getById');
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+Route::prefix('chat')->controller(ChatController::class)->group(function () {
 
-    Route::get('provider/category/{categoryId}', 'getSubCategoryByProviderCategory');
-
-    Route::get('view/detail/{id}', 'viewSubCategoryById');
-    Route::get('provider/{providerId}/category/{categoryId}', 'getSubCategoryByProviderCategoryId');
-    Route::get('provider/{providerId}', 'getSubCategoryByProviderId');
-    Route::put('edit/{id}', 'updateSubCategory');
-
-    Route::get('{categoryId}/details', 'getCategoryServiceScopes');
-
-    
-});
-Route::prefix('subcategory/user')->controller(SubCateogryUserController::class)->group(function () {
-
-    Route::post('join/{providerId}/{subcategoryId}', 'joinSubCategory');
-    Route::get('get/{providerId}/{subcategoryId}','getSubCategory');
-});
-
-Route::prefix('services')->controller(ServiceController::class)->group(function () {
-    Route::post('create/{id}', 'create');
-    Route::get('all', 'getAll');
-    Route::get('{id}', 'getBysubcategory');
-    Route::get('view/{id}', 'viewServiceById');
-    Route::get('category/{id}', 'getByCategory');
-    Route::get('{serviceId}/scopes', 'getScopes');
-
-    Route::post('edit/{service}', 'updateService');
-});
-
-Route::prefix('provider')->controller(ServiceProviderController::class)->group(function () {
-    Route::post('services/create/{id}', 'createServices');
-    Route::get('{providerId}/services', 'getServicesByPorviderId');
-    Route::get('{providerId}/category/{categoryId}', 'getServicesByCategory');
-    Route::get('{providerId}/subcategory/{subcategoryid}', 'getServicesBySubCategory');
-    Route::post('services/update/{providerId}', 'editProviderService');
-    Route::delete('{providerId}/delete/{serviceId}', 'deleteServiceByServiceId');
-    Route::get('{providerId}/category/{categoryId}/join', 'getCategoryDetailByProviderId');
-    Route::get('{providerId}/service/{serviceId}/view', 'viewProviderServicesById');
-
-    Route::get('{providerId}/{serviceId}/scope', 'getProviderServiceScope');
-
-
-
-    Route::get('all', 'getAllProvider');
-    Route::get('category/{categoryId}', 'getProviderByCategory');
-    Route::get('subcategory/{subcategoryid}', 'getProviderBySubCategory');
-    Route::get('{providerId}/category/{categoryId}/details', 'getProviderDetails');
-
-    Route::get('search/service', 'searchByService');
-});
-
-Route::prefix('orders')->controller(OrderController::class)->group(function () {
-    Route::post('create/{customerId}/service/{serviceId}/provider/{providerId}', 'placeOrder');
-    Route::get('provider/{providerId}', 'getReceivedOrders');
-    Route::get('{orderId}/received', 'viewOrderReceived');
-    Route::get('{orderId}/made', 'viewCustomerOrder');
-
-
-    Route::get('customer/{customerId}', 'getCustomerOrders');
-
-    Route::put('{orderId}/accept', 'AcceptOrder');
-    Route::put('{orderId}/cancel', 'CancelOrder');
-    // Route::get('get/{providerId}', 'getAllOrders');
-    // Route::get('{orderId}/{customerId}', 'getOrdersById');
-});
-
-Route::prefix('search')->controller(SearchController::class)->group(function () {
-
-    Route::get('service', 'searchService');
-    Route::get('location/get', 'searchLocation');
-    Route::get('location/provider', 'searchByLocation');
-    Route::get('location/category/{categoryId}', 'searchCategoryLocation');
+    // Route::get('chat/get',[ChatController::class,'sendMessage'])->middleware('auth:sanctum')
+    Route::get('private/{receiverId}', [ChatController::class, 'index'])->middleware('auth:sanctum');
+    Route::post('private/{receiverId}', [ChatController::class, 'store'])->middleware('auth:sanctum');
 });
 
 
-Route::prefix('scope')->controller(ScopeController::class)->group(function () {
 
-    Route::post('create/{serviceId}', 'create');
-    Route::get('all', 'show');
-    Route::get('service/{serviceId}', 'showByServiceId');
+Route::prefix('admin')->group(function () {
+
+    Route::prefix('category')->controller(CategoryController::class)->group(function () {
+        Route::post('create', 'create');
+        Route::get('all', 'getAllCategory');
+        Route::get('view/{id}', 'viewCategoryById');
+        Route::post('edit/{id}', 'updateCategory');
+    });
+
+    Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
+        Route::post('create/{categoryId}', 'create');
+        Route::get('all', 'getAllSubCategory');
+        Route::get('view/category/{categoryId}', 'getSubCategoryByCategory');
+        Route::get('view/{id}', 'getById');
+        Route::put('edit/{id}', 'updateSubCategory');
+    });
+
+    Route::prefix('services')->controller(ServiceController::class)->group(function () {
+        Route::post('create/{id}', 'create');
+        Route::get('all', 'getAll');
+        Route::get('view/subcategory/{subcategoryId}', 'getBySubcategory');
+        Route::get('view/{id}', 'viewById');
+        Route::post('edit/{service}', 'updateService');
+    });
+
+    Route::prefix('subservice')->controller(SubServiceController::class)->group(function () {
+
+        Route::post('create/{serviceId}', 'create');
+        Route::get('all', 'show');
+        Route::get('service/{serviceId}', 'showByServiceId');
+    });
 });
 
-Route::prefix('scope/provider')->controller(ScopeUserController::class)->group(function () {
 
-    Route::post('create/{providerId}', 'create');
-    Route::get('show/{providerId}/{servcieId}', 'getProviderScope');
+
+
+Route::prefix('buyer')->group(function () {
+
+    Route::prefix('catalog')->controller(BuyerCatalogController::class)->group(function () {
+        Route::get('show', 'viewCatalog');
+    });
+
+    Route::prefix('services')->controller(BuyerServiceController::class)->group(function () {
+        Route::get('cards/all', 'getAllServiceCards');
+        Route::get('view/{serviceId}', 'getServiceDetails');
+    });
+
+    Route::prefix('filter')->controller(FilterSearchController::class)->group(function () {
+        Route::get('service', 'searchService');
+        Route::get('location/get', 'searchLocation');
+        Route::get('location/provider', 'searchByLocation');
+        Route::get('location/category/{categoryId}', 'searchCategoryLocation');
+        Route::get('provider/keyword', 'searchProviderByService');
+        Route::get('service/{serviceId}/filter', 'filterService');
+        Route::get('service/filters/{serviceId}', 'getFilterTypes');
+    });
+
+    Route::prefix('orders')->controller(BuyerOrderController::class)->group(function () {
+        Route::post('service/{serviceId}/seller/{sellerId}', 'placeOrder');
+        Route::get('view/{orderId}', 'viewOrder');
+        Route::get('buyer/{buyerId}', 'getBuyerOrders');
+    });
 });
 
-Route::prefix('order/scope')->controller(OrderScopeController::class)->group(function () {
 
-    Route::post('create/{orderId}', 'create');
-    Route::get('show/{orderId}/{providerId}', 'showByProviderOrder');
-});
 
-Route::prefix('order/agreement')->controller(AgreementController::class)->group(function () {
 
-    Route::post('initial/{orderId}', 'initialAgreement');
-    Route::post('final/{orderId}', 'finalAgreement');
-    Route::get('check/initial/{orderId}', 'viewInitialAgreement');
-    Route::get('check/final/{orderId}', 'viewFinalAgreement');
-    Route::put('{orderId}/initial/accept', 'AcceptInitialAgreement');
-});
+Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
 
-Route::prefix('status')->controller(StatusController::class)->group(function () {
+    Route::prefix('catalog')->controller(CategoryController::class)->group(function () {
+        Route::get('category', 'viewCategory');
+        Route::get('subcategory', 'viewSubCategory');
+        Route::get('service', 'viewService');
+        Route::get('subservice', 'viewSubService');
+        Route::get('subservice/{serviceId}', 'getSubserviceByService');
+    });
 
-    Route::post('order/{orderId}/accept', 'AcceptOrder');
-    Route::post('order/{orderId}/cancel', 'CancelOrder');
-    Route::get('check/initial/{orderId}', 'viewInitialAgreement');
-    Route::get('check/final/{orderId}', 'viewFinalAgreement');
-});
+    Route::prefix('service')->controller(SellerServiceController::class)->group(function () {
+        Route::post('overview', 'createOverView');
+        Route::post('price', 'createPrice');
+        Route::post('gallery', 'createGallery');
+        Route::post('faq', 'createFaq');
+        Route::post('requirement', 'createRequirement');
 
-Route::prefix('progress')->controller(ProgressController::class)->group(function () {
+        Route::get('service/draft', 'DraftServiceCard');
+        Route::get('service/active', 'ActiveService');
+        Route::get('service/{serviceId}', 'getServiceDetails');
+    });
+    Route::prefix('profile')->controller(SellerProfileController::class)->group(function () {
+        Route::post('personal', 'createPersonal');
+        Route::post('profession', 'createProfession');
+        Route::post('availability', 'createAvailability');
+        Route::post('security', 'createSecurity');
+    });
 
-    Route::post('status/{orderId}', 'workStatus');
-    Route::get('customerTask/{orderId}', 'getCustomerTask');
-    Route::get('view/status/{orderId}', 'viewStatus');
-    Route::get('{progressId}/status/details', 'viewStatusDetails');
-    Route::post('{progressId}/update', 'updateWorkStatus');
+    Route::prefix('orders')->controller(SellerOrderController::class)->group(function () {
+        Route::get('all', 'getReceivedOrders');
+        Route::get('view/{orderId}', 'viewOrderReceived');
+        Route::put('{orderId}/accept', 'AcceptOrder');
+        Route::put('{orderId}/cancel', 'CancelOrder');
+    });
+    Route::prefix('provider')->controller(SellerFeedbackController::class)->group(function () {
+
+        Route::post('rating/{providerId}', 'rateServiceProvider');
+        Route::post('review/{providerId}', 'reviewServiceProvider');
+        Route::get('{providerId}/feedback/{subcategoryId}', 'getAllFeedback');
+        Route::get('{providerId}/category/{categoryId}/rating', 'calculateOverallRating');
+    });
 });

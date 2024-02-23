@@ -16,6 +16,8 @@ class UnitScopeResource extends JsonResource
     {
         return
          [
+            'id'=>$this->name,
+
             'name'=>$this->name,
             'units'=>$this->units,
             'scopes'=>ServiceScopeResource::collection($this->whenLoaded('scopes'))

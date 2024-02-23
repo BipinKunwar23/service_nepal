@@ -17,9 +17,7 @@ class SubCategoryResoruce extends JsonResource
         return [
         'id'=>$this->id,
         'name'=>$this->name,
-        'description'=>$this->description,
-        'icons'=>"http://localhost:8000/".$this->icons,
-        'services'=> CatServiceResource::collection($this->whenLoaded('services'))
+        
         ];
     }
 }

@@ -30,14 +30,14 @@ class profileRequest extends FormRequest
             switch ($action) {
                 case 'create':
                     return array_merge($this->commonRules(), [
-                        'phone_number' => ['required', 'regex:/^[0-9]{10}$/', 'unique:profiles,phone_number']
+                        // 'phone_number' => ['required', 'regex:/^[0-9]{10}$/', 'unique:profiles,phone_number']
                     ]);
     
     
                 case 'createOrUpdate':
                     return array_merge(collect($this->commonRules())->except('password')->all(), [
-                        'email'=>['required', Rule::unique('users','email')->ignore($this->id)],
-                        'phone_number' => ['required', 'regex:/^[0-9]{10}$/', Rule::unique('profiles', 'phone_number')->ignore($this->id,'user_id')],
+                        // 'email'=>['required', Rule::unique('users','email')->ignore($this->id)],
+                        // 'phone_number' => ['required', 'regex:/^[0-9]{10}$/', Rule::unique('profiles', 'phone_number')->ignore($this->id,'user_id')],
     
                     ]);
              

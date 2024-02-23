@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('emergency');
             $table->string('max_delay')->nullable();
             $table->string('delivery_location');
-            $table->string('service_detail')->nullable();
+            $table->text('service_detail')->nullable();
             $table->string('requirements')->nullable();
 
 

@@ -2,7 +2,6 @@ import React from "react";
 import image1 from "../images/plumber.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryAciton, setEditAction } from "../redux/categorySlice";
-import { setServiceId } from "../redux/catServiceSlice";
 const serviceCard = ({ cards }) => {
   const dispatch = useDispatch();
   const selected = useSelector((state) => state.categorySlice.subcategory);
@@ -63,7 +62,6 @@ const serviceCard = ({ cards }) => {
                 <button
                 className="text-green-600 flex-1 justify-center"
                 onClick={() => {
-                  dispatch(setServiceId(card?.id));
 
                   dispatch(setEditAction("service"));
                 }}

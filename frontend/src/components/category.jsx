@@ -3,12 +3,13 @@ import { useNavigate, Outlet, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import image from "../images/Plumber.jpg"
 import Button from "./button";
+import { setFilterAction } from "../redux/cardSlice";
 export default function Categories({categories,setCategory,selected,button,children}) {
   const navigate = useNavigate();
 console.log('button is',button);
   const dispatch = useDispatch();
 
-
+const filters=useSelector((state)=>state.cardSlice.filters)
   return (
     <section className="flex bg-[#1D438A]  ">
       {
@@ -16,6 +17,7 @@ console.log('button is',button);
           return <div key={category?.id} className={`px-5 ${selected?.id===category?.id && 'shadow shadow-slate-300 '}`}
           onClick={()=>{
             dispatch(setCategory(category))
+            dispatch(setFilterAction({...filters,category:category.id}))
           }}
 
           

@@ -367,6 +367,71 @@
 .provider-catgory-row{
   @apply flex flex-col gap-3
 }
+
+.createProfile{
+  @apply grid grid-cols-3 gap-10
+}
+.createProfile input,.createProfile textarea{
+  @apply col-span-2 p-2 border border-gray-400 w-full rounded-md
+}
+.createProfile label {
+  @apply text-[1.1em] text-slate-700 
+}
+
+.professional-info{
+  @apply grid grid-cols-3 gap-10
+}
+.professional-info input,.professional-info textarea{
+  @apply col-span-2 p-2 border border-gray-400 w-full rounded-md
+}
+.professional-info label {
+  @apply text-[1.1em] text-slate-700 
+}
+.create-service{
+  @apply grid grid-cols-5
+}
+.create-service h2{
+  @apply font-bold mb-3
+}
+.create-service input, .create-service textarea{
+  @apply bg-white p-2   border border-gray-400 w-full
+}
+.create-service p{
+  @apply text-gray-400
+}
+.create-service :nth-child(2){
+  @apply col-span-3 col-start-3
+}
+.price-table input, .price-table textarea{
+  @apply bg-white p-2   border border-gray-400 
+}
+.price-table td, th{
+  @apply  py-10 border h-10 border-slate-300 box-border px-6
+}
+.price-table th {
+  @apply text-[1.1em]
+}
+.price-table td input[type='text'], textarea{
+  @apply p-2 border border-gray-300 placeholder:text-gray-800 w-full
+}
+.price-table{
+  @apply  box-border  
+}
+.price-tags{
+  @apply grid grid-cols-5 gap-5 p-4 my-5
+}
+.price-tags :nth-child(2){
+  @apply col-span-2 
+}
+.price-tags input{
+  @apply p-2 border border-gray-400 w-full 
+}
+.price-tags{
+  @apply grid grid-cols-4
+}
+.price-tags h2{
+  @apply font-bold
+}
 }
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -382,8 +447,7 @@ body {
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
   background-color: white;
 }
 

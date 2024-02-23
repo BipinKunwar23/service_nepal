@@ -23,6 +23,10 @@ class Subcategory extends Model
     {
         return $this->hasMany(Service::class);
     }
+    public function locations()
+    {
+        return $this->hasMany(Location::class,'subcategory_id');
+    }
     public function users(){
         return $this->belongsToMany(User::class,'subcategory_user');
     }

@@ -12,7 +12,7 @@ export const ProfileApi = createApi({
       }}),
     endpoints:(build=>({
         viewProfile:build.query({
-            query:(userId=>`view/${userId}`)
+            query:(()=>'view')
         }),
         editProfile:build.mutation({
             query:((formdata)=>{
@@ -24,12 +24,24 @@ export const ProfileApi = createApi({
     
                 }
             })
+        }),
+        addSecurityInfo:build.mutation({
+            query:((values)=>{
+                return {
+                    url:`security`,
+                    method:'POST',
+                    body:values
+    
+                }
+            })
         })
+        
     }))
 })
   
 export const {
 useEditProfileMutation,
-useViewProfileQuery
+useViewProfileQuery,
+useAddSecurityInfoMutation
 }=ProfileApi
 

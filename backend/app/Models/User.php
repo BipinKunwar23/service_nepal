@@ -60,19 +60,36 @@ class User extends Authenticatable
         'pivot.available_cities' => 'array'
 
     ];
+
+    public function role()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
     public function services()
     {
         return  $this->belongsToMany(Service::class, 'service_user')
             // ->using(CatserviceUser::class)
             ->withPivot('description', 'additional_info', 'terms', 'refund_policy');
     }
+    public function subcategories()
+    {
+        return $this->belongsToMany(Subcategory::class, 'subcategory_user')->using(SubcategoryUser::class)->withPivot('profession','description','available_time', 'available_days');
+    }
     public function subcategory()
     {
-        return $this->belongsToMany(Subcategory::class, 'subcategory_user')->using(SubcategoryUser::class)->withPivot('profession', 'description', 'available_time', 'available_days', 'available_cities', 'available_date', 'special_availability', 'payment_method', 'payment_structure', 'payment_instructions', 'currency_symbol', 'delivery_charge', 'delivery_method', 'education', 'experience', 'training', 'project', 'limitation', 'terms', 'measures');
+        return $this->belongsToMany(Subcategory::class, 'subcategory_user')->using(SubcategoryUser::class)->withPivot('profession', 'description', 'available_time', 'available_days','available_cities', 'available_date', 'special_availability', 'payment_method', 'payment_structure', 'payment_instructions', 'currency_symbol', 'delivery_charge', 'delivery_method', 'education', 'experience', 'training', 'project', 'limitation', 'terms', 'measures');
     }
     public function profile()
     {
         return $this->hasOne(Profile::class, 'user_id');
+    }
+    public function profession()
+    {
+        return $this->hasOne(Profession::class, 'user_id');
+    }
+    public function availability()
+    {
+        return $this->hasOne(Availability::class, 'user_id');
     }
     public function orders()
     {
@@ -80,6 +97,14 @@ class User extends Authenticatable
     }
     public function scopes()
     {
-        return $this->belongsToMany(Scope::class, 'scope_user')->withPivot('price', 'unit');
+        return $this->belongsToMany(Scope::class, 'scope_user');
+    }
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class,'provider_id');
+    }
+    public function locations()
+    {
+        return $this->hasMany(Location::class,'user_id');
     }
 }

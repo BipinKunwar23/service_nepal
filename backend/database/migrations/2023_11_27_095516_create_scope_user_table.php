@@ -13,16 +13,29 @@ return new class extends Migration
     {
         Schema::create('scope_user', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');     
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('scope_id');
             $table->unsignedBigInteger('service_id');
+            $table->unsignedBigInteger('subcategory_id');
+            $table->unsignedBigInteger('category_id');
+
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('scope_id')->references('id')->on('scopes');
             $table->foreign('service_id')->references('id')->on('services');
-            
-            $table->decimal('price',8,2);
-            $table->string('unit');
+            $table->foreign('subcategory_id')->references('id')->on('subcategories');
+            $table->foreign('category_id')->references('id')->on('categories');
+
+
+            $table->string('title');
+            $table->string('search');
+            $table->text('description')->nullable();
+
+            $table->string('image')->nullable();
+            $table->boolean('active')->default(false);
+
+
+
             $table->timestamps();
         });
     }

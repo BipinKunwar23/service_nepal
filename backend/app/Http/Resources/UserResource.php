@@ -16,10 +16,12 @@ class UserResource extends JsonResource
     {
         $profile= $this->whenLoaded('profile');
         return [
+            'id'=>$this->id,
             'name'=>$this->name,
             'email'=>$this->email,
-            'bio'=>$profile->bio,
-                
+            'profile'=>$profile->photo ?? null,
+            'role'=>$this->whenLoaded('role')[0]->role
+                            
                 
         ];
     }
