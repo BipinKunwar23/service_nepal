@@ -45,7 +45,7 @@ const UserNavbar = ({navbars}) => {
           {dropdown && (
             <ul className="flex flex-col w-[200px] absolute top-8 right-0  bg-white">
               <li className="text-gray-600 p-3 hover:bg-gray-300 ">
-                <NavLink to="user/profile" onClick={()=>{
+                <NavLink to={`/user/${name}/profile`}onClick={()=>{
                   setdropdown(!dropdown)
                 }}>Profile</NavLink>
               </li>

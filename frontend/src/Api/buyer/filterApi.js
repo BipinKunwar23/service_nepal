@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const filterApi = createApi({
   reducerPath: "filterService",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/search",
+    baseUrl: "http://localhost:8000/api/buyer/filter/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
@@ -25,11 +25,11 @@ export const filterApi = createApi({
     }),
 
     getFilterTypes: build.query({
-      query: (serviceId) => `service/filters/${serviceId}`,
+      query: (serviceId) => `types/${serviceId}`,
     }),
     getFilteredServices: build.query({
       query: ({ serviceId, filter }) => {
-        return `service/${serviceId}/filter${filter}`;
+        return `service/${serviceId}${filter}`;
       },
     }),
   }),

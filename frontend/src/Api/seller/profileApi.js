@@ -4,7 +4,7 @@ export const sellerProfileApi = createApi({
   reducerPath: "sellerProfile",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/seller/service",
+    baseUrl: "http://localhost:8000/api/seller/profile",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
@@ -13,30 +13,31 @@ export const sellerProfileApi = createApi({
     },
   }),
 
+
   endpoints: (builder) => ({
-    createProfile: builder.mutation({
+    addPersonal: builder.mutation({
       query: (values) => {
         return {
-          url: `edit/${id}`,
+          url: "personal",
           method: "POST",
           body: values,
         };
       },
     }),
 
-    addProfession: builder.mutation({
+    addQualification: builder.mutation({
       query: (values) => {
         return {
-          url: `edit/${id}`,
+          url: "qualification",
           method: "POST",
           body: values,
         };
       },
     }),
-    addAvailabiltiy: builder.mutation({
+    addAvailability: builder.mutation({
       query: (values) => {
         return {
-          url: `edit/${id}`,
+          url: "availability",
           method: "POST",
           body: values,
         };
@@ -54,8 +55,9 @@ export const sellerProfileApi = createApi({
   }),
 });
 export const {
-  useCreateProfileMutation,
-  useAddAvailabiltiyMutation,
-  useAddProfessionMutation,
+  useAddPersonalMutation,
+  useAddAvailabilityMutation,
+  useAddQualificationMutation,
   useAddSecurityInfoMutation,
+
 } = sellerProfileApi;

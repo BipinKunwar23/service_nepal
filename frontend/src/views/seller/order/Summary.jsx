@@ -1,5 +1,5 @@
 import React from "react";
-import { useGetProviderReceivedOrdersQuery } from "../../../Api/orderApi";
+import { useGetProviderReceivedOrdersQuery } from "../../../api/buyer/orderApi";
 import Loader from "../../../components/Loader";
 import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import OrderNavbar from "./Navbar";

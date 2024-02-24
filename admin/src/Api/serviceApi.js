@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const serviceApi = createApi({
   reducerPath: "service",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/services/",
+    baseUrl: "http://localhost:8000/api/admin/service/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
@@ -15,7 +15,7 @@ export const serviceApi = createApi({
     getAllServices: builder.query({
       query: () => "providers",
     }),
-    setupServices: builder.mutation({
+    createServices: builder.mutation({
       query: (formdata) => {
         const id = formdata.get("id");
         return {
@@ -51,36 +51,7 @@ export const serviceApi = createApi({
 
     }),
 
-    getAllProviderServices: builder.query({
-      query: (providerId) => `provider/${providerId}`,
-      providesTags:(result)=>
-        result ?
-        [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
-        :['Services'],
-      
-    }),
-    getProviderServiceByCategory: builder.query({
-      query: ({providerId,categoryId}) =>`provider/${providerId}/category/${categoryId}`,
-      providesTags:(result)=>
-        result ?
-        [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
-        :['Services'],
-      
-    }),
-    getProviderServiceById: builder.query({
-      query: ({serviceId,providerId}) =>`${serviceId}/provider/${providerId}`,
-      providesTags:['Services'],
-
-    }),
-    getAllProviderCategory: builder.query({
-      query: (providerId) => `provider/category/${providerId}`,
-      providesTags:(result)=>
-      result ?
-      [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
-      :['Services'],
-
-    }),
-
+  
 
    
 
@@ -89,12 +60,7 @@ export const serviceApi = createApi({
 });
 export const {
   useGetAllServicesQuery,
-  useSetupServicesMutation,
+  useCreateServicesMutation,
   useEditServicesMutation,
-  useGetAllProviderServicesQuery,
-  useGetAllProviderCategoryQuery,
-  useGetProviderServiceByCategoryQuery,
-  useGetProviderServiceByIdQuery,
   useDeleteServicesMutation,
-  useViewServiceByIdQuery,
 } = serviceApi;

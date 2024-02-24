@@ -1,112 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 
-import { useViewCategoryQuery } from "../../../../Api/categoryApi";
-import { useGetAllSubCategoryQuery } from "../../../../Api/subCategoryApi";
-import Loader from "../../../../components/Loader";
-import AsyncSelect from "react-select/async";
-import { useGetServiceByCategoryQuery } from "../../../../Api/serviceApi";
-import { useGetScopeQuery } from "../../../../Api/serviceApi";
-import { useCreateServiceOverviewMutation } from "../../../../Api/serviceApi";
+import { useCreateOverviewMutation } from "../../../../api/seller/serviceApi";
+
+import { useGetCatalogQuery } from "../../../../api/seller/catalogApi";
+
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { setServiceId, setStepCount, setSteps } from "../../../../redux/serviceSlice";
-const ServiceOptions = ({
-  subcategoryId,
-  setServiceTypes,
-  setValue,
-  defaultService,
-}) => {
-  const { data, isLoading } = useGetServiceByCategoryQuery(subcategoryId);
-  const [serviceOptions, setServiceOptions] = useState([]);
-
-  console.log("services", data);
-
-  useEffect(() => {
-    if (data) {
-      const options = data.map((service) => {
-        return {
-          value: service.id,
-          label: service.name,
-        };
-      });
-      setServiceOptions(options);
-    }
-    if (defaultService) {
-      setServiceTypes(defaultService?.id);
-    }
-  }, [data, defaultService]);
-
-  if (isLoading) {
-    return <Loader />;
-  }
-  return (
-    <div>
-      <Select
-        options={serviceOptions}
-        defaultValue={
-          defaultService && {
-            value: defaultService?.id,
-            label: defaultService?.name,
-          }
-        }
-        onChange={(option) => {
-          setServiceTypes(option.value);
-          setValue("serviceId", option.value);
-        }}
-      />
-    </div>
-  );
-};
-
-const ServiceTypes = ({ serviceId, register, setValue, defaultScope }) => {
-  const { data, isLoading } = useGetScopeQuery(serviceId);
-  console.log("scopes", data);
-
-  console.log("services", data);
-
-  if (isLoading) {
-    return <Loader />;
-  }
-  return (
-    <div className="flex  ">
-      <h2 className="bg-gray-100 p-8">Product Type</h2>
-      <ul className="border-l border-gray-400 flex flex-col gap-8 flex-1 bg-gray-100 p-8">
-        {data.map((scope) => (
-          <li key={scope.id} className="flex gap-5">
-            <input
-              type="radio"
-              name="scope"
-              onChange={() => {
-                setValue("scopeId", scope.id);
-              }}
-              defaultChecked={scope.id === defaultScope?.id}
-            />
-            <button>{scope.name}</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+import {
+  setServiceId,
+  setStepCount,
+  setSteps,
+} from "../../../../redux/sellerSlice";
+import Loader from "../../../../components/Loader";
 
 const OverView = ({ overview }) => {
   const dispatch = useDispatch();
-  const steps = useSelector((state) => state.serviceSlice.steps);
+  const steps = useSelector((state) => state.sellerSlice.steps);
 
-  const { data, isLoading } = useViewCategoryQuery();
-  const { data: dataskills, isLoading: isskills } = useGetAllSubCategoryQuery();
-  const [categoryOptions, setcategoryOptions] = useState([]);
-  const secondSelectRef = useRef(null);
-  const [category, setCategory] = useState(overview?.category_id);
-  const [subcategory, setSubcategory] = useState(overview?.subcategory_id);
-  const [selectSubcategory, setSelectSubcategory] = useState([]);
-  const [selectedOptionSecondSelect, setSelectedOptionSecondSelect] =
-    useState(null);
-  const [serviceTypes, setServiceTypes] = useState(null);
+  const { data: catalog, isLoading: iscatalog } = useGetCatalogQuery();
+  console.log("catalog", catalog);
 
-  const serviceId = useSelector((state) => state.serviceSlice.serviceId);
+  const [subcategory, setSubcategory] = useState([]);
+  const [services, setServices] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
 
+
+  const [serviceOverview, { isLoading: isOverview }] =
+  useCreateOverviewMutation();
+  
   const form = useForm({
     defaultValues: {
       categoryId: overview?.category_id,
@@ -116,40 +38,6 @@ const OverView = ({ overview }) => {
     },
   });
   const { register, handleSubmit, control, setValue } = form;
-  const [serviceOverview, { isLoading: isOverview }] =
-    useCreateServiceOverviewMutation();
-
-  const [defaultCategory, setDefaultCategroy] = useState({});
-
-  useEffect(() => {
-    if (data) {
-      const options = data.map((category) => {
-        return {
-          value: category.id,
-          label: category.name,
-        };
-      });
-      setcategoryOptions(options);
-    }
-
-    if (dataskills && category) {
-      const subcategories = dataskills
-        .filter((value) => value.category_id === category)
-        .map((item) => {
-          return {
-            value: item.id,
-            label: item.name,
-          };
-        });
-
-      setSelectSubcategory(subcategories);
-    }
-
-    // if(Object.keys(overview).length!==0){
-    //   setCategory(overview?.category_id)
-    //     setSubcategory(overview?.subcategory_id)
-    // }
-  }, [data, dataskills, category]);
 
   const onSubmit = async (values) => {
     console.log("data", values);
@@ -166,7 +54,6 @@ const OverView = ({ overview }) => {
         dispatch(setServiceId(response?.id));
         dispatch(setStepCount(2));
 
-
         // navigate(`${location?.state?.path} `, { replace: true });
       })
       .catch((error) => {
@@ -174,7 +61,7 @@ const OverView = ({ overview }) => {
       });
   };
 
-  if (isLoading || isskills || isOverview) {
+  if ( isOverview || iscatalog) {
     return <Loader />;
   }
   return (
@@ -215,37 +102,52 @@ const OverView = ({ overview }) => {
           <div className="flex gap-5 ">
             <div className="flex-1">
               <Select
-                options={categoryOptions}
+                options={catalog.length>0 && catalog.map((category) => {
+                  return {
+                    value: category.id,
+                    label: category.name,
+                  };
+                })}
                 placeholder="Select Category"
-                defaultValue={
-                  overview?.category && {
-                    value: overview?.category?.id,
-                    label: overview?.category?.name,
-                  }
-                }
+                // defaultValue={
+                //   overview?.category && {
+                //     value: overview?.category?.id,
+                //     label: overview?.category?.name,
+                //   }
+                // }
                 onChange={(option) => {
-                  setCategory(option.value);
-                  setValue("categoryId", option.value);
+                  setSubcategory(
+                    catalog.find((category) => category.id === option.value).subcategories
+                  );
+            
+                  // setCategory(option.value);
+                  // setValue("categoryId", option.value);
 
-                  setSelectedOptionSecondSelect(null);
+                  // setSelectedOptionSecondSelect(null);
                 }}
               />
             </div>
             <div className="flex-1">
               <Select
-                options={selectSubcategory}
+                options={subcategory && subcategory.map((subcategory) => {
+                  return {
+                    value: subcategory.id,
+                    label: subcategory.name,
+                  };
+                }) }
                 hideSelectedOptions={true}
-                defaultValue={
-                  overview?.subcategory && {
-                    value: overview?.subcategory?.id,
-                    label: overview?.subcategory?.name,
-                  }
-                }
+                // defaultValue={
+                //   overview?.subcategory && {
+                //     value: overview?.subcategory?.id,
+                //     label: overview?.subcategory?.name,
+                //   }
+                // }
                 onChange={(option) => {
-                  setSubcategory(option.value);
-                  setValue("subcategoryId", option.value);
-
-                  setSelectedOptionSecondSelect(option.value);
+                  setServices(
+                   subcategory ? subcategory.find((subcategory) => subcategory.id === option.value)
+                      .services: []
+                  );
+                
                 }}
               />
             </div>
@@ -257,30 +159,56 @@ const OverView = ({ overview }) => {
             <h2>Service Types</h2>
           </div>
           <div>
-            {" "}
-            <ServiceOptions
-              subcategoryId={subcategory}
-              setServiceTypes={setServiceTypes}
-              setValue={setValue}
-              defaultService={overview?.service}
+            <Select
+              options={services && services.map((service) => {
+                  return {
+                    value: service.id,
+                    label: service.name,
+                  };
+                }) }
+              // defaultValue={
+              //   defaultService && {
+              //     value: defaultService?.id,
+              //     label: defaultService?.name,
+              //   }
+              // }
+              onChange={(option) => {
+                setServiceTypes(
+                  services ? services.find((service) => service.id === option.value)
+                     .scopes: []
+                 );
+               }}
             />
           </div>
         </section>
-
+        {
+          serviceTypes.length>0 &&
         <section className=" grid grid-cols-5">
           <div>
             <h2 className="font-bold">Service Metadata</h2>
           </div>
           <div className="col-span-3 col-start-3">
-            {serviceTypes && (
-              <ServiceTypes
-                serviceId={serviceTypes}
-                setValue={setValue}
-                defaultScope={overview?.scope}
-              />
-            )}
+            <div className="flex  ">
+              <h2 className="bg-gray-100 p-8">Product Type</h2>
+              <ul className="border-l border-gray-400 flex flex-col gap-8 flex-1 bg-gray-100 p-8">
+                {serviceTypes.map((service) => (
+                  <li key={service.id} className="flex gap-5">
+                    <input
+                      type="radio"
+                      name="scope"
+                      onChange={() => {
+                        setValue("scopeId", service.id);
+                      }}
+                      id={service.id}
+                    />
+                    <label htmlFor={service.id} className="cursor-pointer">{service.name}</label>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
+}
         <section className="create-service">
           <div>
             <h2>Search Tags</h2>

@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useAddSecurityInfoMutation } from "../../../../Api/ProfileApi";
+import { useAddSecurityInfoMutation } from "../../../../api/seller/profileApi";
 import Loader from "../../../../components/Loader";
 import { useNavigate } from 'react-router-dom';
 const SecurityInfo = () => {

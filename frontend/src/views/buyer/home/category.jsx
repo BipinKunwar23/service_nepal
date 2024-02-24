@@ -1,29 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
   useNavigate,
-  Outlet,
-  useParams,
-  useSearchParams,
+ 
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setCategory,
-  setSubcategory,
-} from "../../../redux/categorySlice";
+  setSubCategory,
+} from "../../../redux/buyerSlice";
 export default function Category({ categories }) {
-  const selected = useSelector((state) => state.categorySlice.category);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const filters = useSelector((state) => state.cardSlice.filters);
-  const [filterParams, setFilterParams] = useSearchParams();
-
-  useEffect(() => {
-    const filteredObject = Object.fromEntries(
-      Object.entries(filters).filter(([key, value]) => value !== null)
-    );
-    setFilterParams(filteredObject);
-  }, [filters]);
-
   return (
       <section className="flex gap-10 w-full overflow-x-auto ">
         {categories.map((category) => {
@@ -37,20 +24,11 @@ export default function Category({ categories }) {
               `}
               onClick={() => {
                 dispatch(setCategory(category?.id));
-                dispatch(setSubcategory(null));
-                // dispatch(
-                //   setFilterAction({
-                //     subcategory: null,
-                //     category: category.id,
-                //     location: null,
-                //   })
-                // );
+                dispatch(setSubCategory(null));
+              
                 navigate(`category/${category.id}`)
               }}
-              // onMouseEnter={()=>{
-              //   dispatch(setCategory(category.id))
-              // }}
-             
+           
             >
               <div className="  box-border hover:cursor-pointer hover:scale-105 transition text-lg ">
                 <img

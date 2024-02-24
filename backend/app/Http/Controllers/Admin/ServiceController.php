@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\serviceRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CatServiceResource;
 use App\Http\Resources\ServiceResource;
 use App\Http\Resources\ServiceScopeResource;
@@ -126,20 +127,20 @@ class ServiceController extends Controller
       $query->where('id', $subcategoryId);
     })->get();
     if ($service) {
-      return SubCategoryResoruce::collection($service);
+      return CatServiceResource::collection($service);
     }
   }
-  public function getByCategory($id)
+  public function getByCategory($categoryId)
   {
 
-    $service = Service::whereHas('subcategory', function ($query) use ($id) {
-      $query->where('category_id', $id);
+    $service = Service::whereHas('subcategory', function ($query) use ($categoryId) {
+      $query->where('category_id', $categoryId);
     })
       ->get();
     if ($service) {
-      return response()->json([
-        'services' => CatServiceResource::collection($service)
-      ]);
+      return response()->json(
+    CatServiceResource::collection($service)
+      );
     }
   }
 

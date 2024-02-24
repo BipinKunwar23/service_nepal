@@ -5,13 +5,13 @@ import Loader from "../../../components/Loader";
 import Order from "../order/makeOrder";
 import {useForm} from 'react-hook-form'
 import { useDispatch, useSelector } from "react-redux";
-import { setAvailableDate } from "../../../redux/serviceSlice";
+import { setAvailableDate } from "../../../redux/buyerSlice";
 const ViewService = () => {
   const { providerId, serviceId ,categoryId} = useParams();
   const { data, isLoading, isSuccess } = useViewProviderServiceDetailsByIdQuery(
     { providerId, serviceId }
   );
-  const available_date=useSelector((state)=>state.serviceSlice.available_date);
+  const available_date=useSelector((state)=>state.buyerSlice.available_date);
   console.log("date", available_date);
   const [additonal, setAdditonal] = useState({
     other: false,

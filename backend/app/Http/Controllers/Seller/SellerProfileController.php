@@ -38,7 +38,7 @@ class SellerProfileController extends Controller
             ]
         );
         return response()->json([
-            'photo' =>"http://localhost:8000/". $path,
+            'photo' => "http://localhost:8000/" . $path,
             'message' => 'successfullly create',
 
         ], 200);
@@ -78,11 +78,11 @@ class SellerProfileController extends Controller
 
             ]
         );
-        foreach($request->cities as $city){
+        foreach ($request->cities as $city) {
             Location::create([
-                'user_id'=>Auth::user()->id,
-                'city'=>$city->city,
-                
+                'user_id' => Auth::user()->id,
+                'city' => $city->city,
+
             ]);
         }
         return response()->json([
@@ -93,17 +93,16 @@ class SellerProfileController extends Controller
 
     public function createSecurity(Request $request)
     {
-        
+
         $data = Profile::where('user_id', Auth::user()->id)->update(['phone_number' => $request->phone_number]);
         if ($data) {
             $user = User::find(Auth::user()->id);
-            $user->role()->sync([2]);
+            $user->update(['role_id' => 2]);
         }
         return response()->json([
             'message' => 'successfully setup',
-            'role' => 'seller',
+            'role' => "seller",
 
         ]);
     }
-
 }

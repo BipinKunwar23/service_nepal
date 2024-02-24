@@ -1,13 +1,16 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useAddServicePriceMutation } from "../../../../Api/serviceApi";
+import { useAddServicePriceMutation } from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { setStepCount, setSteps } from "../../../../redux/serviceSlice";
+import { setStepCount, setSteps } from "../../../../redux/sellerSlice";
 
 const Pricing = () => {
   
-  const serviceId = useSelector((state) => state.serviceSlice.serviceId);
+  const serviceId = useSelector((state) => state.sellerSlice.serviceId);
+  console.log('serviceId',serviceId);
+  const dispatch = useDispatch();
+  const steps = useSelector((state) => state.sellerSlice.steps);
 
   const [addServicePrice,{isLoading}]=useAddServicePriceMutation()
   const { register, handleSubmit, control, setValue, watch } = useForm({
@@ -52,9 +55,7 @@ const Pricing = () => {
       }
     },
   });
-  console.log('serviceId',serviceId);
-  const dispatch = useDispatch();
-  const steps = useSelector((state) => state.serviceSlice.steps);
+ 
   const onSubmit = async (values) => {
     console.log("data", values);
     await addServicePrice({serviceId, ...values})

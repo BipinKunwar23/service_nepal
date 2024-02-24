@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useAddRequirementsMutation } from "../../../../Api/serviceApi";
+import { useAddRequirementsMutation } from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 const Requirements = () => {
@@ -12,7 +12,7 @@ const Requirements = () => {
     },
   });
 const [addRequirements, {isLoading}]=useAddRequirementsMutation()
-const serviceId = useSelector((state) => state.serviceSlice.serviceId);
+const serviceId = useSelector((state) => state.sellerSlice.serviceId);
 
 
   const { fields, append, remove } = useFieldArray({

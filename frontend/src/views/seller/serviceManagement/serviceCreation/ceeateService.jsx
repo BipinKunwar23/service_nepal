@@ -4,20 +4,20 @@ import Pricing from "./pricing";
 import Description from "./description";
 import { Gallery } from "./gallery";
 import Requirements from "./requirement";
-import { useGetDraftServicesQuery } from "../../../../Api/serviceApi";
+import { useGetDraftServicesQuery } from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSteps,
-  setServiceId,
+  setServiceId, 
   setStepCount,
-} from "../../../../redux/serviceSlice";
+} from "../../../../redux/sellerSlice";
 const CreateService = () => {
   const { data, isLoading } = useGetDraftServicesQuery();
   console.log("draft", data);
-  const steps = useSelector((state) => state.serviceSlice.steps);
-  const stepCount = useSelector((state) => state.serviceSlice.stepCount);
-console.log('stepcount',stepCount);
+  const steps = useSelector((state) => state.sellerSlice.steps);
+  const stepCount = useSelector((state) => state.sellerSlice.stepCount);
+console.log('stepcount',typeof(stepCount.toString()));
   const dispatch = useDispatch();
 
 
@@ -90,6 +90,7 @@ console.log('stepcount',stepCount);
         break;
     }
   };
+
   if (isLoading) {
     return <Loader />;
   }
@@ -98,11 +99,19 @@ console.log('stepcount',stepCount);
       <section className="w-[80Vw] mx-auto">
         <div>
           <div className="flex justify-end">
-            <p className="w-[200px] border h-6 rounded-full m-3  bg-white">
-              <p className={`w-[${stepCount* 20}%] bg-green-600 h-full rounded-full`}>
-                
+            <div className="w-[200px] border h-6 rounded-full m-3  bg-white relative">
+              <p className={` grid place-content-center  bg-green-600 h-full rounded-full    `}
+              style={{
+                width:`${(stepCount-1)*20}%`
+              }}
+              >
+                <span className="absolute left-1/2 right-1/2 z-10 text-gray-700">
+                { 
+                  (stepCount-1)*20
+                }%
+                </span>
               </p>
-            </p>
+            </div>
 
           </div>
         </div>

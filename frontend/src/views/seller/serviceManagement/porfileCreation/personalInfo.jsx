@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
-import avatar from "../../../images/avatar.jpg"
-import {
-  useViewProfileQuery,
-  useCreateProfileMutation,
-} from "../../../../Api/ProfileApi";
+import avatar from "../../../../images/avatar.jpg"
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { ColorRing } from "react-loader-spinner";
-import { setProfileStep } from "../../../../redux/serviceSlice";
-export default function SetupProfile() {
-  const [createProfile, { isLoading: isUpdating }] = useCreateProfileMutation();
-  // const { data: user, isLoading, isError, error,refetch } = useViewProfileQuery(userId);
+import { setProfileStep } from "../../../../redux/sellerSlice";
+import { useAddPersonalMutation } from "../../../../api/seller/profileApi";
+export default function PersonalInfo() {
+  const [addPersonalInfo, { isLoading: isUpdating }] = useAddPersonalMutation();
   const dispatch=useDispatch()
 
   const navigate = useNavigate();
@@ -32,7 +28,7 @@ export default function SetupProfile() {
     formdata.append("language", user.language);
 
   
-    await createProfile(formdata)
+    await addPersonalInfo(formdata)
       .unwrap()
       .then((response) => {
         console.log(response);

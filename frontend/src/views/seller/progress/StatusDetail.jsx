@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useGetStatusDetailsQuery } from '../../../Api/progressApi'
+import { useGetStatusDetailsQuery } from '../../../api/buyer/progressApi'
 import Loader from '../../../components/Loader'
 const StatusDetail = () => {
     const {progressId}=useParams()

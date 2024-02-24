@@ -1,21 +1,26 @@
-
-import { useViewServiceCardsQuery } from "../../../../Api/sellerApi";
+import React from 'react'
+import { useViewServiceCardsQuery } from "../../../../api/seller/serviceApi";
+import { useNavigate } from 'react-router-dom';
 const ServiceCards = ({ active }) => {
-    const { data: services, isLoading } = useViewServiceCardsQuery(active);
+    const { data: services, isLoading } = useViewServiceCardsQuery();
     console.log("services", services);
+    const navigate=useNavigate();
+    const name=localStorage.getItem('name');
     if (isLoading) {
       return;
     }
+   
 
     return (
       <div className="grid grid-cols-2 gap-10">
-        {services?.map((service) => {
+        {services.filter((service)=>service?.active===active).map((service) => {
           return (
+            
             <div
               className="  flex flex-col gap-2 rounded-md  bg-white border border-gray-400 cursor-pointer  "
               key={service?.id}
               onClick={() => {
-                navigate(`/seller/service/${service?.id}`);
+                navigate(`/user/${name}/service/${service?.id}`);
               }}
             >
               <div>
@@ -43,7 +48,8 @@ const ServiceCards = ({ active }) => {
           <button
             className="bg-gray-800 text-white w-[100px] h-[100px] mx-auto mb-3 text-[2em] font-bold rounded-full"
             onClick={() => {
-              navigate("/seller/create/job");
+              navigate(`/user/${name}/service/create`);
+
             }}
           >
             {" "}

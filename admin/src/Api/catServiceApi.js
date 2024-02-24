@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const catServiceAPi = createApi({
   reducerPath: "catService",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/services/",
+    baseUrl: "http://localhost:8000/api/admin/service/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
@@ -22,13 +22,7 @@ tagTypes:['services'],
       invalidatesTags: ['services'],
 
     }),
-    viewCategoryServices: build.query({
-      query: (id) => `show/${id}`,
-      providesTags:(result)=>
-      result ?
-      [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
-      :['services'],
-    }),
+  
     getCatServiceById: build.query({
       query: (id) => `${id}`,
       providesTags:(result)=>
@@ -36,12 +30,7 @@ tagTypes:['services'],
       [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
       :['services'],
     }),
-    getOtherCatservice: build.query({
-      query: (id) => `other/${id}`,
-    }),
-    getAllCatservices: build.query({
-      query: () => "all",
-    }),
+
     getServicesByCategory: build.query({
       query: (id) => `category/${id}`,
       providesTags:(result)=>
@@ -49,13 +38,15 @@ tagTypes:['services'],
       [ ...result.map(({ id }) => ({ type: 'services', id })), 'services']
       :['services'],
     }),
+
+
     getServices: build.query({
       query: ({ category, subcategory }) => {
         return !category && !subcategory
           ? "all"
           : category && !subcategory
           ? `category/${category}`
-          : `${subcategory}`;
+          : `subcategory/${subcategory}`;
       },
       providesTags:['services'],
     }),
@@ -81,9 +72,6 @@ tagTypes:['services'],
 export const {
   useAddCatServicesMutation,
   useGetCatServiceByIdQuery,
-  useGetOtherCatserviceQuery,
-  useViewCategoryServicesQuery,
-  useGetAllCatservicesQuery,
   useGetServicesByCategoryQuery,
   useGetServicesQuery,
   useEditServiceMutation,

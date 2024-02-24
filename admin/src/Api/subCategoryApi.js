@@ -4,7 +4,7 @@ export const subCategoryApi = createApi({
   reducerPath: "subCategory",
  
 
-baseQuery:fetchBaseQuery({baseUrl:'http://localhost:8000/api/subcategory/',
+baseQuery:fetchBaseQuery({baseUrl:'http://localhost:8000/api/admin/subcategory/',
 prepareHeaders:(headers)=>{
     // headers.set('Content-Type','multipart/form-data')
     headers.set('Accept','application/json')
@@ -16,7 +16,7 @@ tagTypes:['subCategory'],
 
 endpoints:(builder)=>({
   getAllSubCategory:builder.query({
-    query:()=>"viewAll",
+    query:()=>"all",
     providesTags:(result)=>
     result ?
     [ ...result.map(({ id }) => ({ type: 'subCategory', id })), 'subCategory']
@@ -29,6 +29,7 @@ getSubCategoryById:builder.query({
   [ ...result.map(({ id }) => ({ type: 'subCategory', id })), 'subCategory']
   :['subCategory'],
 }),
+
 addSubCategory: builder.mutation({
   query: ({formdata,id }) => ({
     url: `create/${id}`,
@@ -38,24 +39,17 @@ addSubCategory: builder.mutation({
   invalidatesTags: ['subCategory'],
 
 }),
+
 getSubCategory:builder.query({
   query:(categoryId)=>{
-    return !categoryId? "viewAll" : `view/${categoryId}`
+    return !categoryId? "all" : `view/category/${categoryId}`
   },
   providesTags:(result)=>
   result ?
   [ ...result.map(({ id }) => ({ type: 'subCategory', id })), 'subCategory']
   :['subCategory'],
 }),
-getProviderSubCategory:builder.query({
-  query:({categoryId,providerId})=>{
-    return !categoryId ? `provider/${providerId}` : `provider/${providerId}/category/${categoryId}`
-  },
-  providesTags:(result)=>
-  result ?
-  [ ...result.map(({ id }) => ({ type: 'subCategory', id })), 'subCategory']
-  :['subCategory'],
-}),
+
 
 viewSubCategoryById:builder.query({
   query:(id)=>`view/detail/${id}`,
@@ -81,7 +75,6 @@ export const {
  useGetSubCategoryByIdQuery,
  useAddSubCategoryMutation,
  useGetSubCategoryQuery,
- useGetProviderSubCategoryQuery,
  useEditSubCategoryMutation,
  useViewSubCategoryByIdQuery
 } = subCategoryApi;

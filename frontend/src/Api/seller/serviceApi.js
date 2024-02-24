@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const sellerServiceApi = createApi({
   reducerPath: "sellerService",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/seller/services/",
+    baseUrl: "http://localhost:8000/api/seller/service/",
     prepareHeaders:(headers)=>{
       // headers.set('Content-Type','multipart/form-data')
       headers.set('Accept','application/json')
@@ -15,10 +15,10 @@ export const sellerServiceApi = createApi({
   endpoints: (builder) => ({
     
   
-    createServiceOverview: builder.mutation({
+    createOverview: builder.mutation({
       query: (values) => {
         return {
-          url: 'overview/create',
+          url: 'overview',
           method: "POST",
           body: values,
         };
@@ -60,7 +60,7 @@ export const sellerServiceApi = createApi({
     addRequirements: builder.mutation({
       query: (values) => {
         return {
-          url: 'requirements',
+          url: 'requirement',
           method: "POST",
           body: values,
         };
@@ -87,6 +87,7 @@ export const sellerServiceApi = createApi({
       query: () => "draft",
      
     }),
+
     deleteServices: builder.mutation({
       query: ({serviceId,providerId}) => {
         return {
@@ -100,13 +101,13 @@ export const sellerServiceApi = createApi({
     }),
 
     viewServiceCards:builder.query({
-      query:(active)=>{
-        return active? "service/active": "service/draft"
+      query:()=>{
+        return "cards"
       }
     }),
 
     viewServiceDetails:builder.query({
-      query:(serviceId)=>`service/${serviceId}`
+      query:(serviceId)=>`${serviceId}`
     }),
    
 
@@ -115,7 +116,8 @@ export const sellerServiceApi = createApi({
   }),
 });
 export const {
-  useCreateServiceOverviewMutation,
+  useCreateOverviewMutation,
+  useAddServicePriceMutation,
   useEditServicesMutation,
   useDeleteServicesMutation,
   useAddDescrptionFaqMutation,
@@ -123,6 +125,8 @@ export const {
   useAddRequirementsMutation,
   useGetDraftServicesQuery,
   useViewServiceCardsQuery,
+  useViewServiceDetailsQuery
+
 
   
   

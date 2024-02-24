@@ -20,4 +20,11 @@ class SellerCatalogController extends Controller
         $categoreis = $this->catservices->getAllCategory();
         return response()->json($categoreis);
     }
+
+    public function viewCatalog()
+    {
+        $value = Category::with(['subcategories','subcategories.services','subcategories.services.scopes'])->get();
+        
+        return response()->json($value);
+    }
 }

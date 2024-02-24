@@ -48,8 +48,10 @@ console.log(message);
         localStorage.setItem("name", response.name);
 
         localStorage.setItem("logged",1)
+        localStorage.setItem("role",response.role)
+
         setMessage(response.message)
-        navigate("/", {replace:true});
+        navigate("/user", {replace:true});
       })
       .catch((error) => {
         error?.status === 422

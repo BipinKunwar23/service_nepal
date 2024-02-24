@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  service:"hello",
   serviceId: null,
-  scopes: [],
   stepCount:1,
   steps: [
     { id: 1, title: "Job Overview", show: true },
@@ -14,8 +12,8 @@ const initialState = {
   profileSteps:"personal"
 };
 
-export const buyerServiceSlice = createSlice({
-  name: "buyerServiceSlice",
+export const sellerSlice = createSlice({
+  name: "sellerSlice",
   initialState,
   available_date: new Date(),
   reducers: {
@@ -28,9 +26,7 @@ export const buyerServiceSlice = createSlice({
     setAvailableDate: (state, actions) => {
       state.available_date = actions.payload;
     },
-    setSelectedScope: (state, actions) => {
-      state.scopes = actions.payload;
-    },
+ 
     setSteps: (state, actions) => {
       state.steps = actions.payload;
     },
@@ -40,19 +36,15 @@ export const buyerServiceSlice = createSlice({
     setProfileStep: (state, actions) => {
       state.profileSteps = actions.payload;
     },
-    setServiceName: (state, actions) => {
-      state.service = actions.payload;
-    },
+  
   },
 });
 export const {
   setAvailableDate,
-  setSelectedScope,
   setSteps,
   setServiceId,
   setProviderService,
   setStepCount,
   setProfileStep,
-  setServiceName
-} = buyerServiceSlice.actions;
-export default buyerServiceSlice.reducer;
+} = sellerSlice.actions;
+export default sellerSlice.reducer;

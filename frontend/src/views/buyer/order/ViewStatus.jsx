@@ -1,5 +1,5 @@
 import React from "react";
-import { useViewStatusQuery } from "../../../Api/progressApi";
+import { useViewStatusQuery } from "../../../api/buyer/progressApi";
 import {
   Outlet,
   useLocation,

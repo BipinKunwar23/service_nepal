@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import { useGetProviderReceivedOrderDetailQuery } from "../../../Api/orderApi";
+import { useGetProviderReceivedOrderDetailQuery } from "../../../api/buyer/orderApi";
 import { useNavigate, useParams, Outlet, NavLink, useLocation } from "react-router-dom";
 import Loader from "../../../components/Loader";
-import { setStatus } from "../../../redux/orderSlice";
 import {
   useAcceptOrderMutation,
   useCancelOrderMutation,
-} from "../../../Api/orderApi";
+} from "../../../api/buyer/orderApi";
 import { useDispatch } from "react-redux";
 import OrderDetails from "../../../components/orderDetail";
 const OrderDetail = () => {

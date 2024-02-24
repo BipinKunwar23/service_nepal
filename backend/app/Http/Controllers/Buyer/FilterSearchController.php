@@ -141,7 +141,7 @@ class FilterSearchController extends Controller
         return $providers;
     }
 
-    public function filterService(Request $request, $serviceId)
+    public function getfilteredService(Request $request, $serviceId)
     {
 
         // $types = $request->input('price');

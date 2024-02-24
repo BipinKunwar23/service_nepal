@@ -194,27 +194,18 @@ class SellerServiceController extends Controller
       return response()->json($data, 200);
     }
 
-  public function DraftServiceCard()
+  public function viewServiceCards()
     {
      
-      $data = ScopeUser::where('active',false)->where('user_id', Auth::user()->id)
-        ->select('id','title','image')
+      $data = ScopeUser::where('user_id', Auth::user()->id)
+        ->select('id','title','image','active')
         ->get();
     
   
       return response()->json($data, 200);
     }
 
-    public function ActiveService()
-    {
-     
-      $data = ScopeUser::where('active',true)->where('user_id', Auth::user()->id)
-        ->select('id','title','image')
-        ->get();
-    
-  
-      return response()->json($data, 200);
-    }
+   
     public function getServiceDetails($serviceId)
     {
      

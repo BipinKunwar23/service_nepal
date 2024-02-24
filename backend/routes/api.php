@@ -23,6 +23,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequirementsController;
 use App\Http\Controllers\ScopeUserController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Seller\SellerCatalogController;
 use App\Http\Controllers\Seller\SellerFeedbackController;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Seller\SellerProfileController;
@@ -54,7 +55,7 @@ Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::get('/profile/auth/{userId}', 'providerAuth');
 });
 
-Route::prefix('provider')->controller(LandingPageController::class)->group(function () {
+Route::prefix('landing')->controller(LandingPageController::class)->group(function () {
 
     Route::post('stories/{userId}/create', 'successStoreis');
     Route::post('questions/{userId}/create', 'askquestions');
@@ -109,11 +110,12 @@ Route::prefix('admin')->group(function () {
         Route::put('edit/{id}', 'updateSubCategory');
     });
 
-    Route::prefix('services')->controller(ServiceController::class)->group(function () {
+    Route::prefix('service')->controller(ServiceController::class)->group(function () {
         Route::post('create/{id}', 'create');
-        Route::get('all', 'getAll');
-        Route::get('view/subcategory/{subcategoryId}', 'getBySubcategory');
+        Route::get('all', 'getAllServices');
         Route::get('view/{id}', 'viewById');
+        Route::get('category/{categoryId}', 'getByCategory');
+        Route::get('subcategory/{subcategoryId}', 'getBySubcategory');
         Route::post('edit/{service}', 'updateService');
     });
 
@@ -134,8 +136,8 @@ Route::prefix('buyer')->group(function () {
         Route::get('show', 'viewCatalog');
     });
 
-    Route::prefix('services')->controller(BuyerServiceController::class)->group(function () {
-        Route::get('cards/all', 'getAllServiceCards');
+    Route::prefix('service')->controller(BuyerServiceController::class)->group(function () {
+        Route::get('all', 'getAllServiceCards');
         Route::get('view/{serviceId}', 'getServiceDetails');
     });
 
@@ -145,8 +147,8 @@ Route::prefix('buyer')->group(function () {
         Route::get('location/provider', 'searchByLocation');
         Route::get('location/category/{categoryId}', 'searchCategoryLocation');
         Route::get('provider/keyword', 'searchProviderByService');
-        Route::get('service/{serviceId}/filter', 'filterService');
-        Route::get('service/filters/{serviceId}', 'getFilterTypes');
+        Route::get('service/{serviceId}', 'getfilteredService');
+        Route::get('types/{serviceId}', 'getFilterTypes');
     });
 
     Route::prefix('orders')->controller(BuyerOrderController::class)->group(function () {
@@ -161,12 +163,14 @@ Route::prefix('buyer')->group(function () {
 
 Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
 
-    Route::prefix('catalog')->controller(CategoryController::class)->group(function () {
+    Route::prefix('catalog')->controller(SellerCatalogController::class)->group(function () {
         Route::get('category', 'viewCategory');
         Route::get('subcategory', 'viewSubCategory');
         Route::get('service', 'viewService');
         Route::get('subservice', 'viewSubService');
         Route::get('subservice/{serviceId}', 'getSubserviceByService');
+        Route::get('show', 'viewCatalog');
+
     });
 
     Route::prefix('service')->controller(SellerServiceController::class)->group(function () {
@@ -176,13 +180,13 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
         Route::post('faq', 'createFaq');
         Route::post('requirement', 'createRequirement');
 
-        Route::get('service/draft', 'DraftServiceCard');
-        Route::get('service/active', 'ActiveService');
-        Route::get('service/{serviceId}', 'getServiceDetails');
+        Route::get('cards', 'viewServiceCards');
+        Route::get('draft', 'DraftService');
+        Route::get('{serviceId}', 'getServiceDetails');
     });
     Route::prefix('profile')->controller(SellerProfileController::class)->group(function () {
         Route::post('personal', 'createPersonal');
-        Route::post('profession', 'createProfession');
+        Route::post('qualification', 'createProfession');
         Route::post('availability', 'createAvailability');
         Route::post('security', 'createSecurity');
     });

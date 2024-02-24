@@ -1,10 +1,10 @@
 import React from "react";
 import Time from "./time";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useAddAvailabilityMutation } from "../../../../Api/availability";
+import { useAddAvailabilityMutation } from "../../../../api/seller/profileApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch } from "react-redux";
-import { setProfileStep } from "../../../../redux/serviceSlice";
+import { setProfileStep } from "../../../../redux/sellerSlice";
 
 const Availability = () => {
     const { register, control, setValue, handleSubmit } = useForm({

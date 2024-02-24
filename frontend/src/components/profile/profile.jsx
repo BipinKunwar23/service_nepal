@@ -5,9 +5,9 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useViewProfileQuery } from "../../Api/ProfileApi";
+import { useViewProfileQuery } from "../../api/profileApi";
 import BuyerProfile from './../../views/buyer/profile/buyerProfile';
-import SellerProfile from './../../views/seller/profile/user/sellerProfile';
+import SellerService from "../../views/seller/serviceManagement/serviceInformation/sellerService";
 function Profile() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -245,7 +245,7 @@ function Profile() {
             </form>
           </div>
         </div>
-        {role !== "seller" ? <BuyerProfile /> : <SellerProfile />}
+        {role !== "seller" ? <BuyerProfile /> : <SellerService />}
       </div>
     </div>
   );

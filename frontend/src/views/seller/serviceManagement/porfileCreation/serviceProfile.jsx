@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-
-import SetupProfile from "./profile";
-import ProfessionalInfo from "./professionalInfo";
+import PersonalInfo from './personalInfo';
 import Availability from "./Availability";
 import SecurityInfo from "./securityInfo";
+import Qualification from './qualification';
 
-import { useViewProfileQuery } from "../../../../Api/sellerApi";
+import { useViewProfileQuery } from "../../../../api/profileApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { setProfileStep } from "../../../../redux/serviceSlice";
+import { setProfileStep } from "../../../../redux/sellerSlice";
 
-const SetupService = () => {
+const ServiceProfile = () => {
   const {data:users,isLoading}=useViewProfileQuery()
-  const step=useSelector((state)=>state.serviceSlice.profileSteps)
+  const step=useSelector((state)=>state.sellerSlice.profileSteps)
   const dispatch=useDispatch()
   
 
@@ -103,15 +102,15 @@ const SetupService = () => {
           </div>
         </div>
         {step === "profession" ? (
-          <ProfessionalInfo />
+          <Qualification />
         ) : step === "availability" ? (
           <Availability />
         ) : step === "security" ? <SecurityInfo/> : (
-          <SetupProfile />
+          <PersonalInfo />
         )}
       </section>
     </section>
   );
 };
 
-export default SetupService;
+export default ServiceProfile;

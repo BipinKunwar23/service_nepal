@@ -3,7 +3,8 @@ import { useForm, Controller, useFieldArray, set } from "react-hook-form";
 import {
   useWorkStatusMutation,
   useGetCustomerTaskQuery,
-} from "../../../Api/progressApi";
+} from "../../../api/buyer/progressApi";
+
 import Loader from "../../../components/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 const AddStatus = () => {

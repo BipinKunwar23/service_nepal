@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import sellerLogo from "../../../images/seler.jpg"
 
 const buyerProfile = () => {
     const navigate=useNavigate()
@@ -11,7 +12,7 @@ const buyerProfile = () => {
       <button
         className="bg-green-500 text-white text-[1.1em] p-2 px-4 font-semibold"
         onClick={() => {
-          navigate("/seller/service/setup");
+          navigate(`/user/${localStorage.getItem('name')}/service/guideline`);
         }}
       >
         Become a seller

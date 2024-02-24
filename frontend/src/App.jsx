@@ -6,17 +6,24 @@ import { useSelector } from "react-redux";
 import Navbar from "./components/navbar/navbar";
 import Footer from "./components/footer/Footer";
 import RequireAuth from "./components/requireAuth/RequireAuth";
+
 import LandingPage from "./components/landingPage/landingPage";
 import SellerHome from "./views/seller/home/sellerHome";
 import BuyerHome from "./views/buyer/home/buyerHome";
+
 import SubCategory from "./views/buyer/home/subCategory";
 import ServiceFilter from "./views/buyer/filtration/serviceFilter";
 import SellerService from "./components/service/service";
+
 import SignIn from "./components/auth/signIn";
 import SignUp from "./components/auth/signUp";
 import Profile from "./components/profile/Profile";
-import SetupSeller from "./views/seller/profile/service/setup";
+
+import ServiceGuideline from "./views/seller/serviceManagement/porfileCreation/guideline";
+import ServiceProfile from "./views/seller/serviceManagement/porfileCreation/serviceProfile";
 import CreateService from "./views/seller/serviceManagement/serviceCreation/ceeateService";
+import ServiceDetail from "./views/seller/serviceManagement/serviceInformation/serviceDetail";
+
 import BookingSummary from "./views/buyer/order/Summary";
 import BookingDetails from "./views/buyer/order/BookingDetails";
 import OrderService from "./views/buyer/order/makeOrder";
@@ -70,16 +77,18 @@ function App() {
 
         <Route path={`user/${name}/*`} element={<SellerHome />}>
           <Route path="profile" element={<Profile />} />
+          <Route path="service/guideline" element={<ServiceGuideline />} />
+
           <Route
-            path="service/profile/create"
+            path="service/profile"
             element={
               <RequireAuth>
-                <SetupSeller />
+                <ServiceProfile />
               </RequireAuth>
             }
           />
-          <Route path="create/job" element={<CreateService />}></Route>
-          <Route path="service/:serviceId" element={<SellerService />}></Route>
+          <Route path="service/create" element={<CreateService />}/>
+          <Route path="service/:serviceId" element={<ServiceDetail />}/>
           <Route path="received/orders/*" element={<OrderSummary />}>
             <Route path=":orderId" element={<OrderDetail />}>
               <Route path="progress/*" element={<ViewStatus />}>

@@ -33,8 +33,10 @@ export const CategoryPage = () => {
     isLoading: categoryLoading,
     error: cataegoryError,
   } = useViewCategoryQuery();
+  console.log('categories',categories);
+  console.log('subcategories',subcategories);
 
-
+console.log('services',services);
 
   if (categoryLoading || subcategoryLoading || serviceLoading ) {
     return <div>loading...</div>;
@@ -54,7 +56,7 @@ export const CategoryPage = () => {
           />
         </section>
         <section>
-          <CardSection subcategories={subcategories} cards={services?.services} />
+          <CardSection subcategories={subcategories} cards={services} />
         </section>
         <section>
           <AllForm />

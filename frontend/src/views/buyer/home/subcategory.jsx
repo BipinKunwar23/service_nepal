@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setServiceName } from "../../../redux/serviceSlice";
+import { setServiceName } from "../../../redux/buyerSlice";
 const SubCategory = () => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
-  const subcategories=useSelector((state)=>state.categorySlice.subcategories)
+  const subcategories=useSelector((state)=>state.buyerSlice.subcategories)
   console.log('subcategories',subcategories);
   return (
     <section className=" relative  ">

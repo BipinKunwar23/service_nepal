@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const buyerServiceApi = createApi({
   reducerPath: "buyerService",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/seller/services/",
+    baseUrl: "http://localhost:8000/api/buyer/service/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
@@ -14,7 +14,7 @@ export const buyerServiceApi = createApi({
   tagTypes: ["Services"],
   endpoints: (builder) => ({
     getServiceCards: builder.query({
-      query: (serviceId) => `${serviceId}/view`,
+      query: () => "all",
     }),
     getServiceDetailsById: builder.query({
       query: (serviceId) => `${serviceId}/view`,

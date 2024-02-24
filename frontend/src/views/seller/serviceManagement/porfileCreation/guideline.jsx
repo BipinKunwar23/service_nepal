@@ -7,7 +7,7 @@ import skill from "../../../../images/requirements.png";
 import packages from "../../../../images/boxes.png";
 import { useNavigate } from 'react-router-dom';
 
-const SetupSeller = () => {
+const ServiceGuideline = () => {
   const navigate=useNavigate()
   return (
     <section className="w-[80Vw] mx-auto my-5 grid grid-cols-2 gap-8 shadow shadow-gray-500 p-3">
@@ -60,7 +60,8 @@ const SetupSeller = () => {
         <div className=" grid place-content-center">
           <button className="bg-blue-600 p-2 rounded-md text-white text-[1.2em] w-[300px]"
           onClick={()=>{
-            navigate("setup")
+            navigate(`/user/${localStorage.getItem('name')}/service/profile`)
+
           }}
           >
             Continue
@@ -71,4 +72,4 @@ const SetupSeller = () => {
   );
 };
 
-export default SetupSeller;
+export default ServiceGuideline;

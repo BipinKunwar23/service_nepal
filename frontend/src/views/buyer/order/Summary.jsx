@@ -1,9 +1,9 @@
 import React from "react";
-import { useGetCustomerOrdersQuery } from "../../../Api/orderApi";
+import { useGetCustomerOrdersQuery } from "../../../api/buyer/orderApi";
 import Loader from "../../../components/Loader";
 import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setStatus } from "../../../redux/orderSlice";
+import { setStatus } from "../../../redux/buyerSlice";
 const BookingSummary = () => {
   const id = localStorage.getItem("userId");
   const {

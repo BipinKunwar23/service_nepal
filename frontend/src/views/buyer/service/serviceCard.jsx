@@ -6,10 +6,9 @@ import { FaStar } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setProviderId } from "../../../redux/cardSlice";
+import { setProviderId } from "../../../redux/buyerSlice";
 import { IoIosStar } from "react-icons/io";
 
-import image from "../../../images/plumber.jpg";
 function ServiceCard({ cards }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();

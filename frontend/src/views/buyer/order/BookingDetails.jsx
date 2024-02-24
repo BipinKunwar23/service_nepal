@@ -1,6 +1,6 @@
 import React from "react";
 import OrderDetails from "../../../components/orderDetail";
-import { useViewCustomerOrderDetailQuery } from "../../../Api/orderApi";
+import { useViewCustomerOrderDetailQuery } from "../../../api/buyer/orderApi";
 
 import { Outlet } from "react-router-dom";
 import Loader from "../../../components/Loader";

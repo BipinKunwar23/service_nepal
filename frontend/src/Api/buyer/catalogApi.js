@@ -4,7 +4,7 @@ export const buyerCatalogApi = createApi({
   reducerPath: "buyerCatalog",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api/catalog/",
+    baseUrl: "http://localhost:8000/api/buyer/catalog/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");

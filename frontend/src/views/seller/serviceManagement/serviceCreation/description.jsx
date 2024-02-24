@@ -1,13 +1,13 @@
 import React from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useAddDescrptionFaqMutation } from "../../../../Api/serviceApi";
+import { useAddDescrptionFaqMutation } from "../../../../api/seller/serviceApi";
 import Loader from '../../../../components/Loader';
 import { useDispatch, useSelector } from "react-redux";
-import { setStepCount, setSteps } from "../../../../redux/serviceSlice";
+import { setStepCount, setSteps } from "../../../../redux/sellerSlice";
 const Description = () => {
-  const serviceId = useSelector((state) => state.serviceSlice.serviceId);
+  const serviceId = useSelector((state) => state.sellerSlice.serviceId);
   const dispatch = useDispatch();
-  const steps = useSelector((state) => state.serviceSlice.steps);
+  const steps = useSelector((state) => state.sellerSlice.steps);
   const { register, control, setValue, handleSubmit } = useForm({
     defaultValues: {
       faqs: [{ question: "",answer:"" }],

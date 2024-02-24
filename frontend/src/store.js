@@ -14,9 +14,8 @@ import { sellerServiceApi } from "./api/seller/serviceApi";
 import { sellerProfileApi } from "./api/seller/profileApi";
 import { sellerFeedbackApi } from "./api/seller/feedbackApi";
 
-import buyerCardSliceReducer from "./redux/buyer/cardSlice";
-import buyerServiceSliceReducer from "./redux/buyer/serviceSlice";
-import sellerServiceSliceReducer from "./redux/seller/serviceSlice";
+import buyerSliceReducer from "./redux/buyerSlice";
+import sellerSliceReducer from "./redux/sellerSlice";
 
 const middleware = getDefaultMiddleware().concat(
   authApi.middleware,
@@ -47,9 +46,8 @@ export const store = configureStore({
     [sellerProfileApi.reducerPath]: sellerProfileApi.reducer,
     [sellerFeedbackApi.reducerPath]: sellerFeedbackApi.reducer,
 
-    buyerCardSlice: buyerCardSliceReducer,
-    buyerServiceSlice: buyerServiceSliceReducer,
-    sellerServiceSlice: sellerServiceSliceReducer,
+    buyerSlice: buyerSliceReducer,
+    sellerSlice: sellerSliceReducer,
   },
 
   middleware,

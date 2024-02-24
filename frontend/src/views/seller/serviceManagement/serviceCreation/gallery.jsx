@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useAddGalleryMutation } from "../../../../Api/serviceApi";
+import { useAddGalleryMutation } from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { setStepCount, setSteps } from "../../../../redux/serviceSlice";
+import { setStepCount, setSteps } from "../../../../redux/sellerSlice";
 export const Gallery = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [previewImage, setPreviewImage] = useState(null);
@@ -53,9 +53,9 @@ const [addGallery, {isLoading}]=useAddGalleryMutation()
       prevPreviews.filter((preview) => preview.id !== id)
     );
   };
-  const serviceId = useSelector((state) => state.serviceSlice.serviceId);
+  const serviceId = useSelector((state) => state.sellerSlice.serviceId);
   const dispatch = useDispatch();
-  const steps = useSelector((state) => state.serviceSlice.steps);
+  const steps = useSelector((state) => state.sellerSlice.steps);
 
   const onSubmit=async(values)=>{
     const formdata = new FormData();

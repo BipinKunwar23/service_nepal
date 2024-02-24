@@ -18,12 +18,13 @@ class UserController extends Controller
         $user = User::create($validate);
         $token = $user->createToken('mytoken')->plainTextToken;
 
-        $user->role()->attach(1);
+
         return response()->json([
             'token' => $token,
             'id' => $user->id,
             'name' => $user->name,
             'message' => 'Register successfully',
+            'role'=>'buyer',
 
         ], 200)->withCookie('mytoken', $token, 1000);
 
@@ -46,17 +47,14 @@ class UserController extends Controller
                 'password' => 'Wrong password',
             ]);
         $token = $user->createToken('mytoken')->plainTextToken;
-        $role=Role::whereHas('users',function($query) use ($user){
-            $query->where('users.id',$user->id);
-        })->get();
+   
         return response()->json([
             'message' => 'Login successfully ',
             'id' => $user->id,
             'status' => 200,
-            'photo' => "http://localhost:8000/" . $profile->photo,
+            'photo' => $profile ? "http://localhost:8000/" . $profile->photo : null,
             'name' => $user->name,
-            'role'=>$role[0]->role,
-
+            'role'=>$user->role->role,
             'token' => $token,
         ], 200)->withCookie('mytoken', $token, config('sanctum.lifetime'), null, null, true, true);
     }

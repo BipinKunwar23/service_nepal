@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useViewCategoryQuery } from "../../../../Api/categoryApi";
 import Select from "react-select";
-import { useGetAllSubCategoryQuery } from "../../../../Api/subCategoryApi";
-import { useAddProfessionMutation } from "../../../../Api/professionApi";
+import { useGetCategoryQuery } from "../../../../api/seller/catalogApi";
+import { useGetSubCategoryQuery } from "../../../../api/seller/catalogApi";
+import { useAddQualificationMutation } from "../../../../api/seller/profileApi";
 import Loader from "../../../../components/Loader"
 import { useDispatch } from "react-redux";
-import { setProfileStep } from "../../../../redux/serviceSlice";
+import { setProfileStep } from "../../../../redux/sellerSlice";
 
-const ProfessionalInfo = () => {
-  const { data, isLoading } = useViewCategoryQuery();
+const Qualification = () => {
+  const { data, isLoading } = useGetCategoryQuery();
   console.log('data',data);
-  const { data: dataskills, isLoading: isskills } = useGetAllSubCategoryQuery();
+  const { data: dataskills, isLoading: isskills } = useGetSubCategoryQuery();
 
   const [occupation, setOccupation] = useState();
   const dispatch=useDispatch()
@@ -44,7 +44,7 @@ const ProfessionalInfo = () => {
       }
     },
   });
-  const [addProfession,{isLoading:isAdding}]=useAddProfessionMutation()
+  const [addQualification,{isLoading:isAdding}]=useAddQualificationMutation()
 
   console.log("skills", dataskills);
 
@@ -79,7 +79,7 @@ const ProfessionalInfo = () => {
 
   const onSubmit=async(values)=>{
     console.log('profession',values);
-    await addProfession(values)
+    await addQualification(values)
     .unwrap()
     .then((response) => {
       console.log(response);
@@ -258,4 +258,4 @@ const ProfessionalInfo = () => {
   );
 };
 
-export default ProfessionalInfo;
+export default Qualification;

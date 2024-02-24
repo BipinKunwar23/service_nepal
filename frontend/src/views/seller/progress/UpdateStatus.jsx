@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import {
-  useUpdateStatusMutation,
-} from "../../../Api/progressApi";
+import { useUpdateStatusMutation } from "../../../api/buyer/progressApi";
 import Loader from "../../../components/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 const UpdateStatus = ({ status }) => {

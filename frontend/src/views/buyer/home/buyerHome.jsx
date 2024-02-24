@@ -1,84 +1,61 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Outlet, useParams, useLocation, useMatch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setCategory } from "../../../redux/categorySlice";
-import { useViewCategoryQuery } from "../../../api/categoryApi";
-import { useFilterProviderQuery } from "../../../api/searchingApi";
-import { useGetFilterFactorsQuery } from "../../../api/searchingApi";
+import { setCategory } from "../../../redux/buyerSlice";
+import { useGetCatalogQuery } from "../../../api/buyer/catalogApi";
+import { useGetServiceCardsQuery } from "../../../api/buyer/serviceApi";
+
 
 import ServiceCard from "../service/serviceCard";
 import Loader from "../../../components/Loader";
 import Category from "./Category";
-import { setSubcategories } from "../../../redux/categorySlice";
+import { setSubCategories } from "../../../redux/buyerSlice";
 
 const buyerHome = () => {
   const dispatch = useDispatch();
-  const isHome=useMatch('/');
+  const isHome=useMatch('/user');
   const name=localStorage.getItem('name')
-  const isCatgory=useMatch(`/${name}/category/:categoryId`);
+ 
 
-  console.log('iscategory',isCatgory);
-
-  const [showItemList, setShowItemList] = useState(false);
-  const itemListRef = useRef(null);
+  // const [showItemList, setShowItemList] = useState(false);
+  // const itemListRef = useRef(null);
 
 
 
-  const handleSearchFocus = () => {
-    setShowItemList(true);
-  };
+  // const handleSearchFocus = () => {
+  //   setShowItemList(true);
+  // };
 
-  const handleSearchBlur = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    setShowItemList(false);
-  };
+  // const handleSearchBlur = async () => {
+  //   await new Promise((resolve) => setTimeout(resolve, 200));
+  //   setShowItemList(false);
+  // };
 
-  const service = useSelector((state) => state.cardSlice.service);
-  console.log("service", service);
-  const filters = useSelector((state) => state.cardSlice.filters);
 
-  const { data: factors, isLoading: isFactors } = useGetFilterFactorsQuery();
-  console.log("factors", factors);
-
-  // const {categoryId}=useParams();
-  // console.log('cateoryid',categoryId);
-  const subcategoryId = useSelector((state) => state.categorySlice.subcategory);
-  // const {
-  //   data: subcategories,
-  //   isError,
-  //   isLoading: subcategoryLoading,
-  //   error: subcataegoryError,
-  // } = useGetSubCategoryQuery(categoryId);
-  // const { data: services, isLoading: serviceLoading } =
-  //   useFilterProviderQuery(filters);
-
-  const navigate = useNavigate();
   const {
-    data: categories,
-    isError: categoryIsError,
-    isLoading: categoryLoading,
-    error: cataegoryError,
-  } = useViewCategoryQuery();
-  console.log("categoruies", categories);
+    data: catalog,
+    isLoading: isCatalog,
+  } = useGetCatalogQuery();
+  console.log("categoruies", catalog);
 
   const {
     data: services,
     isLoading: serviceLoading,
-  } = useFilterProviderQuery(filters);
+  } = useGetServiceCardsQuery();
   console.log("services", services);
 
   const {categoryId}=useParams()
 
 
 useEffect(()=>{
-if( categoryId){
- dispatch(setSubcategories(categories.find(category=>category.id===parseInt(categoryId)).subcategories))
+if( categoryId && catalog){
+ dispatch(setSubCategories(catalog.find(category=>category.id===parseInt(categoryId)).subcategories))
 }
-},[categoryId])
+},[categoryId,catalog])
 
 console.log('categoryId',categoryId);
 
-  if (categoryLoading || isFactors || serviceLoading) {
+  if (isCatalog  || serviceLoading) {
     return <Loader />;
   }
   return (
@@ -107,26 +84,18 @@ console.log('categoryId',categoryId);
           </div> */}
 
           <section className=" p-2 px-8 border border-gray-300 mb-5 ">
-            <Category categories={categories} />
+            <Category categories={catalog} />
           </section>
         </section>
      
       </div>
 
-        {/* <section>
-        <SubCategory subcategories={subcategories} />
-
-        </section> */}
+      
         {
           isHome ?
         <section className="">
 
         <ServiceCard cards={services} />
-
-          {/* <CardSection subcategories={factors?.subcategory} locations={factors?.location}>
-              <Card cards={services} />
-       
-          </CardSection> */}
         </section> : (
 
           <Outlet/>

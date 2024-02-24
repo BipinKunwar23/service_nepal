@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { usePlaceOrderMutation } from "../../../Api/orderApi";
+import { usePlaceOrderMutation } from "../../../api/buyer/orderApi";
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "../../../components/mpdal";
 import Error from "../../../components/error/error";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { useGetProviderServiceScopeQuery } from "../../../Api/providerApi";
-import { setSelectedScope } from "../../../redux/serviceSlice";
+import { setSelectedScope } from "../../../redux/buyerSlice";
 import Loader from "../../../components/Loader";
 const OrderService = () => {
   const navigate = useNavigate();

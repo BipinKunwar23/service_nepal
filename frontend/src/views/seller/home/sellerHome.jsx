@@ -28,7 +28,7 @@ const sellerHome = ({children}) => {
             <div className="grid place-content-center">
               <button className="bg-green-600 p-2 rounded-md shadow   text-lg w-[300px] text-white"
               onClick={()=>{
-                navigate("/seller/service")
+                navigate(`/user/${localStorage.getItem('name')}/service/guideline`)
               }}
               >
                 Become A Seller

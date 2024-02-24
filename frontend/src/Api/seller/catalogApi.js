@@ -4,11 +4,11 @@ export const sellerCatalogApi = createApi({
   reducerPath: "sellerCatalog",
  
 
-baseQuery:fetchBaseQuery({baseUrl:'http://localhost:8000/api/catalog/',
+baseQuery:fetchBaseQuery({baseUrl:'http://localhost:8000/api/seller/catalog/',
 prepareHeaders:(headers)=>{
     // headers.set('Content-Type','multipart/form-data')
-    headers.set('Accept','application/json')
-    headers.set('Authorize',localStorage.getItem('token'))
+    headers.set("Accept", "application/json");
+    headers.set("Authorization", `Bearer ${localStorage.getItem("token")}`);
     return headers
   }}),
 endpoints:(builder)=>({
@@ -16,8 +16,12 @@ endpoints:(builder)=>({
     getCategory:builder.query({
         query:()=>"category/show"
     }),
-    getSubCategoryByCategoryId:builder.query({
+    
+    getSubCategory:builder.query({
         query:()=>"subcategory/show"
+    }),
+    getSubCategoryByCategoryId:builder.query({
+        query:(categoryId)=>"subcategory/show"
     }),
     getServiceBySubcategoryId:builder.query({
         query:()=>"service/show"
@@ -25,14 +29,18 @@ endpoints:(builder)=>({
     getSubServiceByServiceId:builder.query({
         query:()=>"subservice/show"
     }),
-  
+    getCatalog: builder.query({
+        query: () => "show",
+      }),
   
 })
  
 });
 export const {
 useGetCategoryQuery,
+useGetSubCategoryQuery,
 useGetServiceBySubcategoryIdQuery,
 useGetSubCategoryByCategoryIdQuery,
-useGetSubServiceByServiceIdQuery
+useGetSubServiceByServiceIdQuery,
+useGetCatalogQuery
 } = sellerCatalogApi

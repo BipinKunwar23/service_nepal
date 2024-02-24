@@ -1,5 +1,5 @@
 import React from "react";
-import { useViewServiceDetailsQuery } from "../../api/sellerApi";
+import { useViewServiceDetailsQuery } from "../../api/seller/serviceApi";
 import { useParams } from "react-router-dom";
 import Loader from "../Loader";
 import { useSelector } from "react-redux";
@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 const Service = () => {
   const { serviceId } = useParams();
   const { data, isLoading } = useViewServiceDetailsQuery(serviceId);
-  const serviceName=useSelector((state)=>state.serviceSlice.service);
-  console.log("service", serviceName);
+
+  const serviceName=useSelector((state)=>state.buyerSlice.service);
+  console.log("service", data);
   if (isLoading) {
     return <Loader />;
   }
