@@ -9,7 +9,13 @@ const initialState = {
     { id: 4, title: "Gallery", show: false },
     { id: 5, title: "Requirements", show: false },
   ],
-  profileSteps:"personal"
+  profileSteps:"personal",
+  packageName:"basic",
+  serviceDetails:[],
+  totalCost:0,
+  searchValue:'',
+
+
 };
 
 export const sellerSlice = createSlice({
@@ -36,6 +42,18 @@ export const sellerSlice = createSlice({
     setProfileStep: (state, actions) => {
       state.profileSteps = actions.payload;
     },
+    setPackageName: (state, actions) => {
+      state.packageName = actions.payload;
+    },
+    setServiceDetails: (state, actions) => {
+      state.serviceDetails = actions.payload;
+    },
+    setTotalCost: (state, actions) => {
+      state.totalCost = actions.payload;
+    },
+    setSearchValue: (state, actions) => {
+      state.searchValue = actions.payload;
+    },
   
   },
 });
@@ -46,5 +64,9 @@ export const {
   setProviderService,
   setStepCount,
   setProfileStep,
+  setPackageName,
+  setServiceDetails,
+  setTotalCost,
+  setSearchValue
 } = sellerSlice.actions;
 export default sellerSlice.reducer;

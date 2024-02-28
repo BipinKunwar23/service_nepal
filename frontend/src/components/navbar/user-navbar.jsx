@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import img2 from "../../images/logo.png"
+import SearchBar from '../search/searchBar';
 const UserNavbar = ({navbars}) => {
   const [dropdown,setdropdown]=useState(null)
   const name=localStorage.getItem('name')
@@ -10,18 +11,12 @@ const UserNavbar = ({navbars}) => {
     <p
       className="text-[1.5em]  font-bold text-pink-600 cursor-pointer "
       onClick={() => {
-        navigate("/", { replace: true });
+        navigate("/user", { replace: true });
       }}
     >
       Technician
     </p>
-      <div className="flex-1">
-      <input
-        type="search"
-        className="bg-white p-2 w-full border border-pink-300 rounded-lg"
-        placeholder="What service are you looking today ?"
-      />
-    </div>
+      <SearchBar/>
     <div className=" text-red-500 text-[1em] grid content-center ">
       
       <ul className=" flex flex-1 gap-10   ">

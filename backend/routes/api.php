@@ -138,15 +138,15 @@ Route::prefix('buyer')->group(function () {
 
     Route::prefix('service')->controller(BuyerServiceController::class)->group(function () {
         Route::get('all', 'getAllServiceCards');
-        Route::get('view/{serviceId}', 'getServiceDetails');
+        Route::get('{serviceId}', 'getServiceDetails');
     });
 
     Route::prefix('filter')->controller(FilterSearchController::class)->group(function () {
         Route::get('service', 'searchService');
-        Route::get('location/get', 'searchLocation');
+        Route::get('search/list/{name}', 'getSearchList');
         Route::get('location/provider', 'searchByLocation');
         Route::get('location/category/{categoryId}', 'searchCategoryLocation');
-        Route::get('provider/keyword', 'searchProviderByService');
+        Route::get('search', 'getSearchedServices');
         Route::get('service/{serviceId}', 'getfilteredService');
         Route::get('types/{serviceId}', 'getFilterTypes');
     });

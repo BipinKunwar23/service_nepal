@@ -12,38 +12,31 @@ export default function Category({ categories }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   return (
-      <section className="flex gap-10 w-full overflow-x-auto ">
+      <section className="flex gap-10 w-full overflow-x-auto border border-gray-300 p-3 px-10  ">
         {categories.map((category) => {
           return (
-            <section className="flex flex-col gap-8">
 
             <div
               key={category?.id}
-              className={`m-3
-        
-              `}
+              
               onClick={() => {
                 dispatch(setCategory(category?.id));
                 dispatch(setSubCategory(null));
               
                 navigate(`category/${category.id}`)
               }}
+
+              className="grid place-content-center text-lg border p-1 px-4 cursor-pointer rounded-full border-gray-400"
            
             >
-              <div className="  box-border hover:cursor-pointer hover:scale-105 transition text-lg ">
-                <img
-                  src={`http://localhost:8000/${category?.icons}`}
-                  className="max-w-[80px] h-[80px]  rounded-full border border-gray-600 shadow-inner shadow-gray-700  mb-5 "
-                  alt=""
-                />
-                <p className="text-center mt-5 text-gray-800  font-semibold ">
+                
+                <button className="text-center   font-medium ">
                   {category?.name}
-                </p>
-              </div>
+                </button>
+              
             </div>
 
          
-            </section>
 
           );
         })}

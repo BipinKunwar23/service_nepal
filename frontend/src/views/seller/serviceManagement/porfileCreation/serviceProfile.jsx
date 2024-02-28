@@ -15,7 +15,7 @@ const ServiceProfile = () => {
   const dispatch=useDispatch()
   
 
-  console.log(users);
+  console.log('user',users);
   if(isLoading){
     return <Loader/>
   }

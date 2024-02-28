@@ -10,12 +10,18 @@ use App\Models\Price;
 use App\Models\Requirements;
 use App\Models\ScopeUser;
 use App\Models\User;
+use App\Services\ServicesService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
 class SellerServiceController extends Controller
 {
+    protected $service;
+    public function __construct(ServicesService $service) {
+       $this->service=$service;
+    }
+     
     public function createOverView(Request $request)
     {
         $user = User::find(Auth::user()->id);
@@ -209,9 +215,7 @@ class SellerServiceController extends Controller
     public function getServiceDetails($serviceId)
     {
      
-      $data = ScopeUser::
-      with(['user:id,name','user.profile:id,user_id,photo','category:id,name', 'subcategory:id,name', 'service:id,name', 'scope:id,name', 'prices.packages', 'faqs', 'galleries', 'requirements'])
-       ->find($serviceId);
+      $data = $this->service->viewServiceDetails($serviceId);
   
   
       return response()->json($data, 200);

@@ -23,10 +23,13 @@ import ServiceGuideline from "./views/seller/serviceManagement/porfileCreation/g
 import ServiceProfile from "./views/seller/serviceManagement/porfileCreation/serviceProfile";
 import CreateService from "./views/seller/serviceManagement/serviceCreation/ceeateService";
 import ServiceDetail from "./views/seller/serviceManagement/serviceInformation/serviceDetail";
+import ViewDetails from "./views/buyer/service/viewDetail";
 
+
+import OrderConfirm from "./views/buyer/order/orderConfirm";
 import BookingSummary from "./views/buyer/order/Summary";
 import BookingDetails from "./views/buyer/order/BookingDetails";
-import OrderService from "./views/buyer/order/makeOrder";
+import OrderService from "./views/buyer/order/orderConfirm";
 import OrderSummary from "./views/seller/order/Summary";
 import { Chat } from "./components/chat/chat";
 
@@ -35,6 +38,7 @@ import ViewStatus from "./views/seller/progress/ViewStatus";
 import OrderDetail from "./views/seller/order/ViewDetails";
 import StatusDetail from "./components/statusDetail";
 import UpdateStatus from "./views/seller/progress/UpdateStatus";
+import SearchResult from "./components/search/searchResult";
 
 function App() {
 
@@ -43,7 +47,7 @@ function App() {
 
 
   return (
-    <section className="   ">
+    <section className="relative">
       <Navbar />
 
       <Routes>
@@ -64,8 +68,12 @@ function App() {
             path="category/:categoryId/service/:serviceId"
             element={<ServiceFilter />}
           />
+
+          <Route path="service/:serviceId/more" element={<ViewDetails />} />
+
           <Route path="category/:categoryId" element={<SubCategory />} />
           <Route path="chat/receiver/:receiverId" element={<Chat />}></Route>
+
           <Route path="booking/customer" element={<BookingSummary />}>
             <Route path="order/:orderId" element={<BookingDetails />}></Route>
           </Route>
@@ -74,6 +82,11 @@ function App() {
             element={<OrderService />}
           />
         </Route>
+        <Route path="user/search" element={<SearchResult />} />
+
+
+        <Route path={`${name}/order/confirm`} element={<OrderConfirm />}></Route>
+
 
         <Route path={`user/${name}/*`} element={<SellerHome />}>
           <Route path="profile" element={<Profile />} />

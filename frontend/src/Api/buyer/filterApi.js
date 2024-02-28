@@ -32,6 +32,13 @@ export const filterApi = createApi({
         return `service/${serviceId}${filter}`;
       },
     }),
+
+    getSearchList: build.query({
+      query: (name) => `search/list/${name}`,
+    }),
+    getSearchedService: build.query({
+      query: (name) =>  `search?service=${name}`
+    }),
   }),
 });
 
@@ -40,4 +47,6 @@ export const {
   useSearchLocatonQuery,
   useGetFilterTypesQuery,
   useGetFilteredServicesQuery,
+  useGetSearchListQuery,
+  useGetSearchedServiceQuery
 } = filterApi;

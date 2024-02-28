@@ -3,17 +3,17 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import Select from "react-select";
 import { useGetCategoryQuery } from "../../../../api/seller/catalogApi";
 import { useGetSubCategoryQuery } from "../../../../api/seller/catalogApi";
+import { useGetCatalogQuery } from "../../../../api/seller/catalogApi";
 import { useAddQualificationMutation } from "../../../../api/seller/profileApi";
 import Loader from "../../../../components/Loader"
 import { useDispatch } from "react-redux";
 import { setProfileStep } from "../../../../redux/sellerSlice";
 
 const Qualification = () => {
-  const { data, isLoading } = useGetCategoryQuery();
-  console.log('data',data);
-  const { data: dataskills, isLoading: isskills } = useGetSubCategoryQuery();
+  const { data: catalog, isLoading: isCatalog } = useGetCatalogQuery();
 
-  const [occupation, setOccupation] = useState();
+  const [subcategories,setSubcategory]=useState([])
+
   const dispatch=useDispatch()
 
   const { register, handleSubmit, control, setValue, watch } = useForm({
@@ -46,14 +46,8 @@ const Qualification = () => {
   });
   const [addQualification,{isLoading:isAdding}]=useAddQualificationMutation()
 
-  console.log("skills", dataskills);
 
-  const options =data && data?.map((category) => {
-    return {
-      value: category.id,
-      label: category.name,
-    };
-  });
+
 
   const experience = [
     {
@@ -70,7 +64,6 @@ const Qualification = () => {
     },
   ];
 
-  console.log(data);
 
   const { fields, append, remove } = useFieldArray({
     name: "skills",
@@ -91,7 +84,7 @@ const Qualification = () => {
     });
   }
 
-  if (isLoading || isskills || isAdding) {
+  if ( isAdding || isCatalog) {
     return <Loader/>
   }
   return (
@@ -102,11 +95,18 @@ const Qualification = () => {
         <label htmlFor="">Occupations </label>
         <div className="col-span-2">
           <Select
-            options={options}
+             options={catalog.length>0 && catalog.map((category) => {
+              return {
+                value: category.id,
+                label: category.name,
+              };
+            })}
          placeholder="Select your occupation"
             onChange={(option) => {
               setValue("occupation", option.value);
-              setOccupation(option.value);
+              setSubcategory(
+                catalog.find((category) => category.id === option.value).subcategories
+              );
             }}
             isClearable={true}
             className="border-slate-400 "
@@ -114,19 +114,30 @@ const Qualification = () => {
         </div>
       </div>
       {
-        occupation && <>
+        subcategories.length>0 && <>
       <div className="grid grid-cols-3 gap-8 ">
         <label htmlFor="">Skills</label>
-        <div className="col-span-2 grid grid-cols-4 gap-10">
-          {dataskills
-            .filter((skill) => skill.category_id === occupation)
-            .map((skills,index) => {
+        <div className="col-span-2 flex flex-wrap gap-10">
+          {subcategories
+            .map((subcategory,index) => {
               return (
-                <div key={skills.id} className="flex gap-4">
-                  <input type="checkbox" {...register(`skills.${index}`)} value={skills.id} />
-                  <p>{skills.name}</p>
-                </div>
-              );
+                <>
+                {
+                  subcategory?.services.map((skills)=>{
+                    
+                    return (
+                      <div key={skills.id} className="flex gap-2">
+                        <input type="checkbox" {...register(`skills.${index}`)} value={skills.id} />
+                        <p>{skills.name}</p>
+                      </div>
+                    );
+    
+                  })
+
+                }
+                </>
+              )
+
             })}
         </div>
       </div>

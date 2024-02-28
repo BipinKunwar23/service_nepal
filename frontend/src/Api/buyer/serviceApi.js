@@ -17,7 +17,7 @@ export const buyerServiceApi = createApi({
       query: () => "all",
     }),
     getServiceDetailsById: builder.query({
-      query: (serviceId) => `${serviceId}/view`,
+      query: (serviceId) => `${serviceId}`,
     }),
   }),
 });

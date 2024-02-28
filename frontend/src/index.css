@@ -72,13 +72,7 @@
   .edit form > div {
     @apply md:px-20 sm:px-10 lg:px-12 xl:px-20 py-8;
   }
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .scrolling-touch {
-    -webkit-overflow-scrolling: touch; /* For iOS devices */
-    scroll-behavior: smooth; /* For other browsers */
-  }
+ 
 
   .profile .address {
     @apply grid grid-cols-1 gap-2;
@@ -263,10 +257,10 @@
   }
   .selected-field input,
   .selected-field textarea {
-    @apply border border-gray-700 rounded-lg p-2  focus:outline-blue-500 focus:border-none;
+    @apply border-2 border-gray-200 rounded-md p-3  focus:outline-blue-500 focus:border-none placeholder:text-lg;
   }
   .selected-field label{
-    @apply font-bold text-slate-600
+    @apply text-lg text-slate-600 mb-2
   }
 
   .more-items {
@@ -464,6 +458,13 @@ a.active {
 .order-dashboard a.active {
   color: blue;
   font-weight: 600;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.scrolling-touch {
+  -webkit-overflow-scrolling: touch; /* For iOS devices */
+  scroll-behavior: smooth; /* For other browsers */
 }
 
 /* .custom-select{

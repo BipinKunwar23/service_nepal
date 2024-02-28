@@ -17,19 +17,9 @@ const buyerHome = () => {
   const name=localStorage.getItem('name')
  
 
+
   // const [showItemList, setShowItemList] = useState(false);
   // const itemListRef = useRef(null);
-
-
-
-  // const handleSearchFocus = () => {
-  //   setShowItemList(true);
-  // };
-
-  // const handleSearchBlur = async () => {
-  //   await new Promise((resolve) => setTimeout(resolve, 200));
-  //   setShowItemList(false);
-  // };
 
 
   const {
@@ -59,31 +49,16 @@ console.log('categoryId',categoryId);
     return <Loader />;
   }
   return (
-    <section className="h-screen "
+    <section className="min-h-screen "
     onMouseLeave={()=>{
       dispatch(setCategory(null))
     }}
     >
       <div className="  ">
         <section className="   ">
-          {/* <div className="flex col-span-4 mb-5 w-[60Vw]  mx-auto justify-self-center relative  ">
-            <input
-              type="search"
-              className="w-full rounded-full p-2 focus:outline-none shadow shadow-gray-600 "
-              placeholder="Find Your Srevices"
-              onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
-              onChange={(e) => {
-                console.log(e.target.value);
-                !e.target.value
-                  ? dispatch(setSearchingProvider(null))
-                  : dispatch(setSearchingProvider(e.target.value));
-              }}
-            />
-            {showItemList && <Provider />}
-          </div> */}
+        
 
-          <section className=" p-2 px-8 border border-gray-300 mb-5 ">
+          <section className="  ">
             <Category categories={catalog} />
           </section>
         </section>

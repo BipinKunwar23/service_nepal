@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Service;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,12 @@ class SellerCatalogController extends Controller
     public function viewCategory()
     {
         $categoreis = $this->catservices->getAllCategory();
+        return response()->json($categoreis);
+    }
+
+    public function viewService()
+    {
+        $categoreis = Service::get();
         return response()->json($categoreis);
     }
 

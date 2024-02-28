@@ -13,14 +13,10 @@ export const chatApi = createApi({
       return headers;
     },
   }),
-  tagTypes:['Chats'],
   endpoints: (build) => ({
     showChats: build.query({
       query: (receiverId) => `private/${receiverId}`,
-    //   providesTags:(result)=>
-    //   result ?
-    //   [ ...result.map(({ id }) => ({ type: 'Chats', id })), 'Chats']
-    //   :['Chats'],
+ 
     }),
     sendMessage: build.mutation({
       query: ({ message, receiverId }) => {
@@ -30,7 +26,7 @@ export const chatApi = createApi({
           body: message,
         };
       },
-    //   invalidatesTags:['Chats']
+ 
     }),
   }),
 });

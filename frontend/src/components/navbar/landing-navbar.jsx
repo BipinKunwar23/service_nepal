@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMatch, NavLink,useNavigate } from 'react-router-dom';
+import SearchBar from '../search/searchBar';
 
 const LandingNavbar = () => {
     const name=localStorage.getItem('name');
@@ -18,13 +19,7 @@ const LandingNavbar = () => {
         </p>
         {
           isbuyer && 
-        <div className="w-[33Vw] grid content-center">
-          <input
-            type="search"
-            className="bg-white p-2 w-full border border-pink-300 rounded-lg"
-            placeholder="What service are you looking today ?"
-          />
-        </div>
+      <SearchBar/>
         }
     
         <div className="  text-[1.2em] flex-1 grid justify-end">
