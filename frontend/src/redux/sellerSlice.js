@@ -12,8 +12,12 @@ const initialState = {
   profileSteps:"personal",
   packageName:"basic",
   serviceDetails:[],
-  totalCost:0,
+  order:{
+    quantity:0,
+    cost:0,
+  },
   searchValue:'',
+  toastMessage:""
 
 
 };
@@ -48,11 +52,14 @@ export const sellerSlice = createSlice({
     setServiceDetails: (state, actions) => {
       state.serviceDetails = actions.payload;
     },
-    setTotalCost: (state, actions) => {
-      state.totalCost = actions.payload;
+    setOrderDetails: (state, actions) => {
+      state.order = actions.payload;
     },
     setSearchValue: (state, actions) => {
       state.searchValue = actions.payload;
+    },
+    setToastMessage:(state, actions) => {
+      state.toastMessage = actions.payload;
     },
   
   },
@@ -66,7 +73,8 @@ export const {
   setProfileStep,
   setPackageName,
   setServiceDetails,
-  setTotalCost,
-  setSearchValue
+  setOrderDetails,
+  setSearchValue,
+  setToastMessage
 } = sellerSlice.actions;
 export default sellerSlice.reducer;

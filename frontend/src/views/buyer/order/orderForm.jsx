@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { setTotalCost } from "../../../redux/sellerSlice";
+import { createSearchParams, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { setOrderDetails } from "../../../redux/sellerSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const OrderForm = ({ packages, setContinue }) => {
+
+const OrderForm = ({ packages, setContinue,serviceId }) => {
   console.log("packages", packages);
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const totalCost = useSelector((state) => state.sellerSlice.totalCost);
+  const order = useSelector((state) => state.sellerSlice.order);
+  const location=useLocation();
+
 
   useEffect(() => {
-    dispatch(setTotalCost(packages?.price * count));
-  }, [count, packages]);
+    dispatch(setOrderDetails({quantity:count,cost:packages?.price * count}));
+  }, [count,packages]);
 
   return (
     <section className=" w-[32%]  bg-white flex flex-col gap-8 ">
@@ -78,10 +81,20 @@ const OrderForm = ({ packages, setContinue }) => {
         <button
           className="w-full box-border text-[1.2em] bg-gray-700 text-white p-3 rounded-sm "
           onClick={() => {
-            navigate(`/${localStorage.getItem("name")}/order/confirm`);
+            navigate({
+              pathname: `/${localStorage.getItem("name")}/order/service`,
+              search: createSearchParams({
+                id: `${serviceId}`,
+              }).toString(),
+            },
+            {state:{
+              path:location.pathname
+            }}
+            
+            );
           }}
         >
-          CONTINUE <span className="ml-4">${totalCost}</span>{" "}
+          CONTINUE <span className="ml-4">${order?.cost}</span>{" "}
         </button>
       </div>
     </section>

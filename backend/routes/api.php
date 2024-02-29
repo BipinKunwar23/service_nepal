@@ -84,11 +84,12 @@ Route::prefix('profile')->middleware('auth:sanctum')->controller(ProfileControll
 });
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
-Route::prefix('chat')->controller(ChatController::class)->group(function () {
+Route::prefix('chat')->middleware('auth:sanctum')->controller(ChatController::class)->group(function () {
 
     // Route::get('chat/get',[ChatController::class,'sendMessage'])->middleware('auth:sanctum')
-    Route::get('private/{receiverId}', [ChatController::class, 'index'])->middleware('auth:sanctum');
-    Route::post('private/{receiverId}', [ChatController::class, 'store'])->middleware('auth:sanctum');
+    Route::get('private/all', 'index');
+    Route::post('private/{receiverId}', 'store');
+    Route::get('private/{receiverId}', 'show');
 });
 
 
@@ -151,10 +152,10 @@ Route::prefix('buyer')->group(function () {
         Route::get('types/{serviceId}', 'getFilterTypes');
     });
 
-    Route::prefix('orders')->controller(BuyerOrderController::class)->group(function () {
-        Route::post('service/{serviceId}/seller/{sellerId}', 'placeOrder');
+    Route::prefix('order')->middleware('auth:sanctum')->controller(BuyerOrderController::class)->group(function () {
+        Route::post('service/{serviceId}', 'placeOrder');
         Route::get('view/{orderId}', 'viewOrder');
-        Route::get('buyer/{buyerId}', 'getBuyerOrders');
+        Route::get('all', 'getAllOrders');
     });
 });
 
@@ -170,7 +171,6 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
         Route::get('subservice', 'viewSubService');
         Route::get('subservice/{serviceId}', 'getSubserviceByService');
         Route::get('show', 'viewCatalog');
-
     });
 
     Route::prefix('service')->controller(SellerServiceController::class)->group(function () {

@@ -23,7 +23,7 @@ const SellerNavbar = ({ profile }) => {
         Technician
       </p>
       <div className="flex-1 grid content-center ">
-        <ul className=" flex gap-10 w-[80%]  text-[1.2em]   mx-auto  ">
+        <ul className=" flex gap-10 w-[80%]  text-[1.3em]   mx-auto  ">
           <li className=" p-2">
             <NavLink to="/" className="w-full">
               {" "}
@@ -51,31 +51,31 @@ const SellerNavbar = ({ profile }) => {
         </ul>
       </div>
       <div className=" text-gray-700 ">
-        <ul className=" flex-1 flex gap-10   ">
+        <ul className=" flex-1 flex gap-10   place-content-center ">
           <li className="p-2">
             <NavLink to="/" className="w-full">
               {" "}
-              <IoNotificationsOutline className="text-[1.5em]" />
+              <IoNotificationsOutline className="text-[1.7em]" />
             </NavLink>
           </li>
           <li className="p-2">
             <NavLink to="/" className="w-full">
               {" "}
-              < AiOutlineMessage className="text-[1.5em]"/>
+              < AiOutlineMessage className="text-[1.7em]"/>
             </NavLink>
           </li>
           <li className="p-2">
             <NavLink to="/" className="w-full">
               {" "}
-              <MdFavoriteBorder className="text-[1.5em]" />
+              <MdFavoriteBorder className="text-[1.7em]" />
             </NavLink>
           </li>
          
 
-          <li className="p-1 text-[1.2em] text-slate-500 ">
-            <NavLink to="/seller/jh" className="w-full">
+          <li className="p-1 text-[1.4em] text-slate-500 ">
+            <NavLink to="/user" className="w-full">
               {" "}
-              Order
+              Switch to Buying
             </NavLink>
           </li>
           <li className="relative">

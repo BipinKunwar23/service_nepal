@@ -15,7 +15,6 @@ const Service = ({ services }) => {
   const [continues, setContinue] = useState(false);
   const [chat, setChat] = useState(false);
 
-
   useEffect(() => {
     if (continues) {
       document.body.style.position = "fixed";
@@ -184,7 +183,7 @@ const Service = ({ services }) => {
                   <button
                     className="border border-gray-400 rounded-md  p-2 w-full"
                     onClick={() => {
-                      setChat(true)
+                      setChat(true);
                     }}
                   >
                     Contact Now
@@ -201,15 +200,35 @@ const Service = ({ services }) => {
           continues ? "grid" : "hidden"
         }`}
       >
-        <OrderForm packages={packageData} setContinue={setContinue} />
+        <OrderForm
+          packages={packageData}
+          setContinue={setContinue}
+          serviceId={services?.id}
+        />
       </div>
 
       <div
-        className={` top-[10Vh] left-10 bg-[rgba(0,0,0,0.7)]  bg-white justify-items-end  fixed z-10   ${
+        className={` top-[13Vh] left-10    justify-items-end  fixed z-10   ${
           chat ? "grid" : "hidden"
         }`}
       >
-        <Chat setChat={setChat} receiverId={services?.user?.id} />
+        <div className="w-[40Vw] mx-auto bg-white border border-gray-300 shadow my-4 grid  rounded-lg">
+        <Chat setChat={setChat} receiverId={services?.user?.id} >
+
+        <div className="">
+          <button
+            className="text-xl text-gray-400 "
+            onClick={() => {
+              setChat(false);
+            }}
+          >
+            {" "}
+            X
+          </button>
+        </div>
+        </Chat>
+
+        </div>
       </div>
     </>
   );

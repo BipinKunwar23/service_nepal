@@ -9,82 +9,39 @@ use App\Models\Order;
 use App\Models\OrderImage;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 
 class BuyerOrderController extends Controller
 {
-    public function placeOrder(Request $req, $customerId, $serviceId, $providerId)
+    public function placeOrder(Request $req, $serviceId)
     {
+        Order::create([
 
-
-        $order =  Order::create([
-
-            'customer_id' => $customerId,
+            'customer_id' => Auth::user()->id,
             'service_id' => $serviceId,
-            'provider_id' => $providerId,
-
+            'delivery_city' => $req->delivery_city,
+            'contact_number' => $req->contact_number,
             'service_date' => $req->service_date,
-            'response_time' => $req->response_time,
-            'emergency' => filter_var($req->emergency, FILTER_VALIDATE_BOOLEAN),
+            'package' => $req->package,
+            'quantity' => $req->quantity,
+            'cost' => $req->cost,
 
-            'max_delay' => $req->max_delay,
-            'delivery_location' => $req->delivery_location,
-            'service_detail' => $req->service_detail,
-            'requirements' => $req->requirements,
 
-            'name' => $req->name,
+            // 'emergency' => filter_var($req->emergency, FILTER_VALIDATE_BOOLEAN)
 
-            'email' => $req->email,
-            'number' => $req->number,
-            'accept_terms' =>  filter_var($req->accept_terms, FILTER_VALIDATE_BOOLEAN)
 
         ]);
-        $data = json_decode($req->scopes);
-
-
-        $collection = collect($data)->keyBy('id')
-            ->map(function ($item) {
-                return collect($item)->except('id')->toArray();
-            });
-
-        $order->scopes()->syncWithoutDetaching($collection);
-
-        $imageNames = [];
-        if (isset($req->images)) {
-
-            foreach ($req->images as $file) {
-
-                if (isset($file) && $file instanceof UploadedFile) {
-
-                    $extension = $file->getClientOriginalExtension();
-
-                    $name = time() . '_' . uniqid() . '.' . $extension;
-
-                    $file->move('order', $name);
-                    $path = 'order/' . $name;
-
-                    $imageNames[] = $path;
-                }
-            }
-        }
-
-        if (isset($imageNames)) {
-            foreach ($imageNames as $image) {
-                $data = new OrderImage();
-                $data->name = $image;
-                $data->order_id = $order->id;
-
-                $data->save();
-            }
-        }
 
         return response()->json([
-            'message' => 'Successfully Created'
+            'message' => 'Your Order is Successfull'
         ]);
     }
 
-    public function getBuyerOrders($customerId)
+    public function getAllOrders()
     {
-        $orders = Order::with('services', 'providers.profile', 'status')->where('customer_id', $customerId)->orderBy('created_at', 'desc')->get();
+        $orders = Order::where('customer_id', Auth::user()->id)->orderBy('created_at', 'desc')
+            ->with(['services.scope','services.user'])
+            ->get();
         // return $orders;
         if ($orders) {
             return CustomerOrdersResource::collection($orders);

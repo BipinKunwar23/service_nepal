@@ -3,20 +3,28 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 
 export const buyerOrderApi = createApi({
   reducerPath: "buyerOrder",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/orders/" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:8000/api/buyer/order",
+    prepareHeaders: (headers) => {
+      // headers.set('Content-Type','multipart/form-data')
+      headers.set("Accept", "application/json");
+      headers.set("Authorization", `Bearer ${localStorage.getItem("token")}`);
+      return headers;
+    },
+  }),
   endpoints: (build) => ({
     placeOrder: build.mutation({
-      query: ({ formdata, customerId, serviceId,providerId }) => {
+      query: ({ serviceId, ...values }) => {
         return {
-          url: `create/${customerId}/service/${serviceId}/provider/${providerId}`,
+          url: `service/${serviceId}`,
           method: "POST",
-          body: formdata,
+          body: values,
         };
       },
     }),
 
     getCustomerOrders: build.query({
-      query: (id) => `customer/${id}`,
+      query: () => "all",
     }),
     getProviderReceivedOrders: build.query({
       query: (id) => `provider/${id}`,
@@ -29,22 +37,17 @@ export const buyerOrderApi = createApi({
     }),
 
     AcceptOrder: build.mutation({
-      query: (orderId) => (
-        {
-          url: `${orderId}/accept`,
-          method: "PUT",
-        }
-      )
+      query: (orderId) => ({
+        url: `${orderId}/accept`,
+        method: "PUT",
+      }),
     }),
     CancelOrder: build.mutation({
-      query: (orderId) => (
-        {
-          url: `${orderId}/cancel`,
-          method: "PUT",
-        }
-      )
+      query: (orderId) => ({
+        url: `${orderId}/cancel`,
+        method: "PUT",
+      }),
     }),
-
   }),
 });
 
@@ -55,5 +58,5 @@ export const {
   useGetProviderReceivedOrderDetailQuery,
   useViewCustomerOrderDetailQuery,
   useAcceptOrderMutation,
-  useCancelOrderMutation
+  useCancelOrderMutation,
 } = buyerOrderApi;

@@ -15,29 +15,21 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('service_id');
-            $table->unsignedBigInteger('provider_id');
+
             $table->foreign('customer_id')->references('id')->on('users');
-            $table->foreign('service_id')->references('id')->on('services');
-            $table->foreign('provider_id')->references('id')->on('users');
+            $table->foreign('service_id')->references('id')->on('scope_user');
+            $table->string('delivery_city');
 
+
+
+            $table->string('contact_number', 12);
             $table->date('service_date');
-            $table->boolean('emergency');
-            $table->string('max_delay')->nullable();
-            $table->string('delivery_location');
-            $table->text('service_detail')->nullable();
-            $table->string('requirements')->nullable();
-
-
-            $table->string('response_time')->nullable();
-
-            $table->string('name', 40);
-            $table->string('email');
-            $table->string('number', 12);
-            $table->boolean('accept_terms')->default(false);
-            $table->string('status',30)->default("Pending");
+            $table->date('quantity');
+            $table->date('cost');
+            $table->string('package', 20);
+            $table->string('status', 30)->default("Pending");
 
             $table->timestamps();
-
         });
     }
 

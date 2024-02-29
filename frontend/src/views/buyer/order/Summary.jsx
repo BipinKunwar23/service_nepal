@@ -1,84 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
 import { useGetCustomerOrdersQuery } from "../../../api/buyer/orderApi";
 import Loader from "../../../components/Loader";
 import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setStatus } from "../../../redux/buyerSlice";
-const BookingSummary = () => {
-  const id = localStorage.getItem("userId");
+const BuyerOrderList = () => {
   const {
     data: orders,
     isLoading,
     isError,
     error,
-  } = useGetCustomerOrdersQuery(id);
+  } = useGetCustomerOrdersQuery();
   console.log("orders", orders);
   const navigate = useNavigate();
   const isOrder = useMatch("booking/customer/order/:orderId");
   const isStatus = useMatch("booking/customer/order/:orderId/status");
-
-  
+  const [orderStatus,setOrderStatus]=useState("Pending")
 
   const dispatch = useDispatch();
 
-  if (isOrder || isStatus ) {
-    return (
-      <>
-        <section>
-          <Outlet />
-        </section>
-      </>
-    );
-  }
+  // if (isOrder || isStatus ) {
+  //   return (
+  //     <>
+  //       <section>
+  //         <Outlet />
+  //       </section>
+  //     </>
+  //   );
+  // }
   if (isLoading) {
     return <Loader />;
   }
   return (
-    <section className="p-10 ">
-      <section className="grid grid-cols-1  mx-auto gap-2">
-        <p className="text-center text-xl font-semibold p-2">Order History</p>
+    <section className="">
+      <section className="grid grid-cols-1  mx-auto gap-2 text-lg">
+      <div className="flex place-content-center p-4 gap-10">
+        <button className={` p-2 ${orderStatus==="Pending" && "border-b-2  border-green-700  font-semibold"} `}
+        onClick={()=>{
+          setOrderStatus("Pending")
+        }}
+        >Pending</button>
+        <button
+        onClick={()=>{
+          setOrderStatus("Running")
+        }}
+        className={` p-2 ${orderStatus==="Running" && "border-b-2  border-green-700  font-semibold"} `}
+        >Running</button>
+        <button
+        onClick={()=>{
+          setOrderStatus("Completed")
+        }}
+        className={` p-2 ${orderStatus==="Completed" && "border-b-2  border-green-700  font-semibold"} `}
+        >Completed</button>
 
-        <table className="w-full box-bordr table-fixed bg-white border border-gray-200">
+      </div>
+
+        <table className="w-full box-border table-auto bg-white border  border-gray-200">
           <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Id</th>
+            <tr className="text-left bg-blue-600 text-white">
+              <th className="py-4 px-4 border-b">Order Id</th>
               <th className="py-2 px-4 border-b">Service</th>
-              <th className="py-2 px-4 border-b">Provider Name</th>
-              <th className="py-2 px-4 border-b">Email</th>
-              <th className="py-2 px-4 border-b">Contact No</th>
-              <th className="py-2 px-4 border-b">Address</th>
+              <th className="py-2 px-4 border-b">Seller Name</th>
+              <th className="py-2 px-4 border-b"> Quantity</th>
+              <th className="py-2 px-4 border-b">Total Cost</th>
 
-              <th className="py-2 px-4 border-b">Created At</th>
-              <th className="py-2 px-4 border-b">Status</th>
+              <th className="py-2 px-4 border-b">Ordered At</th>
 
               <th className="py-2 px-4 border-b">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {orders.map((order) => {
+          <tbody className="">
+            {orders.filter((order=>order?.status===orderStatus)).map((order) => {
               return (
                 <tr key={order?.id}>
-                  <td className="py-2 px-4 border-b">{order?.id}</td>
+                  <td className="py-4 px-4 border">{order?.id}</td>
 
-                  <td className="py-2 px-4 border-b max-w-xs overflow-hidden whitespace-nowrap overflow-ellipsis">
+                  <td className="py-2 px-4 border max-w-xs overflow-hidden whitespace-nowrap overflow-ellipsis">
                     {order?.service}
                   </td>
-                  <td className="py-2 px-4 border-b">{order.provider?.name}</td>
-                  <td className="py-2 px-4 border-b  max-w-md overflow-ellipsis break-words ">
-                    {order.provider?.email}
+                  <td className="py-2 px-4 border">{order?.seller}</td>
+                  <td className="py-2 px-4 border  max-w-md overflow-ellipsis break-words ">
+                    {order?.quantity}
                   </td>
 
-                  <td className="py-2 px-4 border-b">
-                    {order.provider?.phone}
-                  </td>
-                  <td className="py-2 px-4 border-b">{`${order.provider?.address?.muncipility}-${order.provider?.address?.ward}, ${order.provider?.address?.district}`}</td>
+                  <td className="py-2 px-4 border">{order?.cost}</td>
 
-                  <td className="py-2 px-4 border-b">{order?.created}</td>
-                  <td className="py-2 px-4 border-b">
-                    {order.status?.isOrder ? "Accepted" : "Pending"}
-                  </td>
+                  <td className="py-2 px-4 border">{order?.created_at}</td>
 
-                  <td className="py-2 px-4 border-b">
+                  <td className="py-2 px-4 border">
                     <button
                       className=" text-indigo-600"
                       onClick={() => {
@@ -99,4 +108,4 @@ const BookingSummary = () => {
   );
 };
 
-export default BookingSummary;
+export default BuyerOrderList;

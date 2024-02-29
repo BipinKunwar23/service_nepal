@@ -25,7 +25,7 @@ function ServiceCard({ cards }) {
               onClick={() => {
                 dispatch(setProviderId(card?.id));
                 navigate(
-                  `/user/service/${card?.id}/more`
+                  `/user/service/${card?.id}`
                 );
               }}
             >

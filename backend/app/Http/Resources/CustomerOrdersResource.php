@@ -17,10 +17,17 @@ class CustomerOrdersResource extends JsonResource
         $service = $this->whenLoaded('services');
         return [
             'id' => $this->id,
-            'service' => $service->name,
-            'provider' => new ProviderOrderProfileResource($this->whenLoaded('providers')),
-            'created'=>$this->created_at->format('Y-m-d'),
-            'status' => $this->status
+            'service' => $service->scope->name,
+            'seller' => $service->user->name,
+
+            'quantity' => $this->quantity,
+            'cost' => $this->cost,
+
+
+
+            'status' => $this->status,
+            'created_at' => $this->created_at->format('Y-m-d'),
+
 
 
         ];

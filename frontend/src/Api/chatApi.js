@@ -9,7 +9,6 @@ export const chatApi = createApi({
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
       headers.set("Authorization", `Bearer ${localStorage.getItem("token")}`);
-
       return headers;
     },
   }),
@@ -28,7 +27,11 @@ export const chatApi = createApi({
       },
  
     }),
+    recentUsers: build.query({
+      query: () =>"private/all",
+ 
+    }),
   }),
 });
 
-export const { useShowChatsQuery, useSendMessageMutation } = chatApi;
+export const { useShowChatsQuery, useSendMessageMutation, useRecentUsersQuery } = chatApi;

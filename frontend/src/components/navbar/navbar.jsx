@@ -7,6 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import SellerNavbar from "./seller-navbar";
 import LandingNavbar from "./landing-navbar";
 import UserNavbar from "./user-navbar";
+import { IoNotificationsOutline } from "react-icons/io5";
+import { AiOutlineMessage } from "react-icons/ai";
+import { MdFavoriteBorder } from "react-icons/md";
 
 const Navbar = () => {
   const logged = localStorage.getItem("logged");
@@ -14,39 +17,53 @@ const Navbar = () => {
   const name=localStorage.getItem('name')
   const isSeller = useMatch(`user/${encodeURIComponent(name)}/*`);
 
-
   const customers = [
     {
-      id: 5,
-      link: "Notification",
+      id: 1,
       to: "/booking/customer",
+      icon:<IoNotificationsOutline/>
     },
     {
-      id: 6,
-      link: "Message",
-      to: "/user/profile",
+      id: 2,
+      to: `/${name}/chat/receiver`,
+      icon:<AiOutlineMessage/>
     },
     {
-      id: 7,
-      link: "Orders",
+      id: 3,
       to: "/chat",
+      icon:<MdFavoriteBorder/>
+    },
+    {
+      id: 4,
+      to: `/${name}/order/summary`,
+      link:"orders"
+    },
+    {
+      id: 4,
+      to: `/user/${localStorage.getItem('name')}`,
+      link:"Become a Seller"
     },
   ];
   const sellers = [
     {
       id: 5,
-      link: "Notification",
       to: "/booking/customer",
+      link:<IoNotificationsOutline/>
     },
     {
       id: 6,
-      link: "Message",
-      to: "/user/profile",
+      to: `/${name}/chat/receiver`,
+      link:<AiOutlineMessage/>
     },
     {
       id: 7,
-      link: "My Orders",
       to: "/chat",
+      link:"orders"
+    },
+    {
+      id: 7,
+      to: "/user",
+      link:"Become a Buyer"
     },
   ];
 

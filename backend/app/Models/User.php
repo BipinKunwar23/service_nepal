@@ -108,4 +108,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Location::class,'user_id');
     }
+    public function latestmessage()
+    {
+        return $this->hasMany(Message::class, 'sender_id', 'id')
+        ->orWhere(function ($query) {
+            $query->where('receiver_id', $this->id);
+        })
+        ->latest();
+    }
 }

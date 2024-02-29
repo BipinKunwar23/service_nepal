@@ -25,7 +25,6 @@ import CreateService from "./views/seller/serviceManagement/serviceCreation/ceea
 import ServiceDetail from "./views/seller/serviceManagement/serviceInformation/serviceDetail";
 import ViewDetails from "./views/buyer/service/viewDetail";
 
-
 import OrderConfirm from "./views/buyer/order/orderConfirm";
 import BookingSummary from "./views/buyer/order/Summary";
 import BookingDetails from "./views/buyer/order/BookingDetails";
@@ -40,14 +39,28 @@ import StatusDetail from "./components/statusDetail";
 import UpdateStatus from "./views/seller/progress/UpdateStatus";
 import SearchResult from "./components/search/searchResult";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+import BuyerOrderList from "./views/buyer/order/Summary";
+import ViewChat from "./components/chat/viewChat";
+import ChatHistory from "./components/chat/chatHistory";
+
 function App() {
+  const message = useSelector((state) => state.sellerSlice.toastMessage);
 
   const name = localStorage.getItem("name");
 
+  // useEffect(()=>{
+  //   if(message){
+  //     toast(message)
 
+  //   }
+  // },[message])
 
   return (
     <section className="relative">
+      <ToastContainer />
       <Navbar />
 
       <Routes>
@@ -69,7 +82,7 @@ function App() {
             element={<ServiceFilter />}
           />
 
-          <Route path="service/:serviceId/more" element={<ViewDetails />} />
+          <Route path="service/:serviceId" element={<ViewDetails />} />
 
           <Route path="category/:categoryId" element={<SubCategory />} />
           <Route path="chat/receiver/:receiverId" element={<Chat />}></Route>
@@ -84,9 +97,15 @@ function App() {
         </Route>
         <Route path="user/search" element={<SearchResult />} />
 
-
-        <Route path={`${name}/order/confirm`} element={<OrderConfirm />}></Route>
-
+        <Route
+          path={`/${name}/order/service`}
+          element={<OrderConfirm />}
+        ></Route>
+        <Route
+          path={`/${name}/order/summary`}
+          element={<BuyerOrderList />}
+        ></Route>
+        <Route path={`/${name}/chat/receiver`} element={<ViewChat />}></Route>
 
         <Route path={`user/${name}/*`} element={<SellerHome />}>
           <Route path="profile" element={<Profile />} />
@@ -100,8 +119,8 @@ function App() {
               </RequireAuth>
             }
           />
-          <Route path="service/create" element={<CreateService />}/>
-          <Route path="service/:serviceId" element={<ServiceDetail />}/>
+          <Route path="service/create" element={<CreateService />} />
+          <Route path="service/:serviceId" element={<ServiceDetail />} />
           <Route path="received/orders/*" element={<OrderSummary />}>
             <Route path=":orderId" element={<OrderDetail />}>
               <Route path="progress/*" element={<ViewStatus />}>
