@@ -13,19 +13,17 @@ return new class extends Migration
     {
         Schema::create('option_user', function (Blueprint $table) {
             $table->id();
-        
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('option_id')->constrained();
-            $table->foreignId('service_id')->constrained();
-            $table->foreignId('category_id')->constrained();
-            $table->foreignId('subcategory_id')->constrained();
+
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('option_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('service_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+
 
             $table->string('title');
-            $table->string('search');
-            $table->text('description')->nullable();
+            $table->string('keywords');
+           
+            $table->string('status')->default('draft');
 
-            $table->string('image')->nullable();
-            $table->boolean('active')->default(false);
 
 
             $table->timestamps();

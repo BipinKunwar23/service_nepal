@@ -27,7 +27,7 @@ const SearchResult = () => {
       <h2 className=" text-3xl ">Result For {service}</h2>
       </div>
       <div>
-        <ServiceCard cards={services} />
+        <ServiceCard cards={services?.data} />
       </div>
     </section>
   );

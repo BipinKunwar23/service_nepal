@@ -3,14 +3,13 @@ const initialState = {
   serviceId: null,
   stepCount:1,
   steps: [
-    { id: 1, title: "Job Overview", show: true },
     { id: 2, title: "Pricing and Scopes", show: false },
-    { id: 3, title: "Description and FAQ", show: false },
-    { id: 4, title: "Gallery", show: false },
-    { id: 5, title: "Requirements", show: false },
+    { id: 3, title: "Gallery and Description", show: false },
+    { id: 4, title: "Requirements", show: false },
 
   ],
-  profileSteps:"personal",
+
+  profileSteps:1,
   packageName:"basic",
   package:[],
   order:{
@@ -25,7 +24,8 @@ const initialState = {
   message:0,
   notification:0
  },
-name:""
+name:"",
+type:"",
 
 };
 
@@ -80,6 +80,9 @@ export const sellerSlice = createSlice({
     setName:(state, actions) => {
       state.name = actions.payload;
     },
+    setType:(state, actions) => {
+      state.type = actions.payload;
+    },
   
   },
 });
@@ -98,6 +101,7 @@ export const {
   setSenderMessage,
   setNotifications,
   setCounts,
-  setName
+  setName,
+  setType
 } = sellerSlice.actions;
 export default sellerSlice.reducer;

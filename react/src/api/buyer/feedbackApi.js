@@ -16,9 +16,9 @@ export const buyerFeedbackApi = createApi({
     
 
     reviewService: builder.mutation({
-      query: ({ serviceId, ...values }) => {
+      query: ({ sellerId, ...values }) => {
         return {
-          url: `${serviceId}`,
+          url: `${sellerId}`,
           method: "post",
           body: values,
         };
@@ -27,13 +27,32 @@ export const buyerFeedbackApi = createApi({
     }),
 
     getServiceReview: builder.query({
-      query: (serviceId) =>
-        `/${serviceId}`,
+      query: (sellerId) =>
+        `${sellerId}`,
       providesTags: ["Services"],
+    }),
+   
+    addTestimonial: builder.mutation({
+      query: ({ formdata }) => ({
+        url: "testimonail",
+        method: "POST",
+        body: formdata,
+      }),
+      invalidatesTags: ["Category"],
+    }),
+    updateTestimonial: builder.mutation({
+      query: ({ formdata }) => ({
+        url: "testimonial",
+        method: "POST",
+        body: formdata,
+      }),
+      invalidatesTags: ["Category"],
     }),
   }),
 });
 export const {
   useGetServiceReviewQuery,
-  useReviewServiceMutation
+  useReviewServiceMutation,
+  useUpdateTestimonialMutation,
+  useAddTestimonialMutation
 } = buyerFeedbackApi;

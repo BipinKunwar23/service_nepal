@@ -9,16 +9,47 @@ import { useViewProfileQuery } from "../../../../api/seller/profileApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfileStep } from "../../../../redux/sellerSlice";
+import Faq from "./faq";
 
 const ServiceProfile = () => {
-  const { data: users, isLoading } = useViewProfileQuery();
+  const { data: user, isLoading } = useViewProfileQuery();
   const step = useSelector((state) => state.sellerSlice.profileSteps);
+  console.log('step',step);
   const dispatch = useDispatch();
-
-  console.log("user", users);
+  console.log("user", user);
   if (isLoading) {
     return <Loader />;
   }
+
+  const HandelPage = ({user,step}) => {
+    switch (step) {
+      case 1:
+        return <PersonalInfo personal={user?.profile} />;
+
+        break;
+      case 2:
+        return <Qualification profession={user?.profession} />;
+        break;
+      case 3:
+        return (
+          <Availability
+            availability={user?.availability}
+            cities={user?.locations}
+          />
+        );
+        break;
+      case 4:
+        return <Faq faqs={user?.faqs} />;
+      case 5:
+        return <Preview user={user} />;
+        break;
+
+      default:
+        break;
+    }
+  };
+
+
   return (
     <>
       <div className="p-6">
@@ -34,11 +65,11 @@ const ServiceProfile = () => {
               </span>
               <button
                 className={`  text-lg font-semibold  ${
-                  step === "personal" && "text-gray-800"
+                  step === "2" && "text-gray-800"
                 } `}
-                // disabled={!(users && users?.personal)}
+                // disabled={!(user && user?.personal)}
                 onClick={() => {
-                  dispatch(setProfileStep("personal"));
+                  dispatch(setProfileStep(1));
                 }}
               >
                 Personal Info
@@ -50,9 +81,9 @@ const ServiceProfile = () => {
               </span>
               <button
                 onClick={() => {
-                  dispatch(setProfileStep("profession"));
+                  dispatch(setProfileStep(2));
                 }}
-                disabled={!(users && users?.personal)}
+                disabled={!(user && user?.profile)}
                 className={` text-lg font-semibold  ${
                   step === "profession" && "text-gray-800"
                 } `}
@@ -69,9 +100,9 @@ const ServiceProfile = () => {
                 className={` text-lg font-semibold  ${
                   step === "availability" && "text-gray-800"
                 }`}
-                disabled={!(users && users?.profession)}
+                disabled={!(user && user?.profession)}
                 onClick={() => {
-                  dispatch(setProfileStep("availability"));
+                  dispatch(setProfileStep(3));
                 }}
               >
                 Availability Info
@@ -84,29 +115,38 @@ const ServiceProfile = () => {
 
               <button
                 className={` text-lg font-semibold  ${
-                  step === "preview" && "text-gray-800"
+                  step === "faq" && "text-gray-800"
                 }`}
-                disabled={!(users && users?.availability)}
+                disabled={!(user && user?.availability)}
                 onClick={() => {
-                  dispatch(setProfileStep("preview"));
+                  dispatch(setProfileStep(4));
                 }}
               >
-             Preview
+                FAQS
               </button>
             </div>
-           
-          </div>
-          {step === "profession" ? (
-            <Qualification profession={users?.profession} />
-          ) : step === "availability" ? (
-            <Availability availability={users?.availability}  cities={users?.cities} />
-          )  : step==="preview" ?<Preview profile={users}/> :
+            <div className="flex gap-2">
+              <span className="bg-green-400 border rounded-full h-[30px] w-[30px] block text-center text-lg text-white ">
+                5
+              </span>
 
-          (
-            <PersonalInfo personal={users?.personal} />
-          )
-          
-          }
+              <button
+                className={` text-lg font-semibold  ${
+                  step === "preview" && "text-gray-800"
+                }`}
+                disabled={!(user && user?.faqs)}
+                onClick={() => {
+                  dispatch(setProfileStep(5));
+                }}
+              >
+                Preview
+              </button>
+            </div>
+          </div>
+
+         {
+          <HandelPage user={user} step={step}/>
+         }
         </section>
       </section>
     </>

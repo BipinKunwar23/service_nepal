@@ -5,20 +5,25 @@ namespace App\Http\Controllers\Buyer;
 use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use App\Models\Order;
+use App\Services\RatingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BuyerFeedbackController extends Controller
 {
+    public $rating;
+    public function __construct(RatingService $rating) {
+        $this->rating = $rating;
+    }
 
-    public function reviewService(Request $request, $serviceId)
+    public function reviewService(Request $request, $sellerId)
     {
 
         Feedback::create(
 
             [
                 'buyer_id' => Auth::user()->id,
-                'service_id' => $serviceId,
+                'seller_id' => $sellerId,
                 'stars' => $request->rating,
                 'review' => $request->review,
             ]
@@ -28,28 +33,17 @@ class BuyerFeedbackController extends Controller
         ]);
     }
 
-    public function calculateOverallRating($serviceId)
-    {
-        $overallRating = Feedback::where('service_id', $serviceId)
-            ->selectRaw('AVG(stars) as stars')
-            ->first();
-            if ($overallRating) {
-                // Convert the stars value to a fixed decimal value with one decimal place
-                $fixedDecimalValue = number_format($overallRating->stars, 1);
-                
-                return $fixedDecimalValue;
-            }
-    }
+   
 
 
 
 
-    public function getReviews($serviceId)
+    public function getReviews($sellerId)
     {
 
-        $feedbacks = Feedback::where('service_id', $serviceId)
-            ->with('users.profile')->get();
-        $overallRating = $this->calculateOverallRating($serviceId);
+        $feedbacks = Feedback::where('seller_id', $sellerId)
+            ->with('users.profile')->latest()->get();
+        $overallRating = $this->rating->calculateOverallRating($sellerId);
         // return $overallRating;
         return response()->json([
             'overall_stars' => $overallRating,

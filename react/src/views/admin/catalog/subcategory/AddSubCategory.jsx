@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { useViewCategoryQuery } from "../../../../api/admin/categoryApi";
 import Select from "react-select";
-const AddSubCategory = ({setAddItem}) => {
+const AddSubCategory = () => {
   const {
     data: categories,
     isError: categoryIsError,
@@ -16,7 +16,7 @@ const AddSubCategory = ({setAddItem}) => {
 
   const navigate = useNavigate();
   const {categoryId}=useParams()
-  const { register, control, handleSubmit, setValue } = useForm();
+  const { register, control, handleSubmit, setValue ,reset} = useForm();
 
 
   const location=useLocation()
@@ -34,7 +34,7 @@ const AddSubCategory = ({setAddItem}) => {
       .unwrap()
       .then((response) => {
         if (response) {
-         setAddItem(false)
+       reset()
         }
 
         console.log(response);
@@ -54,8 +54,7 @@ const AddSubCategory = ({setAddItem}) => {
         className="my-4"
         onSubmit={handleSubmit(submitForm)}
       >
-       
-        <div className="add-form">
+        <div className="add-form grid grid-cols-4">
           <div>
             <label htmlFor=""> {`Sub Category Name`}</label>
             <input type="text" {...register("name")} />
@@ -71,7 +70,7 @@ const AddSubCategory = ({setAddItem}) => {
               control={control}
               render={({ field }) => {
                 return (
-                  <div>
+                  <div className="space-y-5">
                     <label
                       htmlFor=""
                       className="text-gray-700 font-semibold  "
@@ -79,7 +78,7 @@ const AddSubCategory = ({setAddItem}) => {
                       Add Icon/Image
                     </label>
 
-                    <div className=" mt-5 border p-1.5">
+                    <div className="  border-2 border-blue-200 rounded p-1.5">
                       <input
                         type="file"
                         accept="image/*"

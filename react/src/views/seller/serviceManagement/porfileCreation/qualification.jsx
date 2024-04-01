@@ -79,7 +79,7 @@ const Qualification = ({ profession }) => {
       .unwrap()
       .then((response) => {
         console.log(response);
-        dispatch(setProfileStep("availability"))
+        dispatch(setProfileStep(3))
         // navigate(`${location?.state?.path} `, { replace: true });
       })
       .catch((error) => {
@@ -92,7 +92,7 @@ const Qualification = ({ profession }) => {
       .unwrap()
       .then((response) => {
         console.log('response',response);
-        dispatch(setProfileStep("availability"))
+        dispatch(setProfileStep(3))
         // navigate(`${location?.state?.path} `, { replace: true });
       })
       .catch((error) => {
@@ -144,12 +144,12 @@ const Qualification = ({ profession }) => {
         </div>
         {subcategories.length > 0 && (
           <>
-            <div className="grid grid-cols-3 gap-8 ">
+            <div className="grid grid-cols-3  ">
               <label htmlFor="">Skills</label>
-              <div className="col-span-2 flex flex-wrap gap-10">
+              <div className="col-span-2  p-2">
                 {subcategories.map((subcategory, index) => {
                   return (
-                    <div key={subcategory?.id}>
+                    <div key={subcategory?.id} className="grid grid-cols-4">
                       {subcategory?.services.map((skills) => {
                         return (
                           <div key={skills.id} className="flex gap-2">

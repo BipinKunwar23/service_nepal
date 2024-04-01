@@ -5,26 +5,26 @@ const SellerService = () => {
   const [active, setActive] = useState(1);
 
   return (
-    <div className="flex-1 ">
-            <div className="flex gap-10 bg-white p-3  mb-4">
+    <div className="flex-1  px-20">
+            <div className="flex gap-16 bg-white p-3 mb-3 font-semibold ">
               <div className={`${active && "border-b-2 border-green-600"}`}>
                 <button
-                  className="p-4"
+                  className=""
                   onClick={() => {
                     setActive(1);
                   }}
                 >
-                  ACTIVE SERVICE{" "}
+                  ACTIVE {" "}
                 </button>
               </div>
               <div className={`${!active && "border-b-2 border-green-600"}`}>
                 <button
-                  className="p-4"
+                  className=""
                   onClick={() => {
                     setActive(0);
                   }}
                 >
-                  DRAFTS
+                  DRAFT
                 </button>
               </div>
             </div>

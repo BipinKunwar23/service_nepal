@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AddForm } from "../../../../components/admin/addForm";
-const AddServiceOption = ({setAddItem}) => {
+const AddServiceOption = () => {
   const [addService, { data, isLoading, isError, error }] =
     useAddOptionMutation();
   const dispatch = useDispatch();
   const { serviceId } = useParams();
+  const { register, handleSubmit,reset } = useForm();
+
   const navigate = useNavigate();
   const location = useLocation();
   const submitForm = async (values) => {
@@ -18,14 +20,13 @@ const AddServiceOption = ({setAddItem}) => {
       .then((response) => {
         console.log("response", response);
         if (response) {
-          setAddItem(false)
+        reset()
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const { register, control, handleSubmit, setValue } = useForm();
  
  
   return (

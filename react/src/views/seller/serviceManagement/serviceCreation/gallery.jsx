@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { useAddGalleryMutation,useUpdateGalleryMutation } from "../../../../api/seller/serviceApi";
+import {
+  useAddGalleryMutation,
+  useUpdateGalleryMutation,
+} from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setStepCount, setSteps } from "../../../../redux/sellerSlice";
-export const Gallery = ({ galleries }) => {
+export const Gallery = ({ galleries, image }) => {
+  console.log("image", image);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [previewImage, setPreviewImage] = useState(null);
   const { register, control, setValue, handleSubmit } = useForm({});
   const [addGallery, { isLoading }] = useAddGalleryMutation();
-  const [updateGallery, { isLoading:isUpdating }] = useUpdateGalleryMutation();
+  const [updateGallery, { isLoading: isUpdating }] = useUpdateGalleryMutation();
 
-
-  const [removeImage,setRemoveImage]=useState([]);
-  console.log('removeImage',removeImage);
+  const [removeImage, setRemoveImage] = useState([]);
+  console.log("removeImage", removeImage);
   const fileInputRef = React.createRef();
   const handleAddButtonClick = () => {
     // Trigger the file input programmatically when the "Add" button is clicked
@@ -65,41 +68,23 @@ export const Gallery = ({ galleries }) => {
     for (const file of imagePreviews) {
       formdata.append("images[]", file.file);
     }
-    if(galleries && galleries?.length>0){
-      const gallery=galleries?.filter((item)=>{
-        return removeImage.some((value)=>value==item?.id)
-      })
+    if (galleries && galleries?.length > 0) {
+      const gallery = galleries?.filter((item) => {
+        return removeImage.some((value) => value == item?.id);
+      });
       for (const item of gallery) {
         formdata.append("gallery[]", item.image);
       }
 
       await updateGallery({ serviceId, formdata })
-      .unwrap()
-      .then((response) => {
-        dispatch(setStepCount(5));
-        console.log("response", response);
-        const updatedSteps = [...steps];
-
-        const stepIndex = updatedSteps.findIndex((step) => step.id === 5);
-
-        updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], show: true };
-        dispatch(setSteps(updatedSteps));
-        // navigate(`${location?.state?.path} `, { replace: true });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
-    else{
-      await addGallery({ serviceId, formdata })
         .unwrap()
         .then((response) => {
           dispatch(setStepCount(5));
           console.log("response", response);
           const updatedSteps = [...steps];
-  
+
           const stepIndex = updatedSteps.findIndex((step) => step.id === 5);
-  
+
           updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], show: true };
           dispatch(setSteps(updatedSteps));
           // navigate(`${location?.state?.path} `, { replace: true });
@@ -107,7 +92,23 @@ export const Gallery = ({ galleries }) => {
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      await addGallery({ serviceId, formdata })
+        .unwrap()
+        .then((response) => {
+          dispatch(setStepCount(5));
+          console.log("response", response);
+          const updatedSteps = [...steps];
 
+          const stepIndex = updatedSteps.findIndex((step) => step.id === 5);
+
+          updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], show: true };
+          dispatch(setSteps(updatedSteps));
+          // navigate(`${location?.state?.path} `, { replace: true });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
   if (isLoading || isUpdating) {
@@ -120,9 +121,22 @@ export const Gallery = ({ galleries }) => {
         className="bg-white p-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        {/* <div className="create-service mb-5">
-            <h2 className="text-[1.2em]">Service Profile</h2>
-      <div className="">
+        <div className="create-service">
+          <label htmlFor="" className="font-semibold">
+            Description
+          </label>
+          <textarea
+            {...register("description")}
+            id=""
+            rows={5}
+            placeholder="About Service"
+          ></textarea>
+        </div>
+        <div className=" mb-5">
+          <h2 className="text-[1.1em] mb-3 font-semibold">
+            Service Profile Image
+          </h2>
+          <div className="grid grid-cols-2">
             <div
               onClick={() => {
                 document.getElementById("image").click();
@@ -130,31 +144,35 @@ export const Gallery = ({ galleries }) => {
               className=" rounded-full"
             >
               <Controller
-              name="photo"
+                name="photo"
                 control={control}
-                render={({field}) => {
+                render={({ field }) => {
                   return (
                     <>
-                    <div className=" w-full h-[300px] border-2 border-gray-400 grid  "> 
-                       {
-                        !previewImage && <button type="button" className="text-[2em] font-semibold text-green-600">Add 
-                        <span>+</span>
-                        </button>
-                       } 
-                        {
-                             previewImage &&
-                             <img
-                               src={
-                                URL.createObjectURL(previewImage)
-                                
-                                  
-                               }
-                               className=" object-contain object-top h-[300px] w-full "
-                               alt="Service Profile"
-                             />
-                        }
-
-                    </div>
+                      <div className=" w-full h-[300px] border-2 border-gray-400 grid  ">
+                        {!previewImage && !image && (
+                          <button
+                            type="button"
+                            className="text-[2em] font-semibold text-green-600"
+                          >
+                            Add
+                            <span>+</span>
+                          </button>
+                        )}
+                        {previewImage ? (
+                          <img
+                            src={URL.createObjectURL(previewImage)}
+                            className=" object-cover object-center h-[300px] w-full "
+                            alt="Service Profile"
+                          />
+                        ) : image ? (
+                          <img
+                            src={`http://localhost:8000/${image}`}
+                            className=" object-cover object-center h-[300px] w-full "
+                            alt="Service Profile"
+                          />
+                        ) : null}
+                      </div>
                       <input
                         type="file"
                         id="image"
@@ -170,32 +188,34 @@ export const Gallery = ({ galleries }) => {
               />
             </div>
           </div>
-        </div> */}
+        </div>
 
         <div className="">
-          <h2 className="text-[1.2em] font-semibold mb-4">Add Gallery</h2>
+          <h2 className="text-[1.1em] font-semibold mb-4">Add Gallery</h2>
           <div className="">
             <div className="grid grid-cols-2 gap-4 ">
-              {galleries?.filter((item)=>{
-                return !removeImage.some((value)=>value==item?.id)
-              }).map((gallery) => (
-                <div className="relative" key={gallery?.id}>
-                  <img
-                    src={`http://localhost:8000/${gallery?.image}`}
-                    alt=""
-                    className="w-full h-[300px] object-cover"
-                  />
-                  <button
-                    onClick={()=>{
-                      setRemoveImage([...removeImage,gallery?.id])
-                    }}
-                    type="button"
-                    className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
+              {galleries
+                ?.filter((item) => {
+                  return !removeImage.some((value) => value == item?.id);
+                })
+                .map((gallery) => (
+                  <div className="relative" key={gallery?.id}>
+                    <img
+                      src={`http://localhost:8000/${gallery?.image}`}
+                      alt=""
+                      className="w-full h-[300px] object-cover"
+                    />
+                    <button
+                      onClick={() => {
+                        setRemoveImage([...removeImage, gallery?.id]);
+                      }}
+                      type="button"
+                      className="absolute top-0 right-0 cursor-pointer bg-[rgba(0,0,0,0.9)] px-1 text-white font-semibold text-lg]"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
               {imagePreviews.map((preview, index) => (
                 <div key={preview.id} className="relative">
                   <img

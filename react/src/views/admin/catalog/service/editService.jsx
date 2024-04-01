@@ -1,56 +1,65 @@
 import React from "react";
-import EditForm from "../../../components/editForm";
 import { useSelector,useDispatch } from "react-redux";
+import EditForm from "../../../../components/admin/editForm";
 
 import {
   useViewServiceByIdQuery,
   useEditServiceMutation,
 } from "../../../../api/admin/catServiceApi";
-const EditService = () => {
-  const serviceId = useSelector((state) => state.catServiceSlice.serviceId);
-  console.log('serviceID',serviceId);
-  const dispatch=useDispatch()
-  const subcategoryId = useSelector((state) => state.categorySlice.subcategory);
+import { useForm } from "react-hook-form";
+const EditService = ({service,setEdit}) => {
 
-  const { data: subcategory, isLoading } = useViewServiceByIdQuery(serviceId);
-  const [editCategory, { isLoading: isupdating, isError, error }] =
+  const dispatch=useDispatch()
+
+  // const { data: subcategory, isLoading } = useViewServiceByIdQuery(serviceId);
+  const [editService, { isLoading: isupdating, isError, error }] =
     useEditServiceMutation();
 
-  const submitForm = async (values) => {
-    const formdata = new FormData();
-    formdata.append("name", values.name);
-    formdata.append('subcategory_id',subcategoryId)
-    formdata.append("description", values.description);
-    formdata.append("keywords", values.keywords);
-    formdata.append("icons", values.icons);
+    const { register, control, handleSubmit, reset } = useForm({
+      defaultValues:{
+        name: service?.name,
+        keywords: service?.keywords,
+  
+      }
+    });
 
-    await editCategory({
-     formdata,
-      id: serviceId,
-    })
-      .unwrap()
-      .then((response) => {
-        dispatch(setEditAction(""));
+    const submitForm = async (values) => {
+      console.log('values',values);
+  
+      await editService({ values, id: service?.id })
+        .unwrap()
+        .then((response) => {
+          console.log("response", response);
+          if (response) {
+            setEdit(false)
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
 
-
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-  if (isupdating) {
-    return <div>Saving</div>;
-  }
-  if (isError) {
-    return <div>{error.status}</div>;
-  }
-
+ 
   return (
-    <EditForm submitForm={submitForm} name="Service" values={subcategory} />
+    <EditForm register={register} submitForm={submitForm} handleSubmit={handleSubmit} name={"Service"}  >
+       <>
+        
+        <div className="flex-1 ">
+              <label htmlFor=""> Keywords</label>
+              <input type="text" {...register("keywords")} className="w-full" />
+            </div>
+            <div className="flex-1 flex flex-col ">
+              <label htmlFor=""> Type</label>
+             <select name="" id="" placeholder="Select Type" defaultValue={service.type}  {...register('type')} className="p-2 border-blue-300 border-2 focus:border-2 selection:p-2 focus:border-blue-300 rounded space-y-4">
+
+                <option value="general" className="p-2">General Service</option>
+                <option value="specific" className=" p-2">Specific Service</option>
+   
+              </select>
+              {/* <input type="text" {...register("keywords")} className="w-full" /> */}
+            </div>
+          </>
+    </EditForm>
   );
 };
 

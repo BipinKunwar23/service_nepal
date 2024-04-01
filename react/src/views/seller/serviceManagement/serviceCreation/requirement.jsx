@@ -19,7 +19,6 @@ const Requirements = ({data}) => {
     useUpdateRequirementsMutation();
 
   const serviceId = useSelector((state) => state.sellerSlice.serviceId);
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "terms",

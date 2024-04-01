@@ -1,5 +1,4 @@
 import React from "react";
-import EditForm from "../../../components/editForm";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
@@ -7,29 +6,33 @@ import {
   useEditCategoryMutation,
   useGetCategoryByIdQuery,
 } from "../../../../api/admin/categoryApi";
-const EditCategory = () => {
-  const selected = useSelector((state) => state.categorySlice.category);
-  console.log('selected',selected);
+import EditForm from "../../../../components/admin/editForm";
+import { useForm } from "react-hook-form";
+
+const EditCategory = ({ categoryId , setEdit}) => {
   const navigate = useNavigate();
-  const dispatch=useDispatch()
-  const { data: category, isLoading } = useGetCategoryByIdQuery(selected);
+  const dispatch = useDispatch();
+  const { data: category, isLoading } = useGetCategoryByIdQuery(categoryId);
+  console.log('category',category);
   const [editCategory, { isLoading: isupdating, isError, error }] =
     useEditCategoryMutation();
+  const { register, control, handleSubmit, setValue, reset } = useForm({
+    defaultValues:{
+      name: category?.name,
+      keywords: category?.keywords,
+
+    }
+  });
 
   const submitForm = async (values) => {
-    const formdata = new FormData();
-    formdata.append("name", values.name);
-    
-    formdata.append("description", values.description);
-    formdata.append("keywords", values.keywords);
-    formdata.append("icons", values.icons);
+   
 
-    await editCategory({formdata, id: selected })
+    await editCategory({ values, id: categoryId })
       .unwrap()
       .then((response) => {
-        dispatch(setEditAction(""));
-
-
+        if(response){
+          setEdit(false)
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -45,7 +48,37 @@ const EditCategory = () => {
     return <div>{error.status}</div>;
   }
 
-  return <EditForm submitForm={submitForm} name="Category" values={category} />;
+  return (
+    <div className="  my-4 ">
+      <form action="" className="" onSubmit={handleSubmit(submitForm)}>
+     
+        <div className="add-form">
+          <div>
+            <label htmlFor=""> Category Name</label>
+            <input type="text" {...register("name")}
+            defaultValue={category?.name}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="">Key Words</label>
+            <input type="text" {...register("keywords")}
+            defaultValue={category?.keywords}
+            />
+          </div>
+
+          <div className="grid content-end">
+            <button
+              className="bg-blue-600 text-white p-2 w-[150px] rounded "
+              type="submit"
+            >
+              Update Category
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default EditCategory;

@@ -18,11 +18,12 @@ use Illuminate\Validation\Rule;
 class CategoryController extends Controller
 {
     protected $catservices;
-     public function __construct(CategoryService $catservices) {
-        $this->catservices=$catservices;
+    public function __construct(CategoryService $catservices)
+    {
+        $this->catservices = $catservices;
     }
 
-    public function create(Request $request) 
+    public function create(Request $request)
     {
         $request->validate([
             'name' => ['required', 'unique:categories,name'],
@@ -54,13 +55,13 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function getAllCategory(){
-       $categoreis= $this->catservices->getAllCategory();
-       return response()->json($categoreis);
-
+    public function getAllCategory()
+    {
+        $categoreis = $this->catservices->getAllCategory();
+        return response()->json($categoreis);
     }
 
- 
+
 
     public function viewCategoryById($id)
     {
@@ -72,64 +73,28 @@ class CategoryController extends Controller
     {
         $validate = $request->validate([
             'name' => ['required', Rule::unique('categories', 'name')->ignore($id)],
-            'description' => 'sometimes',
             'keywords' => 'required',
         ]);
 
         $category = Category::find($id);
 
 
-        if ($request->hasFile('icons')) {
-            $destination = $category->icons;
-            if (File::exists($destination)) {
-                File::delete($destination);
-            }
-            $file = $request->file('icons');
-            $extension = $file->getClientOriginalExtension();
-            $name = time() . '.' . $extension;
-            $file->move('category/icons', $name);
-            $path = 'category/icons/' . $name;
-        } else {
-            $path = $category->icons;
-        }
-        $category->fill(collect($validate)->put('icons', $path)->toArray())->save();
+
+        $category->fill(collect($validate)->toArray())->save();
         return response()->json([
             'message' => 'successfully updated'
         ], 200);
     }
 
- 
-    public function search(Request $request)
+    public function deleteCategory(Request $request, $id)
     {
-        $category = $request->input('name');
-        $items = Category::select('name', 'description', 'image')->where('name', 'LIKE', '%' . $category . '%')->get();
+
+        Category::find($id)->delete();
+
+
+
         return response()->json([
-            'category' => $items
-        ]);
-    }
-    public function getServices($id)
-    {
-        $item = Category::find($id)->services()->select('id', 'name')->get();
-        return response()->json($item);
-    }
-
-
-    public function getCategoryByProviderId($id)
-    {
-
-
-        $user = User::find($id)->services->pluck('id');
-        if ($user) {
-
-            $categories = Category::whereHas('subcategories', function ($query) use ($user) {
-                $query->whereHas('services', function ($subquery) use ($user) {
-                    $subquery->whereIn('id', $user);
-                });
-            })
-                ->get(['id', 'name','icons']);
-            if ($categories) {
-                return response()->json($categories);
-            }
-        }
+            'message' => 'successfully deleted'
+        ], 200);
     }
 }

@@ -28,8 +28,9 @@ class OptionUser extends Pivot
         return $this->belongsTo(Option::class,'option_id');
     }
 
+    
     public function packages(){
-        return $this->hasMany(package::class,'option_id');
+        return $this->hasMany(package::class,'service_id');
     }
     public function faqs(){
         return $this->hasMany(FAQ::class,'service_id');
@@ -40,17 +41,32 @@ class OptionUser extends Pivot
     public function galleries(){
         return $this->hasMany(gallery::class,'service_id');
     }
+   
+
+    public function standards(){
+        return $this->belongsToMany(Standard::class,'service_user_standard','service_user_id','standard_id')->withPivot('value_id','package');
+    }
+
+    public function values(){
+        return $this->belongsToMany(StandardValue::class,'service_user_standard','service_user_id','value_id');
+    }
+   
+
+
+    public function description(){
+        return $this->hasOne(Description::class,'service_id');
+    }
+  
     public function ratings(){
-        return $this->hasOne(Feedback::class,'service_id');
+        return $this->hasMany(Feedback::class,'service_id');
     }
     public function orders(){
         return $this->hasMany(Order::class,'service_id');
     }
-    public function standards(){
-        return $this->belongsToMany(Standard::class,'option_user_standard','option_user_id','standard_id')->withPivot('value_id','package');
-    }
 
-    public function values(){
-        return $this->belongsToMany(Value::class,'option_user_standard','option_user_id','value_id');
+  
+    public function lists(){
+        return $this->belongsToMany(Lists::class,'list_option_user','option_user_id','list_id');
+
     }
 }

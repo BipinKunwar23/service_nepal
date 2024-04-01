@@ -4,26 +4,27 @@ import { useReviewServiceMutation } from "../../../api/buyer/feedbackApi";
 
 import { FaStar } from "react-icons/fa";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { createReview as addReview } from "../../../redux/buyerSlice";
+import { useDispatch } from "react-redux";
 
-const createReview = () => {
+const createReview = ({ sellerId }) => {
   const [reviewService, { isLoading }] = useReviewServiceMutation();
 
   const { register, control, handleSubmit } = useForm();
 
   const [ratingStar, setRatingStars] = useState(0);
-  const {serviceId}=useParams()
-  const location=useLocation()
-  const navigate=useNavigate()
+  const { serviceId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-
- 
   const handleReview = async (values) => {
-    await reviewService({ review: values.review,rating:ratingStar, serviceId })
+    await reviewService({ review: values.review, rating: ratingStar, sellerId })
       .unwrap()
       .then((response) => {
         console.log("response", response);
-        if(response){
-navigate(location?.state?.path,{replace:true})
+        if (response) {
+          dispatch(addReview(false));
         }
       })
       .catch((error) => {
@@ -33,7 +34,20 @@ navigate(location?.state?.path,{replace:true})
   return (
     <section className="p-5 justify-center grid">
       <div className="w-[40Vw] border p-10 shadow  bg-white ">
-        <h2 className="font-semibold text-gray-700 text-xl mb-6">Review and Rating</h2>
+        <div className="border-b mb-4 grid justify-end">
+          <button
+            className="text-xl text-blue-600 "
+            onClick={() => {
+              dispatch(addReview(false));
+            }}
+          >
+            {" "}
+            X
+          </button>
+        </div>
+        <h2 className="font-semibold text-gray-700 text-xl mb-6">
+          Review and Rating
+        </h2>
         <form
           action=""
           className="space-y-4"
@@ -47,11 +61,11 @@ navigate(location?.state?.path,{replace:true})
               {[1, 2, 3, 4, 5].map((star) => (
                 <i key={star} className=" ">
                   <FaStar
-                   className={`  cursor-pointer text-[2em] ${
-                    star <= ratingStar ? "text-orange-500" : "text-gray-400"
-                  }`}
+                    className={`  cursor-pointer text-[2em] ${
+                      star <= ratingStar ? "text-orange-500" : "text-gray-400"
+                    }`}
                     onClick={() => {
-                        setRatingStars(star)
+                      setRatingStars(star);
                     }}
                   />
                 </i>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { FaChevronUp } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
-const ServiceFaqs = ({faqs}) => {
+const ServiceFaqs = ({faqs,children}) => {
   const [faqIndex, setFaqIndex] = useState();
 
   return (
    <>
-   <h2 className="font-semibold mb-3">FAQS </h2>
+   {children}
 
 <ul>
   {faqs?.map((faq) => {

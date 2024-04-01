@@ -9,15 +9,17 @@ use App\Models\Subcategory;
 use App\Models\User;
 use App\Services\SubCategoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 
 class SubCategoryController extends Controller
 {
 
     protected $subcatservices;
-    public function __construct(SubCategoryService $subcatservices) {
-       $this->subcatservices=$subcatservices;
-   }
+    public function __construct(SubCategoryService $subcatservices)
+    {
+        $this->subcatservices = $subcatservices;
+    }
 
 
     public function create(Request $request, $id)
@@ -38,7 +40,7 @@ class SubCategoryController extends Controller
         }
         Subcategory::create([
             'name' => $request->name,
-            'category_id'=>$id,
+            'category_id' => $id,
             'description' => $request->description,
             'keywords' => $request->keywords,
             'icons' => $path,
@@ -50,7 +52,7 @@ class SubCategoryController extends Controller
     }
     public function getAllSubCategory()
     {
-        $subcategoreis= $this->subcatservices->getAllSubCategory();
+        $subcategoreis = $this->subcatservices->getAllSubCategory();
         return response()->json($subcategoreis);
     }
 
@@ -67,65 +69,39 @@ class SubCategoryController extends Controller
         return response()->json($subcategories);
     }
 
-    public function getAllSubCategoryByProvider()
-    {
-        
-        $subcategories = Subcategory::with('services:id,subcategory_id,name,icons')->get();
-        if ($subcategories) {
-            return response()->json($subcategories);
-        }
-    }
-    public function getSubCategoryByProviderCategory($categoryId)
-    {
-        
-        $subcategories = Subcategory::with('services:id,subcategory_id,name,icons')->where('category_id',$categoryId)->get();
-        return response()->json($subcategories);
-    }
-    public function getSubCategoryByProviderId($providerId)
-    {
-        $user = User::find($providerId)->services->pluck('id');
-        $subcategories = Subcategory::whereHas('services', function ($query) use ($user) {
-            $query->whereIn('id', $user);
-        })->get();
 
-        if ($subcategories) {
-            return response()->json($subcategories);
-        }
-    }
-
-    public function getSubCategoryByProviderCategoryId($categoryId, $providerId)
-    {
-        $user = User::find($providerId)->services->pluck('id');
-
-        $subcategories = Subcategory::whereHas('category', function ($query) use ($categoryId) {
-            $query->where('id', $categoryId);
-        })
-            ->whereHas('services', function ($subquery) use ($user) {
-                $subquery->whereIn('id', $user);
-            })
-            ->get();
-        if ($subcategories) {
-            return response()->json($subcategories);
-        }
-    }
 
     public function updateSubCategory(Request $req, $id)
     {
         $validate = $req->validate([
             'name' => ['required', Rule::unique('subcategories', 'name')->ignore($id)],
-            'description' => 'sometimes',
             'keywords' => 'required',
             'category_id' => 'required'
         ]);
-        $category = Subcategory::find($id)->first();
-        $category->fill($validate)->save();
+        $subcategory = Subcategory::find($id);
+
+        if ($req->hasFile('icons')) {
+            $destination = $subcategory->icons;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $req->file('icons');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('subcategory/icons', $name);
+            $path = 'subcategory/icons/' . $name;
+        } else {
+            $path = $subcategory->icons;
+        }
+        $subcategory->fill(collect($validate)->put('icons', $path)->toArray())->save();
         return response()->json([
             'message' => 'successfully updated'
         ], 200);
     }
 
-    public function getCategoryServiceScopes($categoryId){
-        $detail=Subcategory::with('services.scopes')->find($categoryId);
+    public function getCategoryServiceScopes($categoryId)
+    {
+        $detail = Subcategory::with('services.scopes')->find($categoryId);
         return $detail;
     }
 }

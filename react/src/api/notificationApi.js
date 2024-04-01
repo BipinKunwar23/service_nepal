@@ -15,10 +15,8 @@ export const notificationApi = createApi({
   endpoints: (build) => ({
     showNotificaitons: build.query({
       query: () => "all",
- 
     }),
-
   }),
 });
 
-export const { useShowNotificaitonsQuery  } = notificationApi;
+export const { useShowNotificaitonsQuery } = notificationApi;

@@ -12,9 +12,7 @@
   .field input, .field textarea{
    @apply border-2 border-slate-300  p-2 rounded-md 
   }
-    .admin {
-  @apply  shadow shadow-gray-800 p-20 rounded-md w-[33Vw] box-border 
-    }
+  
     .admin div{
       @apply mb-5 flex flex-col gap-3
     }
@@ -24,7 +22,7 @@
     .admin div label{
       @apply text-[1em] font-semibold
     }
-  }
+   
   .add-form{
     @apply flex  justify-between  gap-4
   }
@@ -32,10 +30,10 @@
     @apply   space-y-5 
   }
   .add-form div label{
-    @apply text-gray-600 text-[1.1em]
+    @apply text-gray-600 text-[1em] font-semibold
   }
   .add-form div input[type="text"], .add-form div textarea{
-    @apply p-2 focus:outline-none border border-gray-300   rounded text-[1em] w-full 
+    @apply p-2 focus:outline-none border border-blue-300 rounded text-[1em] w-full 
   }
   .add-form div button {
     @apply content-center
@@ -46,7 +44,7 @@
 }
 
   .form form {
-    @apply space-y-8 border-2 shadow  border-gray-200 rounded bg-white p-12 box-border w-full text-[1.1em];
+    @apply space-y-8  rounded bg-white   w-full text-[1.1em];
   }
 
   .form form > div {
@@ -57,7 +55,7 @@
     @apply font-medium ;
   }
   .form div input {
-    @apply text-gray-600 p-3 text-[1em] placeholder:text-[1em] focus:outline-none  my-1  hover:transition   hover:bg-gray-200   border-b-2 border-gray-300 ;
+    @apply text-gray-600 p-3 text-[1em] placeholder:text-[1em] focus:outline-none  my-1  hover:transition   hover:bg-gray-200   border-b-2 border-gray-400 ;
   }
   .form div textarea {
     @apply focus:outline-none border border-gray-400 rounded-md p-2;
@@ -90,25 +88,30 @@
   .charge {
     @apply flex;
   }
+}
 
 @layer base {
   .charge {
     @apply flex;
+    
+  }
+  .admin   a.active {
+    @apply bg-white shadow rounded-3xl  text-slate-800 
   }
 }
 
 @layer utilities {
   .login form {
-    @apply grid grid-cols-1 text-lg box-border  gap-4 bg-white p-10  w-full shadow shadow-gray-400 rounded bottom-full;
+    @apply grid grid-cols-1 text-lg box-border  gap-4 bg-white p-8  w-full rounded bottom-full;
   }
   .login form > div {
     @apply grid gap-2;
   }
   .login form div label {
-    @apply text-slate-600;
+    @apply text-slate-600 font-semibold;
   }
   .login div input {
-    @apply focus:outline-none  p-3  w-full my-1 text-gray-600  hover:bg-gray-200 rounded-md border shadow;
+    @apply focus:outline-none  p-2  w-full my-1 text-gray-600  hover:bg-gray-200 rounded-md border border-gray-400 shadow;
   }
 
   .edit form > div {
@@ -184,7 +187,7 @@
     @apply flex gap-10 bg-red-500;
   }
   .service-card {
-    @apply  rounded-lg transition-all text-center hover:scale-105  shadow-gray-700 shadow-lg p-4  border border-gray-100
+    @apply  rounded-lg transition-all text-center hover:scale-105 p-4  border border-gray-300 shadow
   }
   .service-card img {
     @apply h-[150px] w-full object-cover shadow rounded-lg ;
@@ -248,14 +251,14 @@
   .quick-links h4,
   .legal-info h4,
   .social-media h4 {
-    @apply text-orange-600 font-bold;
+    @apply text-gray-800 font-bold mb-4;
   }
 
   .contact-info ul li,
   .quick-links ul li,
   .legal-info ul li,
   .social-media ul li {
-    @apply mb-3 mt-3;
+    @apply mt-2 text-[0.9em] font-semibold text-gray-600;
   }
 
   .order {
@@ -407,6 +410,12 @@
 .createProfile{
   @apply grid grid-cols-3 gap-10
 }
+.createProfile div{
+  @apply col-span-2
+}
+.createProfile div p{
+  @apply mt-3 text-red-600 font-semibold
+}
 .createProfile input,.createProfile textarea{
   @apply col-span-2 p-2 border border-gray-400 w-full rounded-md
 }
@@ -432,8 +441,12 @@
 .create-service input, .create-service textarea{
   @apply bg-white p-2   border border-gray-400 w-full
 }
+
 .create-service p{
   @apply text-gray-400
+}
+.create-service label{
+  @apply font-semibold
 }
 .create-service :nth-child(2){
   @apply col-span-3 col-start-3
@@ -488,9 +501,17 @@
 .dashboard-title div span{
   @apply text-xl font-semibold 
 }
+.about-form {
+@apply grid grid-cols-1 gap-3 my-6
+}
+.about-form input[type='text'], .about-form textarea{
+  @apply w-full rounded focus:outline-none border border-gray-300 p-2 box-border
+}
+.about-form label{
+  @apply text-[1em] 
+}
 }
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 }
@@ -499,9 +520,14 @@ body {
   margin: 0;
   display: grid;
   box-sizing: border-box;
+  font-size: 16px;
   min-width: 320px;
   min-height: 100vh;
-  font-family: "Roboto", sans-serif;
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: 'normal';
+  font-variation-settings:
+    "wdth" 100;
   padding: 0;
   background-color: white;
 }
@@ -510,6 +536,7 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
 
 /* a.active {
   color: black;

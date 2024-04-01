@@ -17,8 +17,9 @@ class ServiceSummaryResource extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->whenLoaded('option')->name,
+            'type'=>$this->whenLoaded('service')->type,
             'orders'=>$this->orders_count,
-            'active'=>$this->active,
+            'status'=>$this->status,
         ];
     }
 }

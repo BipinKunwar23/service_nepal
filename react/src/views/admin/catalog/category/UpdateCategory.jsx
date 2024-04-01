@@ -31,7 +31,7 @@ refetch()
       return <div>{error}</div>
      }
   return (
-    <div className="form">
+    <div className="form ">
     <form action="" onSubmit={handleSubmit(submitForm)}>
       <div>
         <label htmlFor="">Category Name</label>

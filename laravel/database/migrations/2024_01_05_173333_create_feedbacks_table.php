@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('buyer_id');
-            $table->unsignedBigInteger('service_id');
+            $table->unsignedBigInteger('seller_id');
             $table->foreign('buyer_id')->references('id')->on('users');
-            $table->foreign('service_id')->references('id')->on('option_user');
+            $table->foreign('seller_id')->references('id')->on('users');
             $table->integer('stars')->nullable();
             $table->text('review')->nullable();
 

@@ -4,20 +4,17 @@ export const sellerServiceApi = createApi({
   reducerPath: "sellerService",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8000/api/seller/service/",
-    prepareHeaders:(headers)=>{
+    prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
-      headers.set('Accept','application/json')
-      headers.set('Authorization', `Bearer ${localStorage.getItem('token')}`);
-      return headers
-    }
+      headers.set("Accept", "application/json");
+      headers.set("Authorization", `Bearer ${localStorage.getItem("token")}`);
+      return headers;
+    },
   }),
-  tagTypes:['Services'],
+  tagTypes: ["Services"],
   endpoints: (builder) => ({
-    
-  
-  
     createOverview: builder.mutation({
-      query: ({optionId,values}) => {
+      query: ({ optionId, values }) => {
         return {
           url: `overview/${optionId}`,
           method: "POST",
@@ -25,11 +22,9 @@ export const sellerServiceApi = createApi({
         };
       },
       invalidatesTags: ["Services"],
-
-
     }),
     updateOverview: builder.mutation({
-      query: ({optionId,values}) => {
+      query: ({ optionId, values }) => {
         return {
           url: `overview/${optionId}`,
           method: "PUT",
@@ -37,59 +32,32 @@ export const sellerServiceApi = createApi({
         };
       },
       invalidatesTags: ["Services"],
-
-
     }),
+
     addServicePrice: builder.mutation({
-      query: ({optionId,price}) => {
+      query: ({ serviceId, price }) => {
         return {
-          url: `price/${optionId}`,
+          url: `price/${serviceId}`,
           method: "POST",
           body: price,
         };
       },
       invalidatesTags: ["Services"],
-
-
     }),
     updateServicePrice: builder.mutation({
-      query: ({optionId,price}) => {
+      query: ({ serviceId, price }) => {
         return {
-          url: `price/${optionId}`,
+          url: `price/${serviceId}`,
           method: "PUT",
           body: price,
         };
       },
       invalidatesTags: ["Services"],
-
     }),
 
-    addDescrptionFaq: builder.mutation({
-      query: ({serviceId,values}) => {
-        return {
-          url: `faqs/${serviceId}`,
-          method: "POST",
-          body: values,
-        };
-      },
-
-      invalidatesTags: ["Services"],
-
-    }),
-    updateDescrptionFaq: builder.mutation({
-      query: ({serviceId,values}) => {
-        return {
-          url: `faqs/${serviceId}`,
-          method: "PUT",
-          body: values,
-        };
-      },
-
-      invalidatesTags: ["Services"],
-
-    }),
+   
     addGallery: builder.mutation({
-      query: ({serviceId, formdata}) => {
+      query: ({ serviceId, formdata }) => {
         return {
           url: `gallery/${serviceId}`,
           method: "POST",
@@ -97,10 +65,9 @@ export const sellerServiceApi = createApi({
         };
       },
       invalidatesTags: ["Services"],
-
     }),
     updateGallery: builder.mutation({
-      query: ({serviceId, formdata}) => {
+      query: ({ serviceId, formdata }) => {
         return {
           url: `gallery/update/${serviceId}`,
           method: "POST",
@@ -108,10 +75,9 @@ export const sellerServiceApi = createApi({
         };
       },
       invalidatesTags: ["Services"],
-
     }),
     addRequirements: builder.mutation({
-      query: ({serviceId, values}) => {
+      query: ({ serviceId, values }) => {
         return {
           url: `requirement/${serviceId} `,
           method: "POST",
@@ -119,10 +85,9 @@ export const sellerServiceApi = createApi({
         };
       },
       invalidatesTags: ["Services"],
-
     }),
     updateRequirements: builder.mutation({
-      query: ({serviceId, values}) => {
+      query: ({ serviceId, values }) => {
         return {
           url: `requirement/${serviceId} `,
           method: "PUT",
@@ -130,19 +95,40 @@ export const sellerServiceApi = createApi({
         };
       },
       invalidatesTags: ["Services"],
-
     }),
 
     saveService: builder.mutation({
       query: (serviceId) => {
         return {
-          url: `save/${serviceId} `,
+          url:  `save/${serviceId}` ,
           method: "POST",
         };
       },
       invalidatesTags: ["Services"],
-
     }),
+
+  
+    addDescription: builder.mutation({
+      query: ({formdata,serviceId }) => {
+        return {
+          url: `detail/create/${serviceId}`,
+          method: "POST",
+          body: formdata,
+        };
+      },
+      invalidatesTags: ["Services"],
+    }),
+    updateDescription: builder.mutation({
+      query: ({formdata,serviceId }) => {
+        return {
+          url: `detail/update/${serviceId}`,
+          method: "POST",
+          body: formdata,
+        };
+      },
+      invalidatesTags: ["Services"],
+    }),
+
 
     editServices: builder.mutation({
       query: (formdata) => {
@@ -151,73 +137,77 @@ export const sellerServiceApi = createApi({
           url: `edit/${id}`,
           method: "POST",
           body: formdata,
-         
         };
       },
-      invalidatesTags: ['Services'],
+      invalidatesTags: ["Services"],
     }),
-
-  
 
     deleteServices: builder.mutation({
       query: (serviceId) => {
         return {
           url: `delete/${serviceId}`,
           method: "DELETE",
-         
         };
-        
       },
-      invalidatesTags: ['Services'],
-
+      invalidatesTags: ["Services"],
     }),
 
-    viewServiceCards:builder.query({
-      query:()=>{
-        return "cards"
+    viewServiceCards: builder.query({
+      query: () => {
+        return "cards";
       },
       providesTags: ["Services"],
-
     }),
 
-    viewServiceDetails:builder.query({
-      query:(serviceId)=>`${serviceId}`,
+    viewServiceDetails: builder.query({
+      query: (serviceId) => `${serviceId}`,
       providesTags: ["Services"],
-
     }),
-   
-
-    viewServiceSummary:builder.query({
-      query:()=>"all",
+    viewSpecificServiceDetails: builder.query({
+      query: (serviceId) => `specific/${serviceId}`,
       providesTags: ["Services"],
-
     }),
-   
-    getServiceStandard:builder.query({
-      query:(optionId)=>`option/standard/${optionId}`
+    viewDraftService: builder.query({
+      query: ({serviceId,type}) => {
+        return type==='specific'? `draft/specific/${serviceId}` : type==="general"? `draft/general/${serviceId}` : null
+      },
+      providesTags: ["Services"],
+    }),
+    viewOptonDetails: builder.query({
+      query: ({ optionId }) => `option/${optionId}`,
+      providesTags: ["Services"],
+    }),
+
+    viewServiceSummary: builder.query({
+      query: () => "view/all",
+      providesTags: ["Services"],
+    }),
+
+    getServiceStandard: builder.query({
+      query: (serviceId) => `standard/${serviceId}`,
     }),
   }),
 });
 export const {
-  useCreateOverviewMutation,
+
   useAddServicePriceMutation,
   useEditServicesMutation,
   useDeleteServicesMutation,
-  useAddDescrptionFaqMutation,
   useAddGalleryMutation,
   useAddRequirementsMutation,
   useViewServiceCardsQuery,
-  useViewServiceDetailsQuery,
   useViewServiceSummaryQuery,
+  useViewServiceDetailsQuery,
+  useViewSpecificServiceDetailsQuery,
   useGetServiceStandardQuery,
-  useSaveServiceMutation,
+  useCreateOverviewMutation,
   useUpdateOverviewMutation,
+  useAddDescriptionMutation,
+  useUpdateDescriptionMutation,
   useUpdateServicePriceMutation,
-  useUpdateDescrptionFaqMutation,
   useUpdateGalleryMutation,
-  useUpdateRequirementsMutation
-
-
-  
-  
+  useUpdateRequirementsMutation,
+  useViewOptonDetailsQuery,
+  useViewDraftServiceQuery,
+  useSaveServiceMutation
 } = sellerServiceApi;

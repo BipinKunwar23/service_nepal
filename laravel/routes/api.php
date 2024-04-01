@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\StandardController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+
 use App\Http\Controllers\Admin\SubServiceController;
 use App\Http\Controllers\Admin\SubsubcateogryController;
 use App\Http\Controllers\AvailabilityController;
@@ -19,6 +22,7 @@ use App\Http\Controllers\FAQController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ListController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceController;
@@ -29,12 +33,14 @@ use App\Http\Controllers\RequirementsController;
 use App\Http\Controllers\ScopeUserController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SearchHistoryController;
+use App\Http\Controllers\Seller\OrderStatusController;
 use App\Http\Controllers\Seller\SellerCatalogController;
 use App\Http\Controllers\Seller\SellerFeedbackController;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Seller\SellerProfileController;
 use App\Http\Controllers\Seller\SellerServiceController;
 use App\Http\Controllers\ServiceProviderController;
+use App\Http\Controllers\UserServiceController;
 use App\Models\SearchHistory;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -61,21 +67,21 @@ Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::get('/profile/auth/{userId}', 'providerAuth');
 });
 
+
+Route::prefix('user/service')->controller(UserServiceController::class)->group(function () {
+    Route::get('all', 'getAllServiceCards');
+    Route::get('{serviceId}/package', 'getServicePackage');
+    Route::get('search/list/{name}', 'getSearchList');
+    Route::get('search', 'getSearchedServices');
+    Route::get('filter_type/{serviceId}', 'getFilterTypes');
+    Route::get('filter/{serviceId}', 'getfilteredService');
+    Route::get('{serviceId}/option/{optionId}', 'getServiceDetails');
+});
+
+
 Route::prefix('landing')->controller(LandingPageController::class)->group(function () {
 
-    Route::post('stories/{userId}/create', 'successStoreis');
-    Route::post('questions/{userId}/create', 'askquestions');
-    Route::post('about/create', 'aboutUs');
-    Route::post('contact/create', 'contactUs');
-    Route::post('header/create', 'headers');
-    Route::post('legal/create', 'legals');
-
-    Route::get('stories/{userId}/get', 'getSuccessStoreis');
-    Route::get('questions/{userId}/get', 'getAskquestions');
-    Route::get('about/get', 'getAboutUs');
-    Route::get('contact/get', 'getcontactUs');
-    Route::get('header/get', 'getHeaders');
-    Route::get('legal/get', 'getlegals');
+    Route::get('show', 'getLandingPageData');
 });
 
 Route::prefix('profile')->middleware('auth:sanctum')->controller(ProfileController::class)->group(function () {
@@ -108,6 +114,22 @@ Route::prefix('notification')->middleware('auth:sanctum')->controller(Notificati
 });
 
 
+
+Route::prefix('saved')->middleware('auth:sanctum')->controller(ListController::class)->group(function () {
+
+    // Route::get('chat/get',[ChatController::class,'sendMessage'])->middleware('auth:sanctum')
+    Route::post('list', 'createList');
+    Route::get('list/{serviceId}', 'getList');
+    Route::post('favourite/{listId}/service/{serviceId}', 'addtoFavourite');
+    Route::post('wishlist/{listId}/service/{serviceId}', 'addtoWishList');
+    Route::get('favourite/{listId}', 'getFavouriteList');
+
+    Route::get('wishlist/{listId}', 'getWishList');
+
+    Route::get('services', 'getSavedItems');
+    Route::get('list/{id}/service', 'getItemsByList');
+});
+
 Route::prefix('history')->middleware('auth:sanctum')->controller(SearchHistoryController::class)->group(function () {
 
     // Route::get('chat/get',[ChatController::class,'sendMessage'])->middleware('auth:sanctum')
@@ -130,15 +152,16 @@ Route::prefix('admin')->group(function () {
         Route::post('create', 'create');
         Route::get('all', 'getAllCategory');
         Route::get('view/{id}', 'viewCategoryById');
-        Route::post('edit/{id}', 'updateCategory');
+        Route::put('edit/{id}', 'updateCategory');
+        Route::delete('delete/{id}', 'deleteCategory');
     });
 
     Route::prefix('subcategory')->controller(SubCategoryController::class)->group(function () {
         Route::post('create/{categoryId}', 'create');
         Route::get('all', 'getAllSubCategory');
         Route::get('view/category/{categoryId}', 'getSubCategoryByCategory');
-        Route::get('view/{id}', 'getById');
-        Route::put('edit/{id}', 'updateSubCategory');
+        Route::get('view/{id}', 'viewById');
+        Route::post('edit/{id}', 'updateSubCategory');
     });
 
     Route::prefix('option')->controller(OptionsController::class)->group(function () {
@@ -146,17 +169,23 @@ Route::prefix('admin')->group(function () {
         Route::get('all', 'getAllSubCategory');
         Route::get('service/{serviceId}', 'getByService');
         Route::get('view/{id}', 'getById');
-        Route::put('edit/{id}', 'updateSubCategory');
-        Route::prefix('standard')->group(function () {
-            Route::post('create/{serviceId}', 'createStandard');
+        Route::put('edit/{option}', 'updateOption');
+    });
 
-            Route::get('all', 'show');
-            Route::get('{serviceId}', 'getStandardByServicesId');
-            Route::prefix('value')->group(function () {
-                Route::post('create/{standardId}', 'addValues');
 
-                Route::get('{standardId}', 'getValuesByStandard');
-            });
+    Route::prefix('standard')->controller(StandardController::class)->group(function () {
+        Route::post('create/{serviceId}', 'createStandard');
+        Route::put('edit/{standard}', 'updateStandard');
+
+
+        Route::get('{serviceId}', 'getStandardByServicesId');
+        Route::prefix('value')->group(function () {
+            Route::post('{standardId}', 'addValues');
+            Route::put('edit/{id}', 'updateValue');
+
+
+
+            Route::get('{standardId}', 'getValuesByStandard');
         });
     });
 
@@ -168,32 +197,60 @@ Route::prefix('admin')->group(function () {
         Route::get('subcategory/{subcategoryId}', 'getBySubCategory');
         Route::post('edit/{service}', 'updateService');
     });
-    Route::prefix('user')->controller(UserController::class)->group(function () {
-        Route::post('create', 'create');
+    Route::prefix('user')->controller(AdminUserController::class)->group(function () {
         Route::get('all', 'viewAllUsers');
-        Route::get('services', 'viewAllServices');
-
-        Route::get('view/{id}', 'viewCategoryById');
-        Route::post('edit/{id}', 'updateCategory');
+        Route::get('delete/{id}', 'deleteUser');
+        Route::prefix('service')->group(function () {
+            Route::get('all', 'viewAllServices');
+            Route::post('approve/{id}', 'ApproveService');
+            Route::post('modify/{id}', 'requestModification');
+            Route::post('deny/{id}', 'denyService');
+        });
+        Route::prefix('order')->group(function () {
+            Route::get('all', 'viewAllOrders');
+            Route::post('cancel/{id}', 'cancelOrder');
+        });
     });
+    Route::prefix('about')->middleware('auth:sanctum')->controller(AboutUsController::class)->group(function () {
 
+        // Route::get('chat/get',[ChatController::class,'sendMessage'])->middleware('auth:sanctum')
+        Route::get('company', 'viewCompanyInformation');
+        Route::get('teams', 'viewTeams');
+        Route::get('testimonial', 'viewTestimonials');
+        Route::get('faqs', 'viewFaqs');
+        Route::get('legal', 'viewLegalInformation');
+        Route::get('all', 'viewAbout');
+
+        Route::post('company', 'addCompanyInformation');
+        Route::post('teams', 'addTeams');
+        Route::post('testimonial', 'addTestimonials');
+        Route::post('faqs', 'addFaqs');
+        Route::post('legal', 'addLegalInformation');
+        Route::post('company/edit/{company}', 'editCompanyInformation');
+        Route::post('teams/edit/{member}', 'editTeams');
+        Route::post('testimonial/edit', 'addTestimonials/edit');
+        Route::put('faqs/{id}', 'editFaqs');
+        Route::put('legal', 'editLegalInformation');
+    });
 });
 
 
 
 
-Route::prefix('buyer')->group(function () {
+Route::prefix('buyer')->middleware('auth:sanctum')->group(function () {
 
     Route::prefix('catalog')->controller(BuyerCatalogController::class)->group(function () {
         Route::get('show', 'viewCatalog');
     });
 
     Route::prefix('service')->controller(BuyerServiceController::class)->group(function () {
-        Route::middleware('auth:sanctum')->get('recommend', 'getRecommendedServices');
+        Route::get('recommend', 'getRecommendedServices');
+        Route::get('popular', 'getPopularService');
+
         Route::get('all', 'getAllServiceCards');
         Route::get('{serviceId}', 'getServiceDetails');
         Route::get('{serviceId}/package', 'getServicePackage');
-
+        Route::get('order/{serviceId}', 'getSpecificOrderDetails');
     });
 
     Route::prefix('filter')->controller(FilterSearchController::class)->group(function () {
@@ -205,17 +262,20 @@ Route::prefix('buyer')->group(function () {
         Route::get('service/{serviceId}', 'getfilteredService');
         Route::get('types/{serviceId}', 'getFilterTypes');
     });
+    Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-    Route::prefix('order')->middleware('auth:sanctum')->controller(BuyerOrderController::class)->group(function () {
+
+    Route::prefix('order')->controller(BuyerOrderController::class)->group(function () {
         Route::post('service/{serviceId}', 'placeOrder');
-        Route::get('view/{orderId}', 'viewOrder');
         Route::get('all', 'getAllOrders');
+        Route::get('{orderId}', 'viewOrder');
+        Route::put('{orderId}/cancel', 'CancelOrder');
     });
 
-    Route::prefix('review')->middleware('auth:sanctum')->controller(BuyerFeedbackController::class)->group(function () {
+    Route::prefix('review')->controller(BuyerFeedbackController::class)->group(function () {
 
-        Route::post('{serviceId}', 'reviewService');
-        Route::get('{serviceId}', 'getReviews');
+        Route::post('{sellerId}', 'reviewService');
+        Route::get('{sellerId}', 'getReviews');
     });
 });
 
@@ -234,32 +294,51 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('service')->controller(SellerServiceController::class)->group(function () {
-        Route::post('overview/{serviceId}', 'createOverView');
-        Route::put('overview/{serviceId}', 'updateOverView');
+
+
+        Route::post('overview/{serviceId}', 'createServiceOverView');
+        Route::put('overview/{serviceId}', 'updateServiceOverView');
 
 
         Route::post('price/{serviceId}', 'createPrice');
         Route::put('price/{serviceId}', 'updatePrice');
 
+        Route::post('detail/create/{serviceId}', 'createSpecificDetails');
+        Route::post('detail/update/{serviceId}', 'updateSpecificDetails');
+
         Route::post('gallery/{serviceId}', 'createGallery');
         Route::post('gallery/update/{serviceId}', 'updateGallery');
 
-        Route::post('faqs/{serviceId}', 'createFaq');
-        Route::put('faqs/{serviceId}', 'updateFaq');
 
         Route::post('requirement/{serviceId}', 'createRequirement');
         Route::put('requirement/{serviceId}', 'updateRequirement');
+        Route::get('draft/general/{serviceId}', 'DraftGeneralService');
+        Route::get('draft/specific/{serviceId}', 'DraftSpecificService');
+
+
+        Route::get('view/all', 'viewServiceSummary');
 
         Route::post('save/{serviceId}', 'saveService');
-
-
-        Route::get('all', 'viewServiceSummary');
         Route::get('cards', 'viewServiceCards');
-        Route::get('draft/{serviceId}', 'DraftService');
-        Route::get('{serviceId}', 'getServiceDetails');
-        Route::get('option/standard/{optionId}', 'getOptionStandards');
-        Route::delete('delete/{id}', 'deleteService');
 
+        Route::get('{serviceId}', 'getServiceDetails');
+
+        // Route::prefix('specific')->group(function () {
+        //     Route::get('draft/{serviceId}', 'DraftSpecificService');
+        //     Route::post('overview/{optionId}', 'createSpecificOverView');
+        //     Route::put('overview/{serviceId}', 'updateSpecificOverView');
+        //     Route::post('detail/create/{serviceId}', 'createSpecificDetails');
+        //     Route::post('detail/update/{serviceId}', 'updateSpecificDetails');
+        //     Route::post('save/{serviceId}', 'saveSpecificService');
+        //     Route::get('{serviceId}', 'getSpecificServiceDetails');
+        // });
+
+
+
+        Route::get('option/{optionId}', 'getOptionDetails');
+
+        Route::get('standard/{serviceId}', 'getServiceStandards');
+        Route::delete('delete/{id}', 'deleteService');
     });
     Route::prefix('profile')->controller(SellerProfileController::class)->group(function () {
         Route::post('personal', 'createPersonal');
@@ -271,6 +350,10 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
 
         Route::post('availability', 'createAvailability');
         Route::put('availability', 'updateAvailability');
+
+
+        Route::post('faqs/{serviceId}', 'createFaq');
+        Route::put('faqs/{serviceId}', 'updateFaq');
 
         Route::post('security', 'createSecurity');
         Route::post('role', 'setRole');
@@ -285,5 +368,11 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
         Route::get('view/{orderId}', 'viewOrderReceived');
         Route::put('{orderId}/accept', 'AcceptOrder');
         Route::put('{orderId}/cancel', 'CancelOrder');
+        Route::put('{orderId}/complete', 'CompleteOrder');
+        Route::delete('{orderId}/delete', 'DeleteOrder');
+
+
+        Route::get('cost', 'getCostByDay');
+        Route::put('status', 'updateStatus');
     });
 });

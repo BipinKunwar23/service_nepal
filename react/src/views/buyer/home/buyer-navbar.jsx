@@ -4,10 +4,13 @@ import SearchBar from "../../../components/search/searchBar";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { AiOutlineMessage } from "react-icons/ai";
 import { MdFavoriteBorder } from "react-icons/md";
+import { setCategory } from "../../../redux/buyerSlice";
+import { useDispatch } from "react-redux";
 const BuyerNavbar = () => {
   const [dropdown, setdropdown] = useState(null);
   const name = localStorage.getItem("name");
   const navigate = useNavigate();
+  const dispatch=useDispatch()
   const navbars = [
  
    
@@ -23,21 +26,12 @@ const BuyerNavbar = () => {
     },
     {
       id: 3,
-      to: "/chat",
+      to: `/user/${name}/list`,
       icon:<MdFavoriteBorder/>
     },
    
   ];
-  const seller= {
-    id: 5,
-    to: `/user/${localStorage.getItem('name')}/seller`,
-    link:"Become a Seller",
-    rquire:"buyer",
-  }
-if(localStorage.getItem("role")!=="seller"){
-
-  navbars.splice(1,0,seller)
-}
+ 
 
   const sidebars = [
     {
@@ -47,45 +41,72 @@ if(localStorage.getItem("role")!=="seller"){
     },
   ];
   return (
-    <div className="  flex gap-4 bg-white p-4">
+    <div className="  flex gap-4 sticky top-0  shadow-sm bg-white z-10 p-3">
       <div
-        className="text-[2em] mr-28 font-bold text-indigo-600 cursor-pointer "
+        className="text-[1.4em] mr-4 space-x-3 font-semibold text-indigo-600 cursor-pointer "
         onClick={() => {
+          dispatch(setCategory(null))
           navigate(`/user/${localStorage.getItem("name")}`, { replace: true });
         }}
       >
-        Labour
+        <span>ProHome</span> 
+        <span className="text-gray-400">Nepal</span>
       </div>
-      <div className="mx-auto w-[40Vw]">
+      <div className="mx-auto flex-1 ">
       <SearchBar />
 
       </div>
       <div className="flex-1 text-gray-600 grid content-center justify-end ">
-        <ul className=" flex flex-1 gap-20  ">
+        <ul className=" flex flex-1 gap-8  ">
           {navbars.map((navbar) => (
             <li key={navbar?.id} className=" grid place-content-center ">
               
-                <NavLink to={navbar.to} className="w-full text-[1.6em] ">
+                <NavLink to={navbar.to} className="w-full text-[1.4em] text-gray-600 ">
                   {" "}
-                  {navbar.icon}
+                  {navbar.icon || navbar.link}
                 </NavLink>
               
              
 
             </li>
           ))}
+          <li  className=" grid place-content-center font-semibold ">
+              
+              <NavLink to={`/user/${localStorage.getItem('name')}/order`} className="w-full  ">
+                {" Orders"}
+              </NavLink>
+            
+           
+
+          </li>
+          <li className=" grid place-content-center font-semibold">
+            {
+              localStorage?.getItem('role')==='seller' ?
+                <NavLink to={`/user/${localStorage.getItem('name')}/seller/dashboard`} className="w-full  text-green-700">
+                  {"Switch to Selling"}
+                </NavLink>:
+                 <NavLink to={`/user/${localStorage.getItem('name')}/seller`} className="w-full  text-green-700">
+                 {"Become a Seller"}
+               </NavLink>
+            }
+              
+              
+             
+
+            </li>
+          
           <li className="relative">
             <img
               src={localStorage.getItem("photo")}
               alt=""
-              className="rounded-full border h-[40px] w-[40px] cursor-pointer"
+              className="rounded-full border h-[30px] w-[30px] cursor-pointer"
               onClick={() => {
                 setdropdown(!dropdown);
               }}
             />
             {dropdown && (
-              <ul className="flex flex-col text-[1.1em] w-[300px] absolute top-12 right-0 gap-4 py-5 border boder-gray-300 p-2 rounded-md bg-white">
-                <li className="text-gray-600 flex gap-3">
+              <ul className="flex flex-col text-[1.05em] w-[300px] font-semibold  bg-white shadow absolute top-12 right-0 gap-3 py-3 border boder-gray-300 p-2 rounded-md ">
+                <li className="text-gray-600 flex gap-3 bg-white">
                   <img
                     src={localStorage.getItem("photo")}
                     alt=""
@@ -93,7 +114,7 @@ if(localStorage.getItem("role")!=="seller"){
                   />
                   <h2 className="text-lg">{localStorage.getItem("name")}</h2>
                 </li>
-                <li className="border border-gray-300 rounded-lg p-3">
+                <li className="border-2 border-gray-300 rounded-lg p-3 bg-white">
                   {
                     localStorage.getItem("role")==="seller" ? 
                   <NavLink

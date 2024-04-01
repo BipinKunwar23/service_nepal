@@ -50,10 +50,10 @@ export const catServiceAPi = createApi({
       providesTags: ["services"],
     }),
     editService: build.mutation({
-      query: ({ formdata, id }) => ({
+      query: ({ values, id }) => ({
         url: `edit/${id}`,
         method: "POST",
-        body: formdata,
+        body: values,
       }),
       invalidatesTags: ["services"],
     }),

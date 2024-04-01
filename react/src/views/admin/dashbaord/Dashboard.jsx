@@ -1,55 +1,69 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom';
-const Dashboard = () => {
-    const dashbars = [
-        {
-          id: 1,
-          link: "Home",
-          to: "/",
-        },
-        {
-          id: 2,
-          link: "Providers",
-          to: "",
-        },
-        {
-          id: 3,
-          link: "Services",
-          to: "/category",
-        },
-      
-        {
-          id: 4,
-          link: "Customers",
-          to: "/",
-        },
-       
-        {
-          id: 5,
-          link: "Payments",
-          to: "/",
-        },
-    ]
+import React from "react";
+
+const Dashboard = ({children}) => {
   return (
-    <div>
-    <nav className=" shadow w-[250px] shadow-white flex flex-col text-white text-[1em] min-h-screen bg-gray-500 ">
-    <h2 className="text-xl font-semibold ml-10  m-10 ">Admin Dashboard </h2>
-  <ul className="flex flex-col   ">
-    {
-      dashbars.map((dashbar)=>{
-        return <li key={dashbar.id} className=" mb-10  ">
-        <NavLink to={dashbar.to} className="text-white m-10">
-          {dashbar?.link}
-        </NavLink>
-        </li>
-      })
-    }
-  </ul>
+    <section className=" w-full"> 
 
-  </nav>
+      <div className="p-4 ">
 
-    </div>
-  )
-}
+      <h2 className="text-lg font-semibold mb-6 ">Dashboard</h2>
+      <div className="dashboard-title">
+        <div className="bg-green-300">
+          <div>
+            <h2>Success Score</h2>
+            <span>200</span>
+          </div>
+        </div>
+        <div className="bg-orange-300">
+          <div className="">
+            <h2>Rating</h2>
+            <span>200</span>
+          </div>
+        </div>
+        <div className="bg-red-300">
+          <div>
+            <h2>Response Rate</h2>
+            <span>200</span>
+          </div>
+        </div>
+        <div className="bg-pink-300">
+          <div>
+            <h2>Orders</h2>
+            <span>3000</span>
+          </div>
+        </div>
+        <div className="bg-indigo-300">
+          <div>
+            <h2>Unique Clients</h2>
+            <span>4000</span>
+          </div>
+        </div>
+        <div className="bg-blue-300">
+          <div>
+            <h2>Earnings</h2>
+            <span>$ 4000</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h2>Bar Charts</h2>
+      </div>
+      <div>
+        <h2>Recent Activity</h2>
 
-export default Dashboard
+        <ul>
+          <li>Tracking Id</li>
+          <li>Name</li>
+          <li>Activity</li>
+          <li>Date</li>
+          <li>Action</li>
+        </ul>
+      </div>
+      </div>
+
+    </section>
+
+  );
+};
+
+export default Dashboard;

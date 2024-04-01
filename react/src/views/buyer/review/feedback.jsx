@@ -15,6 +15,7 @@ const feedback = ({feedbacks}) => {
   return (
     <>
       <section className="  space-y-6  w-full h-[75Vh] overflow-y-auto bg-white  col-span-2">
+      <h2 className="mb-3 font-semibold text-xl sticky top-0 bg-white">What Customer Says About Seller ?</h2>
         {feedbacks?.map((feedback) => {
           return (
             <div className="space-y-4 px-8 box-border " key={feedback?.id}>
@@ -25,7 +26,7 @@ const feedback = ({feedbacks}) => {
                   alt=""
                 />
                 <div className="space-y-2">
-                  <h2 className=" text-[1.2em] font-bold">
+                  <h2 className=" text-[1.1em] font-semibold">
                     {feedback?.users?.name}
                   </h2>
                   <div className="flex gap-2 mb-2">

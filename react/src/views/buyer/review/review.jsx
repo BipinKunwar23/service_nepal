@@ -5,19 +5,19 @@ import { useGetServiceReviewQuery } from "../../../api/buyer/feedbackApi";
 import Loader from '../../../components/Loader';
 import { useParams } from 'react-router-dom';
 
-const BuyerReview = () => {
-  const { serviceId } = useParams();
+const BuyerReview = ({sellerId}) => {
+  console.log('sellerId',sellerId);
 
-  const { data, isLoading } = useGetServiceReviewQuery(serviceId);
+  const { data, isLoading } = useGetServiceReviewQuery(sellerId);
   console.log('data',data);
   if(isLoading){
     return <Loader/>
   }
 
   return (
-    <section className=' p-10 relative grid grid-cols-3 gap-6'>
-        <Rating rating={data?.overall_stars}/>
+    <section className=' relative grid grid-cols-3 mt-4 gap-6'>
         <Feedback feedbacks={data?.feedbacks}/>
+        <Rating rating={data?.overall_stars}/>
         
     </section>
   )

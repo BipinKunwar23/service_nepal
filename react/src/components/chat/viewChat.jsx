@@ -14,11 +14,11 @@ const viewChat = () => {
     dispatch(setCounts({ ...count, message: 0 }));
   }, []);
   return (
-    <section className="flex  h-[88Vh] ">
-      <div className="w-[20Vw] border shadow h-full overflow-y-auto ">
+    <section className="flex p-4   ">
+      <div className="w-[30Vw]  h-full overflow-y-auto border ">
         <RecentUser />
       </div>
-      <div className="flex-1 border">
+      <div className=" border p-2 w-[60Vw] ">
         {receiverId ? (
           <Chat receiverId={receiverId} />
         ) : (

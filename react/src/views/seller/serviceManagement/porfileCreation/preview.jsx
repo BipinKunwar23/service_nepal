@@ -4,11 +4,12 @@ import Loader from "../../../../components/Loader";
 import { useNavigate } from "react-router-dom";
 import { setProfileStep } from "../../../../redux/sellerSlice";
 import { useDispatch } from "react-redux";
+import ServiceFaqs from './../../../../components/service/faq';
 
-const Preview = ({ profile }) => {
+const Preview = ({ user }) => {
   const [setRole, { isLoading }] = useSetRoleMutation();
   const navigate = useNavigate();
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   if (isLoading) {
     return <Loader />;
   }
@@ -19,12 +20,9 @@ const Preview = ({ profile }) => {
       .then((response) => {
         localStorage.setItem("role", response?.role);
         localStorage.setItem("photo", response?.photo);
-        navigate(
-          `/user/${localStorage.getItem("name")}/seller/service/new`,
-          {
-            replace: true,
-          }
-        );
+        navigate(`/user/${localStorage.getItem("name")}/seller/service/new`, {
+          replace: true,
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -32,26 +30,43 @@ const Preview = ({ profile }) => {
   };
   return (
     <section className="bg-white p-6 space-y-10">
+      <div className="flex justify-between ">
+        <div className="flex gap-3 ">
+          <img
+            src={`http://localhost:8000/${user?.profile?.photo}`}
+            alt=""
+            className=" w-16 h-16  rounded-full object-cover "
+          />
+          <div className="grid content-center">
+            <h2 className="text-lg font-semibold">{user?.name}</h2>
+          </div>
+        </div>
+        <div className="grid content-center">
+        <button
+              className="bg-green-600 p-2 text-white w-[70px]   rounded text-lg"
+              onClick={() => {
+                dispatch(setProfileStep("personal"));
+              }}
+            >
+              Edit
+            </button>
+        </div>
+
+      </div>
       <div className="">
         <ul className="space-y-6">
           <li className=" flex justify-between">
             <h2 className="font-semibold text-2xl">Personal Information</h2>
-            <button className="bg-green-600 p-2 text-white w-[70px]   rounded text-lg"
-            onClick={()=>{
-                dispatch(setProfileStep('personal'))
-            }}
-            >
-              Edit
-            </button>
+         
           </li>
           <li>
             <strong>Unique Name </strong>{" "}
-            <span className="ml-2">: {profile?.personal?.name}</span>
+            <span className="ml-2">: {user?.profile?.name}</span>
           </li>
           <li>
             <strong>Profile Image </strong>{" "}
             <img
-              src={`http://localhost:8000/${profile?.personal?.photo}`}
+              src={`http://localhost:8000/${user?.profile?.photo}`}
               alt=""
               className="mt-5 h-[300px] object-cover w-full"
             />
@@ -59,15 +74,17 @@ const Preview = ({ profile }) => {
 
           <li>
             <strong>My Bio</strong>{" "}
-            <p className="mt-3 text-gray-700">{profile?.personal?.bio}</p>
+            <p className="mt-3 text-gray-700">{user?.profile?.bio}</p>
           </li>
           <li>
-            <strong>Address :</strong> <span>{profile?.personal?.address}</span>
+            <strong>Address :</strong> <span>{user?.profile?.address}</span>
           </li>
-
           <li>
-            <strong>Language :</strong>{" "}
-            <span>{profile?.personal?.language}</span>
+            <strong>Phone Number :</strong>{" "}
+            <span>{user?.profile?.phone_number}</span>
+          </li>
+          <li>
+            <strong>Language :</strong> <span>{user?.profile?.language}</span>
           </li>
         </ul>
       </div>
@@ -77,10 +94,11 @@ const Preview = ({ profile }) => {
             <h2 className="font-semibold text-2xl">
               Perofessional Information
             </h2>
-            <button className="bg-green-600 p-2 text-white w-[70px]   rounded text-lg"
-              onClick={()=>{
-                dispatch(setProfileStep('profession'))
-            }}
+            <button
+              className="bg-green-600 p-2 text-white w-[70px]   rounded text-lg"
+              onClick={() => {
+                dispatch(setProfileStep("profession"));
+              }}
             >
               Edit
             </button>
@@ -88,7 +106,7 @@ const Preview = ({ profile }) => {
           <li>
             <strong>Occupation </strong>{" "}
             <span className="ml-2">
-              : {profile?.profession?.occupation?.label}
+              : {user?.profession?.occupation?.label}
             </span>
           </li>
           <li>
@@ -100,11 +118,11 @@ const Preview = ({ profile }) => {
             <ul className="flex gap-8 mt-4">
               <li>
                 <strong>Experience Year :</strong>{" "}
-                <span>{profile?.profession?.experience?.year}</span>
+                <span>{user?.profession?.experience?.year}</span>
               </li>
               <li>
                 <strong>Level :</strong>{" "}
-                <span>{profile?.profession?.experience?.level}</span>
+                <span>{user?.profession?.experience?.level}</span>
               </li>
             </ul>
           </li>
@@ -112,15 +130,15 @@ const Preview = ({ profile }) => {
             <ul className="flex gap-8 mt-4">
               <li>
                 <strong>Education Institute</strong>{" "}
-                <span>: {profile?.profession?.education?.institute}</span>
+                <span>: {user?.profession?.education?.institute}</span>
               </li>
               <li>
                 <strong>Faculty</strong>{" "}
-                <span>: {profile?.profession?.education?.faculty}</span>
+                <span>: {user?.profession?.education?.faculty}</span>
               </li>
               <li>
                 <strong>Year</strong>{" "}
-                <span>: {profile?.profession?.education?.year}</span>
+                <span>: {user?.profession?.education?.year}</span>
               </li>
             </ul>
           </li>
@@ -128,15 +146,15 @@ const Preview = ({ profile }) => {
             <ul className="flex gap-8 mt-4">
               <li>
                 <strong>Certificate Name</strong>{" "}
-                <span>: {profile?.profession?.certificate?.name}</span>
+                <span>: {user?.profession?.certificate?.name}</span>
               </li>
               <li>
                 <strong>Certified By</strong>{" "}
-                <span>: {profile?.profession?.certificate?.institute}</span>
+                <span>: {user?.profession?.certificate?.institute}</span>
               </li>
               <li>
                 <strong>Year</strong>{" "}
-                <span>: {profile?.profession?.certificate?.year}</span>
+                <span>: {user?.profession?.certificate?.year}</span>
               </li>
             </ul>
           </li>
@@ -146,10 +164,11 @@ const Preview = ({ profile }) => {
         <ul className="space-y-6">
           <li className=" flex justify-between">
             <h2 className="font-semibold text-2xl">Availability Information</h2>
-            <button className="bg-green-600 p-2 text-white w-[70px]   rounded text-lg"
-              onClick={()=>{
-                dispatch(setProfileStep('availability'))
-            }}
+            <button
+              className="bg-green-600 p-2 text-white w-[70px]   rounded text-lg"
+              onClick={() => {
+                dispatch(setProfileStep("availability"));
+              }}
             >
               Edit
             </button>
@@ -159,14 +178,14 @@ const Preview = ({ profile }) => {
             <strong>Time</strong>{" "}
             <span className="ml-2">
               {" "}
-              : {profile?.availability?.time?.start} -{" "}
-              {profile?.availability?.time?.end}
+              : {user?.availability?.time?.start} -{" "}
+              {user?.availability?.time?.end}
             </span>
           </li>
           <li className="flex gap-1">
             <strong>Days</strong> <span className="ml-2">:</span>
             <ul className="flex gap-5">
-              {profile?.availability?.days?.map((day) => (
+              {user?.availability?.days?.map((day) => (
                 <li>{day}</li>
               ))}
             </ul>
@@ -174,13 +193,19 @@ const Preview = ({ profile }) => {
           <li className="flex gap-1">
             <strong>Cities</strong> <span className="ml-2">:</span>
             <ul className="flex gap-5">
-              {profile?.cities?.map((location) => (
+              {user?.cities?.map((location) => (
                 <li>{location?.city},</li>
               ))}
             </ul>
           </li>
         </ul>
       </div>
+      <div className="mt-4">
+          <ServiceFaqs faqs={user?.faqs} >
+   <h2 className="font-semibold text-2xl mb-3">Frequently Asked Questions </h2>
+
+          </ServiceFaqs>
+        </div>
 
       <div className="flex place-content-center text-[1.2em]">
         <button

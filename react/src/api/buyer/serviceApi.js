@@ -19,10 +19,12 @@ export const buyerServiceApi = createApi({
     getServiceDetailsById: builder.query({
       query: (serviceId) => `${serviceId}`,
     }),
-    getServicePackage: builder.query({
-      query: ({serviceId,packageName}) => `${serviceId}/package?name=${packageName}`,
+    getOrderConfirm: builder.query({
+      query: ({serviceId,packageName}) => {
+       return packageName ? `${serviceId}/package?name=${packageName}` : `order/${serviceId}`
+      }
     }),
   }),
 });
-export const { useGetServiceCardsQuery, useGetServiceDetailsByIdQuery, useGetServicePackageQuery } =
+export const { useGetServiceCardsQuery, useGetServiceDetailsByIdQuery, useGetOrderConfirmQuery } =
 buyerServiceApi;

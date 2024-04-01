@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ServiceSummaryResource;
+use App\Models\Description;
 use App\Models\FAQ;
 use App\Models\gallery;
+use App\Models\OptionService;
 use App\Models\package;
 use App\Models\Price;
 use App\Models\Requirements;
 use App\Models\OptionUser;
+use App\Models\ServiceUser;
 use App\Models\Standard;
 use App\Models\User;
+use App\Notifications\Service;
 use App\Services\ServicesService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -27,42 +31,40 @@ class SellerServiceController extends Controller
         $this->service = $service;
     }
 
-    public function createOverView(Request $request, $optionId)
+    public function createServiceOverView(Request $request, $optionId)
     {
+
         $user = User::find(Auth::user()->id);
 
         // return $request->all();
 
         $user->options()->attach($optionId, [
             'service_id' => $request->serviceId,
-            'subcategory_id' => $request->subcategoryId,
-            'category_id' => $request->categoryId,
             'title' => $request->title,
             'keywords' => $request->search,
-            'active' => false
+            'status' => 'draft'
         ]);
 
 
-        $service = OptionUser::select('id')->where('user_id', Auth::user()->id)->where('option_id', intval($request->optionId))->first();
+        $service = OptionUser::select('id', 'service_id')->where('user_id', Auth::user()->id)->where('option_id', $optionId)->latest()->first();
 
         return response()->json([
             'id' => $service->id,
+            'type' => $service->service->type,
             'message' => 'successflully created'
         ]);
     }
-    public function updateOverview(Request $request, $optionId)
+    public function updateServiceOverview(Request $request, $optionId)
     {
 
         $service = OptionUser::find($optionId);
 
-
         $service->option_id = $request->optionId;
+
         $service->service_id = $request->serviceId;
 
-        $service->subcategory_id = $request->subcategoryId;
-        $service->category_id = $request->categoryId;
         $service->title = $request->title;
-        $service->search = $request->search;
+        $service->keywords = $request->search;
 
         $service->save();
 
@@ -71,19 +73,25 @@ class SellerServiceController extends Controller
             'message' => 'successflully updated'
         ]);
     }
-    public function createPrice(Request $request, $optionId)
+    public function createPrice(Request $request, $serviceId)
     {
 
 
         foreach ($request->all() as $package) {
 
             $data =  package::create([
-                'option_id' => $optionId,
+                'service_id' => $serviceId,
                 'name' => $package['name'],
                 'description' => $package['description'],
                 'price' => $package['price'],
                 'package' => $package['package'],
             ]);
+            if ($package['package'] === "basic") {
+                Description::create([
+                    'service_id' => $serviceId,
+                    'price' => $package['price'],
+                ]);
+            }
 
             foreach ($package['standards'] as $standard) {
 
@@ -93,7 +101,7 @@ class SellerServiceController extends Controller
 
         return response()->json("successful");
 
-        $data = OptionUser::with(['packages.standards.values'])->find($optionId);
+        $data = OptionUser::with(['packages.standards.values'])->find($serviceId);
 
 
         foreach ($data->packages as $package) {
@@ -127,14 +135,14 @@ class SellerServiceController extends Controller
         return $data;
     }
 
-    public function updatePrice(Request $request, $optionId)
+    public function updatePrice(Request $request, $serviceId)
     {
 
         foreach ($request->all() as $package) {
             $value = package::find($package['id']);
 
 
-            $value->option_id = $optionId;
+            $value->service_id = $serviceId;
             $value->name = $package['name'];
             $value->description = $package['description'];
             $value->price = $package['price'];
@@ -161,7 +169,7 @@ class SellerServiceController extends Controller
             $file->move('service', $name);
             $path = 'service/' . $name;
         }
-        OptionUser::where('id', $request->serviceId)->update(['image' => $path]);
+        Description::where('service_id', $serviceId)->first()->update(['image' => $path]);
         $imageNames = [];
         if (isset($request->images)) {
 
@@ -201,6 +209,23 @@ class SellerServiceController extends Controller
 
     public function updateGallery(Request $request, $serviceId)
     {
+
+        $detail = Description::where('service_id', $serviceId)->first();
+        if ($request->hasFile('image')) {
+            $destination = $detail->image;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('service', $name);
+            $path = 'service/' . $name;
+        } else {
+            $path = $detail->image;
+        }
+
+
 
 
         if (is_array($request->gallery) && !empty($request->gallery)) {
@@ -255,39 +280,7 @@ class SellerServiceController extends Controller
 
 
 
-    public function createFaq(Request $request, $serviceId)
-    {
-        OptionUser::where('id', $serviceId)->update(['description' => $request->description]);
-        foreach ($request->faqs as  $items) {
-            FAQ::create([
-                'service_id' => $serviceId,
-                'question' => $items['question'],
-                'answer' => $items['answer'],
-            ]);
-        }
 
-        return response()->json([
-            'message' => 'successfully inserted'
-        ], 200);
-    }
-
-    public function updateFaq(Request $request, $serviceId)
-    {
-        OptionUser::where('id', $serviceId)->update(['description' => $request->description]);
-        FAQ::where('service_id', $serviceId)->delete();
-        foreach ($request->faqs as  $items) {
-
-            FAQ::create([
-                'service_id' => $serviceId,
-                'question' => $items['question'],
-                'answer' => $items['answer'],
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'successfully inserted'
-        ], 200);
-    }
 
     public function createRequirement(Request $request, $serviceId)
     {
@@ -326,7 +319,132 @@ class SellerServiceController extends Controller
     {
 
 
-        OptionUser::find($serviceId)->update(['active' => 1]);
+        $service=OptionUser::find($serviceId);
+        
+        $service->status='pending';
+        $service->save();
+        $admin = User::where('role_id', 1)->first();
+
+        $seller = $service->user;
+        $seller = Auth::user();
+        $data = [
+            'user' => $seller->name,
+            'photo' => $seller->profile->photo,
+            'subject' => 'want to advertise service for ',
+            'service' => $service->option->name
+        ];
+        $admin->notify(new Service($data));
+        return response()->json('successfully saved');
+    }
+
+    public function createSpecificOverView(Request $request, $optionId)
+    {
+        $user = User::find(Auth::user()->id);
+
+        // return $request->all();
+
+        $user->options()->attach($optionId, [
+            'service_id' => $request->serviceId,
+            'title' => $request->title,
+            'keywords' => $request->search,
+            'status' => 'draft'
+        ]);
+
+
+        $service = OptionUser::select('id')->where('user_id', Auth::user()->id)->latest()->first();
+
+        return response()->json([
+            'id' => $service->id,
+            'message' => 'successflully created'
+        ]);
+    }
+    public function updateSpecificOverview(Request $request, $optionId)
+    {
+
+        $service = ServiceUser::find($optionId);
+
+
+        $service->option_id = $optionId;
+
+        $service->title = $request->title;
+        $service->keywords = $request->keywords;
+
+        $service->save();
+
+
+        return response()->json([
+            'message' => 'successflully updated'
+        ]);
+    }
+    public function createSpecificDetails(Request $request, $serviceId)
+    {
+        $path = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+
+            $name = time() . '_' . uniqid() . '.' . $extension;
+
+            $file->move('service', $name);
+            $path = 'service/' . $name;
+        }
+
+        Description::create([
+            'service_id' => $serviceId,
+            'description' => $request->description,
+            'price' => $request->price,
+            'image' => $path,
+
+            'note' => $request->note,
+
+
+
+        ]);
+
+        return response()->json([
+            'message' => 'successflully created'
+        ]);
+    }
+    public function updateSpecificDetails(Request $request, $serviceId)
+    {
+
+        $detail = Description::where('service_id', $serviceId)->first();
+        if ($request->hasFile('image')) {
+            $destination = $detail->image;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('service', $name);
+            $path = 'service/' . $name;
+        } else {
+            $path = $detail->image;
+        }
+
+
+
+        $detail->description = $request->description;
+        $detail->price = $request->price;
+        $detail->note = $request->note;
+
+        $detail->image = $path;
+
+        $detail->save();
+
+
+        return response()->json([
+            'message' => 'successflully updated'
+        ]);
+    }
+    public function saveSpecificService($serviceId)
+    {
+
+
+        $service = OptionUser::find($serviceId)->update(['status' => 'pending']);
+        
+
         return response()->json('successfully saved');
     }
     public function viewSellerProfile()
@@ -338,45 +456,64 @@ class SellerServiceController extends Controller
         return response()->json($data, 200);
     }
 
-    public function DraftService($serviceId)
+    public function DraftGeneralService($serviceId)
     {
-        $data = OptionUser::with(['category:id,name', 'subcategory:id,name', 'service:id,name', 'option:id,name', 'packages.standards', 'faqs', 'galleries', 'requirements'])
+        $service = OptionUser::with(['service:id,name,subcategory_id,type', 'service.subcategory:id,name,category_id', 'service.subcategory.category:id,name',  'packages.standards',  'galleries', 'requirements', 'description'])
             ->find($serviceId);
 
-        return response()->json($data, 200);
+
+        $standard = Standard::where('option_id', $service->option_id)->with('values')->get();
+        $service->standards = $standard;
+
+
+        return response()->json($service, 200);
     }
+
+    public function DraftSpecificService($serviceId)
+    {
+        $service = OptionUser::with(['option:id,name', 'service:id,name,subcategory_id,type', 'service.subcategory:id,name,category_id', 'service.subcategory.category:id,name',  'description'])
+            ->find($serviceId);
+
+
+
+        return response()->json($service, 200);
+    }
+
 
 
 
     public function viewServiceCards()
     {
-        $data = OptionUser::whereHas('user', function ($query) {
+
+        $services = OptionUser::whereHas('user', function ($query) {
             $query->where('id', Auth::user()->id);
         })
-            ->select('id', 'title', 'option_id','active')
-            ->with(['galleries' => function ($query) {
-                $query->first();
-            }])
+            ->with(['service:id,type', 'description'])
             ->get();
 
-        return response()->json($data, 200);
+
+
+
+
+        return response()->json($services, 200);
     }
 
 
     public function getServiceDetails($serviceId)
     {
 
-        $data = OptionUser::with([ 'user.profile','category:id,name', 'subcategory:id,name', 'service:id,name', 'option:id,name', 'packages.standards', 'faqs', 'galleries', 'requirements'])
-            ->find($serviceId);
+        $services = $this->service->viewServiceDetails($serviceId);
 
-        return response()->json($data, 200);
+
+        return response()->json($services, 200);
     }
+
 
     public function viewServiceSummary()
     {
         $data = OptionUser::where('user_id', Auth::user()->id)
-            ->select('id', 'option_id', 'active')
-            ->with(['option:id,name'])
+            ->select('id', 'option_id', 'status', 'service_id')
+            ->with(['option:id,name', 'service'])
             ->withCount('orders')
             ->get();
         if ($data) {
@@ -385,20 +522,7 @@ class SellerServiceController extends Controller
     }
 
 
-    public function getOptionStandards($id)
-    {
 
-        // $service = Option::table('standard_values')->where('standard_id', $id)->latest()->get();
-
-        $standard = Standard::where('option_id', $id)->with('values')
-            ->get();
-        return $standard;
-        // ->join('orders', 'users.id', '=', 'orders.user_id')
-        // ->select('users.*', 'contacts.phone', 'orders.price')
-        // if ($service) {
-        //   return CatServiceResource::collection($service);
-        // }
-    }
 
     public function deleteService($id)
     {

@@ -16,21 +16,26 @@ import Loader from "../../../components/Loader";
 import Category from "../../../components/catalog/category";
 import { setSubCategories } from "../../../redux/buyerSlice";
 import BuyerNavbar from "./buyer-navbar";
+import { setPaginateUrl } from "../../../redux/buyerSlice";
+import Pagination from "react-js-pagination";
+import "bootstrap/dist/css/bootstrap.min.css";
+import CardSkeleton from "./cardSkeleton";
+
 
 const buyerHome = () => {
   const dispatch = useDispatch();
-  const isHome = useMatch(`/user/${encodeURI(localStorage.getItem('name'))}`);
+  const isHome = useMatch(`/user/${encodeURI(localStorage.getItem("name"))}`);
   const name = localStorage.getItem("name");
-const paginateUrl=useSelector((state)=>state.buyerSlice.paginateUrl);
+  const paginateUrl = useSelector((state) => state.buyerSlice.paginateUrl);
+
   // const [showItemList, setShowItemList] = useState(false);
   // const itemListRef = useRef(null);
-
   const { data: catalog, isLoading: isCatalog } = useGetCatalogQuery();
-  console.log("categoruies", catalog);
 
   const { data: services, isLoading: serviceLoading } =
     useGetServiceCardsQuery(paginateUrl);
-  console.log("services", services);
+
+    console.log('services',services);
 
   const { categoryId } = useParams();
 
@@ -45,32 +50,54 @@ const paginateUrl=useSelector((state)=>state.buyerSlice.paginateUrl);
     }
   }, [categoryId, catalog]);
 
-  console.log("categoryId", categoryId);
 
   if (isCatalog || serviceLoading) {
-    return <Loader />;
+    return <CardSkeleton />;
   }
   return (
     <>
-    <BuyerNavbar/>
-    <section
-      className="min-h-screen "
-      onMouseLeave={() => {
-        dispatch(setCategory(null));
-      }}
-    >
+      <BuyerNavbar />
+      <section
+        className=" "
        
-            <Category categories={catalog} />
-     
+      >
+        
+        <Category categories={catalog} />
 
-      {isHome ? (
-          <ServiceCard cards={services} url={`/user/${localStorage.getItem('name')}/service`} />
-      ) : (
-        <Outlet />
+        {isHome ? (
+          <section className="p-4 min-h-screen">
+          <h2 className="text-xl font-semibold text-gray-600 ">Based on your browsing history</h2>
+          
+          <ServiceCard
+            cards={services?.data}
+            url={`/user/${localStorage.getItem("name")}/service`}
+          > 
+          {services && services?.data?.length > 0 && (
+        <div className="mt-4 grid place-content-center">
+          <Pagination
+            totalItemsCount={services?.total}
+            activePage={services?.current_page}
+            itemsCountPerPage={services?.per_page}
+            onChange={(pageNumber) => {
+              dispatch(setPaginateUrl(pageNumber));
+            }}
+            itemClass="page-item"
+            linkClass="page-link"
+            prevPageText="Previous"
+            nextPageText="Next"
+            hideFirstLastPages={true}
+            hideNavigation={false}
+            activeClass="active"
+          />
+        </div>
       )}
-    </section>
+          </ServiceCard>
+          </section>
+        ) : (
+          <Outlet />
+        )}
+      </section>
     </>
-
   );
 };
 

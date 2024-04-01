@@ -21,10 +21,11 @@ class AllCustomerOrdersResource extends JsonResource
             'id'=>$this->id,
             'created'=>$this->created_at->format('Y-m-d'),
             'buyer'=>$customer->name,
-            'service'=>$service->scope->name,
-            'package'=>$this->package,
+            'service'=>$service->option->name,
             'quantity'=>$this->quantity,
+            'service_date'=>$this->service_date,
             'status'=>$this->status
+
 
         ];
     }

@@ -9,6 +9,6 @@ class FAQ extends Model
 {
     use HasFactory;
     protected $table='faqs';
-    protected $fillable=['service_id','question','answer'];
+    protected $fillable=['user_id','question','answer'];
     
 }

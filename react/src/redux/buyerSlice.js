@@ -6,8 +6,8 @@ const initialState = {
   scopes: [],
   subcategories: [],
 
-  category: {},
-  subcategory: {},
+  category:null,
+  subcategory: null,
   serviceId: null,
   providerId: null,
   searchProvider: null,
@@ -24,6 +24,7 @@ const initialState = {
   paginateUrl: 1,
   chat:false,
   continue:false,
+  review:false
 
 };
 
@@ -77,7 +78,9 @@ export const buyerSlice = createSlice({
     setContinue: (state, actions) => {
       state.continue = actions.payload;
     },
-    
+    createReview: (state, actions) => {
+      state.review = actions.payload;
+    },
   },
 });
 export const {
@@ -95,6 +98,7 @@ export const {
   setSelectedScope,
   setPaginateUrl,
   setChat,
-  setContinue
+  setContinue,
+  createReview
 } = buyerSlice.actions;
 export default buyerSlice.reducer;

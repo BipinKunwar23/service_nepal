@@ -40,7 +40,9 @@ class ServiceController extends Controller
     $value = Service::create([
       'subcategory_id' => $id,
       'name' => $request->name,
-      'keywords'=>$request->keywords,
+      'type' => $request->type,
+
+      'keywords' => $request->keywords,
 
     ]);
 
@@ -60,29 +62,14 @@ class ServiceController extends Controller
   {
     $validate = $request->validate([
       'name' => ['required', Rule::unique('services', 'name')->ignore($service->id)],
-
-      'description' => 'sometimes',
-      'image' => 'sometimes',
-      'subcategory_id' => 'required',
-      'keywords' => 'sometimes'
-
+      'keywords' => 'required',
+      'type' => 'required'
     ]);
-    if ($request->hasFile('icons')) {
-      $destination = $service->icons;
-      if (File::exists($destination)) {
-        File::delete($destination);
-      }
-      $file = $request->file('icons');
-      $extension = $file->getClientOriginalExtension();
-      $name = time() . '.' . $extension;
-      $file->move('category/icons', $name);
-      $path = 'category/icons/' . $name;
-    } else {
-      $path = $service->icons;
-    }
 
-    $service->fill(collect($validate)->put('icons', $path)->toArray())->save();
 
+
+
+    $service->fill(collect($validate)->toArray())->save();
     return response()->json([
       'message' => 'successfully updated'
     ], 200);
@@ -98,27 +85,19 @@ class ServiceController extends Controller
 
   public function getAllServices()
   {
-    $service = $this->services->getAllServices();
+    $service = Service::get();
     return response()->json($service);
   }
   public function getBySubCategory($subcategoryId)
   {
 
     $service = Service::where('subcategory_id', $subcategoryId)->latest()->get();
-    return $service;
+    return response()->json($service);
     // if ($service) {
     //   return CatServiceResource::collection($service);
     // }
   }
-  public function getByCategory($categoryId)
-  {
 
-    $service = Service::whereHas('subcategory', function ($query) use ($categoryId) {
-      $query->where('category_id', $categoryId);
-    })
-      ->get();
-    return $service;
-  }
 
 
 
@@ -169,5 +148,5 @@ class ServiceController extends Controller
   //   ]);
   // }
 
- 
+
 }

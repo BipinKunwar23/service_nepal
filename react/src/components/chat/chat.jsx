@@ -15,11 +15,15 @@ export const Chat = ({ children, receiverId }) => {
   const dispatch = useDispatch();
   const senderMessage = useSelector((state) => state.sellerSlice.senderMessage);
 
-  console.log("data", data);
   useEffect(() => {
-    if (data) {
-      dispatch(setSenderMessage(data?.messages));
+    if (senderMessage  && data && (senderMessage?.length>=data?.messages?.length)) {
+      dispatch(setSenderMessage(senderMessage));
+    } else {
+      dispatch(setSenderMessage(data?.messages || []));
     }
+    // if (data) {
+    //   dispatch(setSenderMessage(data?.messages));
+    // }
   }, [data]);
 
 
@@ -47,11 +51,11 @@ export const Chat = ({ children, receiverId }) => {
       reveiverCount = 0;
       return (
         <div
-          className="max-w-[60%] justify-self-end flex gap-4 "
+          className="max-w-[50%] justify-self-end flex gap-4 "
           key={message?.id}
         >
           <div className="flex flex-col gap-1">
-            <p className=" bg-purple-500 text-white rounded-md p-3 text-lg">
+            <p className=" bg-purple-600 text-white rounded-md p-2.5">
               {message?.message}
             </p>
             <span className=" text-slate-500  px-2 text-right">
@@ -64,9 +68,9 @@ export const Chat = ({ children, receiverId }) => {
       );
     }
     return (
-      <div className="max-w-[60%]  flex gap-4 " key={message?.id}>
+      <div className="max-w-[50%]  flex gap-4 " key={message?.id}>
         <div className="flex flex-col gap-3">
-          <p className=" bg-purple-500 text-white rounded-md p-3 text-lg">
+          <p className=" bg-purple-500 text-white rounded-md p-2.5 ">
             {message?.message}
           </p>
         </div>
@@ -100,22 +104,22 @@ export const Chat = ({ children, receiverId }) => {
   }
   return (
     <section className="  ">
-      <div className="flex gap-5 px-4 py-2 ">
+      <div className="flex gap-3 p-2 ">
         <img
           src={`http://localhost:8000/${data?.receiver?.profile?.photo}`}
           alt=""
-          className="w-[50px] h-[50px] rounded-full shadow-inner shadow-gray-800"
+          className="w-[40px] h-[40px] rounded-full shadow-inner shadow-gray-800"
         />
         <div className="flex-1 ">
-          <h2 className="font-semibold text-[1.2em] mb-1">
+          <h2 className="font-semibold text-[1em] mb-1">
             {data?.receiver?.name}
           </h2>
-          <p className="text-gray-600">Active 2 hour Ago</p>
+          <p className="text-gray-600 text-sm">Active 2 hour Ago</p>
         </div>
         {children}
       </div>
       <section
-        className="  w-full h-[430px] content-end grid p-4 relative border-y bg-white border-gray-300"
+        className="  w-full h-[420px] content-end grid p-4 relative  bg-white "
         ref={scrollableDivRef}
       >
         <div className="grid   gap-4 overflow-y-auto max-h-full hide-scrollbar bg-white p-4 scrolling-touch ">
@@ -125,14 +129,14 @@ export const Chat = ({ children, receiverId }) => {
           <div ref={spacerRef}></div>
         </div>
       </section>
-      <section className=" p-4 grid">
-        <form action="" onSubmit={handleSubmit(onSubmit)} className="  ">
-          <div className="  flex">
+      <section className=" ">
+        <form action="" onSubmit={handleSubmit(onSubmit)} className=" ">
+          <div className=" bg-slate-100 flex">
             <input
               type="text"
-              className=" rounded-md w-full p-2.5 focus:outline-none  placeholder:text-lg"
+              className=" rounded-md w-full p-3 focus:outline-none bg-slate-100  placeholder:text-lg"
               {...register("message")}
-              placeholder="Send Message"
+              placeholder="Write Message"
             />
             <button
               type="submit"

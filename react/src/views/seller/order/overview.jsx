@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useGetReceivedOrdersQuery } from "../../../api/seller/orderApi";
 import Loader from "../../../components/Loader";
-import { NavLink, Outlet, useMatch, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useMatch, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { setStatus } from "../../../redux/buyerSlice";
-import Sidebar from "../home/sidebar";
-import SellerNavbar from "../home/seller-navbar";
+
+import { IoIosArrowDropup } from "react-icons/io";
+
 const SellerOrderOverview = () => {
   const {
     data: orders,
@@ -17,6 +16,8 @@ const SellerOrderOverview = () => {
   console.log("orders", orders);
   const navigate = useNavigate();
   const [orderStatus, setOrderStatus] = useState("Pending");
+  const [isButton, setButton] = useState(null);
+  const location=useLocation()
 
   const isDetails = useMatch(
     `/${encodeURIComponent(localStorage.getItem("name"))}/orders/:orderId`
@@ -37,16 +38,10 @@ const SellerOrderOverview = () => {
     );
   }
   return (
-    <section className=" flex ">
-      <div className="w-[20Vw]">
-      <Sidebar/>
-
-      </div>
-      <section className="flex-1">
-        <SellerNavbar/>
-        <div className="p-4 space-y-5">
-
-        <div className="flex place-content-center  gap-10">
+    <section className="w-full  ">
+      <h2 className="text-xl text-blue-600 mb-4 font-semibold ">Manage Orders</h2>
+      <section className=" text-[0.9em]">
+        <div className="space-x-10 text-gray-800 mb-4 font-semibold">
           <button
             className={` p-2 ${
               orderStatus === "Pending" &&
@@ -56,18 +51,18 @@ const SellerOrderOverview = () => {
               setOrderStatus("Pending");
             }}
           >
-            Pending
+            PENDING
           </button>
           <button
             onClick={() => {
-              setOrderStatus("Running");
+              setOrderStatus("Active");
             }}
             className={` p-2 ${
-              orderStatus === "Running" &&
+              orderStatus === "Active" &&
               "border-b-2  border-green-700  font-semibold"
             } `}
           >
-            Running
+            ACTIVE
           </button>
           <button
             onClick={() => {
@@ -78,84 +73,109 @@ const SellerOrderOverview = () => {
               "border-b-2  border-green-700  font-semibold"
             } `}
           >
-            Completed
+            COMPLETED
+          </button>
+          <button
+            onClick={() => {
+              setOrderStatus("Delayed");
+            }}
+            className={` p-2 ${
+              orderStatus === "Delayed" &&
+              "border-b-2  border-green-700  font-semibold"
+            } `}
+          >
+            LATE
+          </button>
+          <button
+            onClick={() => {
+              setOrderStatus("Cancelled");
+            }}
+            className={` p-2 ${
+              orderStatus === "Cancelled" &&
+              "border-b-2  border-green-700  font-semibold"
+            } `}
+          >
+            CANCELLED
           </button>
         </div>
-
-        <table className="w-full box-border table-auto bg-white border  border-gray-200">
+        <div>
+          <table className="  table-auto w-full bg-white text-gray-800  ">
           <thead>
-            <tr className="text-left bg-blue-600 text-white">
-              <th className="py-4 px-4 border-b">Order Id</th>
-              <th className="py-2 px-4 border-b">Service Name</th>
-              <th className="py-2 px-4 border-b">Buyer Name</th>
-              <th className="py-2 px-4 border-b"> Package</th>
+              <tr className="text-left border-y ">
+                <th className="p-3 border-none">
+                  <input type="checkbox" />
+                </th>
+                <th className=" p-3 border-none">BUYER</th>
+                <th className="p-3 border-none">SERVICE</th>
+              
+                <th className="p-3  border-none ">TOTAL </th>
 
-              <th className="py-2 px-4 border-b"> Quantity</th>
+                <th className="p-3  border-none">DUE ON</th>
+                <th className="border-none p-3"></th>
+              </tr>
+            </thead>
+            <tbody className="text-[1.1em]">
+              {orders
+                .filter((order) => order?.status === orderStatus)
+                .map((order) => {
+                  return (
+                    <tr key={order?.id} className="border-b ">
+                      <td className="p-3">
+                        <input type="checkbox" />
+                      </td>
+                      <td className="p-3   max-w-md overflow-ellipsis    ">
+                        {order?.buyer}
+                      </td>
+                      <td className="p-3    ">{order?.service}</td>
 
-              <th className="py-2 px-4 border-b">Action</th>
-            </tr>
-          </thead>
-          <tbody className="">
-            {orders
-              .filter((order) => order?.status === orderStatus)
-              .map((order) => {
-                return (
-                  <tr key={order?.id}>
-                    <td className="p-4 border">{order?.id}</td>
+                      <td className="p-3   max-w-md overflow-ellipsis break-words ">
+                        {order?.quantity}
+                      </td>
 
-                    <td className="p-4 border   ">
-                      <div className="flex justify-between">
-                        <p> {order?.service}</p>
-                      
-                      </div>
-                    </td>
+                      <td className="p-3 ">{order?.service_date}</td>
 
-                    <td className="p-4 border  max-w-md overflow-ellipsis    ">
-                      <div className="flex justify-between">
-                        <p>{order?.buyer}</p>
-                        <NavLink
-                          to={`/user/service/${order?.service_id}#seller`}
-                          className=" text-xs   bg-slate-800 text-white text-center p-1 px-2 rounded bottom-full  mb-2"
+                      <td className="text-center  w-40 relative ">
+                        <button
+                          className=" text-2xl"
+                          onClick={() => {
+                            isButton === order.id
+                              ? setButton(null)
+                              : setButton(order.id);
+                          }}
                         >
-                          view
-                        </NavLink>
-                      </div>
-                    </td>
-                    <td className="p-4 border cursor-pointer max-w-md overflow-ellipsis    ">
-                      <div className="flex justify-between">
-                        <p>{order?.package}</p>
-                        <NavLink
-                          to={`/user/service/${order?.service_id}`}
-                          className=" text-xs   bg-slate-800 text-white text-center p-1 px-2 rounded bottom-full  mb-2"
-                        >
-                          view
-                        </NavLink>
-                      </div>
-                    </td>
-                    <td className="p-4 border  max-w-md overflow-ellipsis break-words ">
-                      {order?.quantity}
-                    </td>
-
-
-
-                    <td className="p-4 border">
-                      <button
-                        className=" text-indigo-600"
-                        onClick={() => {
-                          dispatch(setStatus(order?.status));
-                          navigate(`${order.id}`);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+                          <i>
+                            <IoIosArrowDropup />
+                          </i>
+                        </button>
+                        {isButton === order?.id && (
+                          <ul className="text-left bg-white border rounded p-3 space-y-2 absolute top-12 left-7 z-10">
+                            <li
+                              onClick={() => {
+                                navigate(`${order.id}`, {state:{
+                                  path:location?.pathname
+                                }});
+                              }}
+                              className="cursor-pointer"
+                            >
+                              VIEW
+                            </li>
+                            <li
+                              className="cursor-pointer"
+                              onClick={() => {
+                                DeletingService(service?.id);
+                              }}
+                            >
+                              CANCEL
+                            </li>
+                          </ul>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
         </div>
-
       </section>
     </section>
   );

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProviderResource;
+use App\Models\BrowseHistory;
 use App\Models\Location;
 use App\Models\Option;
 use App\Models\OptionUser;
@@ -13,12 +14,19 @@ use App\Models\Scope;
 use App\Models\ScopeUser;
 use App\Models\Service;
 use App\Models\User;
+use App\Services\ServicesService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use React\Http\Browser;
 
 class FilterSearchController extends Controller
 {
+    public $services;
+    public function __construct(ServicesService $services)
+    {
+        $this->services = $services;
+    }
     public function searchService(Request $request)
     {
         $search = $request->input('name');
@@ -65,13 +73,9 @@ class FilterSearchController extends Controller
             })
             ->orWhereHas('subcategory', function ($query) use ($keyword) {
                 $query->Where('keywords', 'like', '%' . $keyword . '%');
-            })
-
-            ->with(['user:id,name', 'user.profile:id,user_id,photo','galleries'])
-            ->select('id', 'title', 'image', 'user_id',)
-            ->latest()
-            ->paginate(20);
-        return response()->json($service);
+            });
+        $data = $this->services->getBuyerServiceCards($service)->paginate(20);
+        return response()->json($data);
     }
 
 
@@ -101,7 +105,7 @@ class FilterSearchController extends Controller
             ->get();
 
         $optionId = $data->pluck('id');
-        $budget = package::whereIn('option_id', $optionId)
+        $budget = package::whereIn('service_id', $optionId)
             ->selectRaw('MIN(price) as min, MAX(price) as max')
             ->get();
 
@@ -122,6 +126,14 @@ class FilterSearchController extends Controller
         // $types = $request->input('price');
         // $typeArray = explode(',', $types);
         // return response()->json($typeArray);
+        if (!$request->all()) {
+            BrowseHistory::create([
+                'service_id' => $serviceId,
+                'user_id' => Auth::user()->id,
+                'action_type' => 'view'
+            ]);
+        }
+
 
 
         $query = OptionUser::query();
@@ -174,12 +186,10 @@ class FilterSearchController extends Controller
                 });
             });
 
-        $services = $query->with(['user:id,name', 'user.profile:id,user_id,photo', 'galleries' => function ($query) {
-            // $query->first();
-        }])
-            ->select('id', 'title', 'image', 'option_id', 'user_id',)
-            ->latest()
-            ->paginate(20);
+        $services = $this->services->getBuyerServiceCards($query)->paginate(20);
+
+
+
 
         return response()->json($services);
     }

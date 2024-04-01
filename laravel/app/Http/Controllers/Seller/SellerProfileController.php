@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\profileRequest;
 use App\Models\Availability;
+use App\Models\FAQ;
 use App\Models\Location;
 use App\Models\Profession;
 use App\Models\Profile;
@@ -38,7 +39,8 @@ class SellerProfileController extends Controller
                 'bio' => $request->bio,
                 'photo' => $path,
                 'language' => $request->language,
-                'address' => $request->address
+                'address' => $request->address,
+                'phone_number'=>$request->phone_number
             ]
         );
         return response()->json([
@@ -71,6 +73,8 @@ class SellerProfileController extends Controller
         $personal->photo = $path;
         $personal->language = $request->language;
         $personal->address = $request->address;
+        $personal->phone_number = $request->phone_number;
+
 
         $personal->save();
 
@@ -171,17 +175,48 @@ class SellerProfileController extends Controller
         ], 200);
     }
 
+    public function createFaq(Request $request, $serviceId)
+    {
+
+
+        foreach ($request->faqs as  $items) {
+            FAQ::create([
+                'user_id' => Auth::user()->id,
+                'question' => $items['question'],
+                'answer' => $items['answer'],
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'successfully inserted'
+        ], 200);
+    }
+
+    public function updateFaq(Request $request, $serviceId)
+    {
+  
+        FAQ::where('user_id', $serviceId)->delete();
+        foreach ($request->faqs as  $items) {
+
+            FAQ::create([
+                'user_id' => Auth::user()->id,
+                'question' => $items['question'],
+                'answer' => $items['answer'],
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'successfully inserted'
+        ], 200);
+    }
+
     public function createSecurity(Request $request)
     {
 
-        $data = Profile::where('user_id', Auth::user()->id)->update(['phone_number' => $request->phone_number]);
-        if ($data) {
-            $user = User::find(Auth::user()->id);
-            $user->update(['role_id' => 2]);
-        }
+        Profile::where('user_id', Auth::user()->id)->update(['phone_number' => $request->phone_number]);
+    
         return response()->json([
             'message' => 'successfully setup',
-            'role' => "seller",
 
         ]);
     }
@@ -206,24 +241,17 @@ class SellerProfileController extends Controller
     }
     public function viewProfile()
     {
-        $personal = Profile::where('user_id', Auth::user()->id)->first();
-        $profession = Profession::where('user_id', Auth::user()->id)
-            ->with(['occupation' => function ($query) {
-                $query->select('id', 'id as value', 'name as label');
-            }])
-            ->first();
-        $skills =
-            $cities = Location::select('city')->where('user_id', Auth::user()->id)->get();
-        $availability = Availability::where('user_id', Auth::user()->id)->first();
+        $user=User::with(['profile','profession','profession.occupation'=>function($query){
+            $query->select('id', 'id as value', 'name as label');
+
+        },'availability','faqs:user_id,question,answer','locations'=>function($query){
+            $query->select('user_id','city');
+        }])
+       ->select('id','name') ->find(Auth::user()->id);
+        return $user;
+      
 
 
-
-        return response()->json([
-            'personal' => $personal,
-            'profession' => $profession,
-            'availability' => $availability,
-            'cities' => $cities,
-
-        ]);
+        return response()->json($user);
     }
 }

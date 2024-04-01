@@ -1,19 +1,17 @@
 import React from 'react'
+import { FaHome } from 'react-icons/fa'
 
-const ServiceCategory = ({category,subcategory,service,option}) => {
+const ServiceCategory = ({category,service}) => {
   return (
     <div>
-         <ul className="flex gap-4 my-5 font-semibold ">
-        <li>
-          {category?.name} <span className="ml-2 "> {">"}</span>
+         <ul className="flex   text-[1em] text-gray-700 font-semibold">
+        <li className='flex gap-2'>
+          <i className='text-lg'><FaHome/></i>{category?.name} <span className=" "> {"/"}</span>
         </li>
+       
         <li>
-          {subcategory?.name} <span className="ml-2 "> {">"}</span>
+          {service?.name} <span className=""> </span>
         </li>
-        <li>
-          {service?.name} <span className="ml-2 "> {">"}</span>
-        </li>
-        <li className="">{option?.name}</li>
       </ul>
     </div>
   )

@@ -18,16 +18,14 @@ class CustomerOrdersResource extends JsonResource
         return [
             'id' => $this->id,
             'service_id'=>$service->id,
-            'service' => $service->scope->name,
+            'service' => $service->option->name,
             'seller' => $service->user->name,
-            'package'=>$this->package,
             'quantity' => $this->quantity,
-            'cost' => $this->cost,
 
 
 
             'status' => $this->status,
-            'created_at' => $this->created_at->format('Y-m-d'),
+            'created_at' => $this->service_date,
 
 
 

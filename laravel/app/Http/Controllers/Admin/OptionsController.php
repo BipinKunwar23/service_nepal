@@ -7,6 +7,7 @@ use App\Models\Option;
 use App\Models\Standard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class OptionsController extends Controller
 {
@@ -31,71 +32,21 @@ class OptionsController extends Controller
       ->latest()->get();
     return $data;
   }
-
-  public function createStandard(Request $request, $id)
+ 
+  public function updateOption(Request $request, Option $option)
   {
-    DB::table('standards')->insert([
-      'name' => $request->name,
-      'option_id' => $id,
-      'created_at' => now(), // Optional if you want to specify creation time
-      'updated_at' => now()  // Optional if you want to specify update time
+    $validate = $request->validate([
+      'name' => ['required', Rule::unique('services', 'name')->ignore($option->id)],
+     
     ]);
 
 
+
+$option->name=$request->name;
+$option->save();
     return response()->json([
-      'message' => 'successfully created'
+      'message' => 'successfully updated'
     ], 200);
   }
-
-  public function getStandardByServicesId($serviceId)
-  {
-    $service = DB::table('standards')->where('option_id', $serviceId)->latest()->get();
-    return $service;
-    // if ($service) {
-    //   return CatServiceResource::collection($service);
-    // }
-  }
-
-
-
-  public function addValues(Request $request, $id)
-  {
-    // return response()->json($request->types);
-    DB::table('standard_values')->insert([
-      'name' => $request->name,
-      'standard_id' => $id,
-      'created_at' => now(), // Optional if you want to specify creation time
-      'updated_at' => now()  // Optional if you want to specify update time
-    ]);
-
-
-    return response()->json([
-      'message' => 'successfully created'
-    ], 200);
-  }
-
-  public function getValuesByStandard($id)
-  {
-
-    $service = DB::table('standard_values')->where('standard_id', $id)->latest()->get();
-    return $service;
-    // if ($service) {
-    //   return CatServiceResource::collection($service);
-    // }
-  }
-
-  public function getOptionStandards($id)
-  {
-
-    // $service = Option::table('standard_values')->where('standard_id', $id)->latest()->get();
-
-    $standard = Standard::where('option_id',$id)->with('values')
-      ->get();
-    return $standard;
-    // ->join('orders', 'users.id', '=', 'orders.user_id')
-    // ->select('users.*', 'contacts.phone', 'orders.price')
-    // if ($service) {
-    //   return CatServiceResource::collection($service);
-    // }
-  }
+  
 }

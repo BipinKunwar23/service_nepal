@@ -68,9 +68,11 @@ class User extends Authenticatable
     }
     public function services()
     {
+
         return  $this->belongsToMany(Service::class, 'service_user')
             // ->using(CatserviceUser::class)
-            ->withPivot('description', 'additional_info', 'terms', 'refund_policy');
+           ->withTimestamps()
+            ->withPivot('title', 'description', 'active', 'keywords');
     }
     public function subcategories()
     {
@@ -83,6 +85,14 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(Profile::class, 'user_id');
+    }
+    public function personal()
+    {
+        return $this->hasOne(Profession::class, 'user_id');
+    }
+    public function faqs()
+    {
+        return $this->hasMany(FAQ::class, 'user_id');
     }
     public function profession()
     {
@@ -98,7 +108,7 @@ class User extends Authenticatable
     }
     public function options()
     {
-        return $this->belongsToMany(Option::class, 'option_user');
+        return $this->belongsToMany(Option::class, 'option_user')->withTimestamps();
     }
     public function feedbacks()
     {
@@ -115,5 +125,10 @@ class User extends Authenticatable
             $query->where('receiver_id', $this->id);
         })
         ->latest();
+    }
+
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'order.'.$this->id;
     }
 }

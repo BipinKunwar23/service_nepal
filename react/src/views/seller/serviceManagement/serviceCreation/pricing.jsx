@@ -11,12 +11,9 @@ import { useParams } from "react-router-dom";
 import { useGetServiceStandardQuery } from "../../../../api/seller/serviceApi";
 import Select from "react-select";
 
-const Pricing = ({ data, optionId }) => {
-  const { data: standards, isLoading } = useGetServiceStandardQuery(optionId);
-  console.log("standard", standards);
+const Pricing = ({ data=[],standards }) => {
 
   const { serviceId } = useParams();
-  console.log("serviceId", serviceId);
   const dispatch = useDispatch();
   const steps = useSelector((state) => state.sellerSlice.steps);
 
@@ -102,8 +99,8 @@ const Pricing = ({ data, optionId }) => {
     },
     {
       id: 3,
-      name: "Price",
-      placeholder: "Service Charge",
+      name: "Fee",
+      placeholder: "Service Fee",
 
       register: "price",
     },
@@ -111,7 +108,6 @@ const Pricing = ({ data, optionId }) => {
 
   const price = getValues("price");
 
-  console.log("prices", price);
 
   const onSubmit = async (values) => {
     console.log("data", values);
@@ -136,7 +132,7 @@ const Pricing = ({ data, optionId }) => {
           console.log(error);
         });
     } else {
-      await addServicePrice({ optionId: serviceId, price: values?.price })
+      await addServicePrice({  serviceId, price: values?.price })
         .unwrap()
         .then((response) => {
           console.log("response", response);
@@ -156,7 +152,7 @@ const Pricing = ({ data, optionId }) => {
         });
     }
   };
-  if (isLoading || isUpdating) {
+  if ( isUpdating) {
     return <Loader />;
   }
   return (

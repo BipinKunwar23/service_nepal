@@ -1,14 +1,15 @@
 import React from "react";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 
-export const filterApi = createApi({
+export const buyerFilterApi = createApi({
   reducerPath: "filterService",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8000/api/buyer/filter/",
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
-      headers.set("Authorize", localStorage.getItem("token"));
+      headers.set("Authorization", `Bearer ${localStorage.getItem("token")}`);
+
       return headers;
     },
   }),
@@ -49,4 +50,4 @@ export const {
   useGetFilteredServicesQuery,
   useGetSearchListQuery,
   useGetSearchedServiceQuery
-} = filterApi;
+} = buyerFilterApi;

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
 import {
-  useGetServiceStandardQuery,
-  useSaveServiceMutation,
+useSaveServiceMutation
 } from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 
@@ -11,13 +10,13 @@ import SellerProfile from "../../../../components/service/profile";
 import ServiceCategory from "./../../../../components/service/category";
 import Service from "../../../../components/service/service";
 import PricePackage from "../../../../components/service/package";
-import ServiceFaqs from "../../../../components/service/faq";
+
 import ServiceTerms from "../../../../components/service/terms";
+import { useSelector } from "react-redux";
 const PrviewService = ({ services }) => {
   const navigate = useNavigate();
-  const { data: standards, isLoading } = useGetServiceStandardQuery(
-    services?.option_id
-  );
+
+  const type = useSelector((state) => state.sellerSlice.type);
 
   const [setService, { isLoading: isSaving }] = useSaveServiceMutation();
   const { serviceId } = useParams();
@@ -37,18 +36,57 @@ const PrviewService = ({ services }) => {
       });
   };
 
-  if (isLoading || isSaving) {
+  if (isSaving) {
     return <Loader />;
+  }
+  if (type === "specific") {
+    return (
+      <section>
+        <SellerProfile />
+        <section className="grid grid-cols-2 gap-4">
+          <div className="">
+            <img
+              src={`http://localhost:8000/${services?.description?.image} `}
+              className="object-cover object-center w-full min-h-[400px] h-full"
+              alt=""
+            />
+          </div>
+          <div className="space-y-3">
+            <h2 className="font-semibold text-2xl">{services?.title}</h2>
+            <p className="text-gray-600 ">
+              {services?.description?.description}
+            </p>
+            <p className="text-gray-600 text-xl">
+              {" "}
+              <span className="text-black mr-3">NPR</span>
+              {services?.description?.price}
+            </p>
+            <div>
+              <p className="mt-4 font-semibold text-xl">
+                {services?.description?.note}
+              </p>
+            </div>
+            <div className=" mt-4">
+              <button
+                className="bg-green-600 text-white p-2 w-full rounded"
+                onClick={saveService}
+              >
+                Review and Save
+              </button>
+            </div>
+          </div>
+        </section>
+      </section>
+    );
   }
 
   return (
     <section className="text-[1.1em]  bg-white  p-8 ">
       <SellerProfile />
       <ServiceCategory
-        category={services?.category}
-        subcategory={services?.subcategory}
+        category={services?.service?.subcategory?.category}
+        subcategory={services?.service?.subcategory}
         service={services?.service}
-        option={services?.option}
       />
       <section className="">
         <div className="flex flex-col gap-6 mb-5">
@@ -60,13 +98,11 @@ const PrviewService = ({ services }) => {
         </div>
         <section>
           <PricePackage
-            standards={standards}
+            standards={services?.standards}
             service_packages={services?.packages}
           />
         </section>
-        <section className="mt-4">
-          <ServiceFaqs faqs={services?.faqs} />
-        </section>
+      
 
         <section className="mt-4 space-y-6">
           <ServiceTerms requirements={services?.requirements} />

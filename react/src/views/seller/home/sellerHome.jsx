@@ -10,29 +10,25 @@ import SellerNavbar from "./seller-navbar";
 const sellerHome = ({ children }) => {
   const navigate = useNavigate();
   const name = localStorage.getItem("name");
-  console.log("name", name);
   const locaiton = useLocation();
-  console.log(locaiton);
 
   const isDefault = useMatch(`user/${encodeURIComponent(name)}/seller`);
-  console.log('default',isDefault);
   if (!isDefault) {
-    return (<section className="flex">
-       <div className="w-[20Vw] sticky  top-0"> 
-    <Sidebar/>
+    return (
+      <section className="flex  ">
+        <div className="w-[20Vw]  sticky top-0 shadow h-screen  ">
+          <Sidebar />
+        </div>
 
-    </div>
-    <section className="flex-1 ">
-    <SellerNavbar/>
-        <section className="flex flex-1   ">
-          <Outlet />
+        <section className="flex-1 border overflow-y-auto ">
+          <div className="border-b ">
+            <SellerNavbar />
+          </div>
+          <section className=" p-4 ">
+            <Outlet />
+          </section>
         </section>
-
-
-    </section>
-      
-    </section>
-
+      </section>
     );
   }
 

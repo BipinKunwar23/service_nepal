@@ -12,13 +12,21 @@ export const sellerOrderApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Services"],
+
   endpoints: (build) => ({
     getReceivedOrders: build.query({
       query: () => "all",
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'Services', id })), 'Services']
+      :['Services'],
     }),
 
-    getProviderReceivedOrderDetail: build.query({
-      query: (orderId) => `${orderId}/received`,
+    getOrderDetail: build.query({
+      query: (orderId) => `view/${orderId}`,
+      providesTags: ["Services"],
+
     }),
 
     AcceptOrder: build.mutation({
@@ -26,19 +34,45 @@ export const sellerOrderApi = createApi({
         url: `${orderId}/accept`,
         method: "PUT",
       }),
+      invalidatesTags: ["Services"],
+
     }),
     CancelOrder: build.mutation({
       query: (orderId) => ({
         url: `${orderId}/cancel`,
         method: "PUT",
       }),
+      invalidatesTags: ["Services"],
+
+    }),
+    CompleteOrder: build.mutation({
+      query: (orderId) => ({
+        url: `${orderId}/complete`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Services"],
+
+    }),
+    DeleteOrder: build.mutation({
+      query: (orderId) => ({
+        url: `${orderId}/delete`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Services"],
+
+    }),
+    getCostByDay: build.query({
+      query: () => `cost`,
     }),
   }),
 });
 
 export const {
   useGetReceivedOrdersQuery,
-  useGetProviderReceivedOrderDetailQuery,
+  useGetOrderDetailQuery,
   useAcceptOrderMutation,
   useCancelOrderMutation,
+  useGetCostByDayQuery,
+  useCompleteOrderMutation,
+  useDeleteOrderMutation
 } = sellerOrderApi;

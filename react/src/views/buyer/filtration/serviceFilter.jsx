@@ -59,7 +59,7 @@ const ServiceFilter = () => {
   }
 
   return (
-    <section>
+    <section className="p-4">
           <FilterQuery services={services} filter_Type={filter_Type} />
       
     </section>

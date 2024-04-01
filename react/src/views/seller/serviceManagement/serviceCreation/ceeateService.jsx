@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import OverView from "./overView";
 import Pricing from "./pricing";
-import Description from "./description";
 import { Gallery } from "./gallery";
 import Requirements from "./requirement";
 import Loader from "../../../../components/Loader";
@@ -12,13 +11,20 @@ import {
   setServiceId, 
   setStepCount,
 } from "../../../../redux/sellerSlice";
+import Description from "./description";
+import { useNavigate } from "react-router-dom";
 const CreateService = ({data}) => {
+
 
   console.log("draft", data);
   const steps = useSelector((state) => state.sellerSlice.steps);
+  const type = useSelector((state) => state.sellerSlice.type);
+  console.log('type',type);
+
   const stepCount = useSelector((state) => state.sellerSlice.stepCount);
 
   const [currentStep,setCurrentStep]=useState(0);
+  const navigate=useNavigate()
 
   console.log('currentStep',currentStep);
 console.log('stepcount',typeof(stepCount.toString()));
@@ -26,7 +32,7 @@ console.log('stepcount',typeof(stepCount.toString()));
 
 
   const processData = async () => {
-    if (data && Object.keys(data).length!==0) {
+    if (data && Object.keys(data).length!==0 && data?.standards?.length>0) {
       let updatedSteps = [...steps];
   
       updatedSteps = await updateSteps(2, updatedSteps);
@@ -34,15 +40,13 @@ console.log('stepcount',typeof(stepCount.toString()));
   
       if (data?.packages?.length>0) {
         updatedSteps = await updateSteps(3, updatedSteps);
-        if (data?.faqs.length!==0) {
-          updatedSteps = await updateSteps(4, updatedSteps);
           if (data?.galleries.length!==0) {
-            updatedSteps = await updateSteps(5, updatedSteps);
+            updatedSteps = await updateSteps(4, updatedSteps);
           }
           if (data?.requirements) {
-            updatedSteps = await updateSteps(6, updatedSteps);
+            updatedSteps = await updateSteps(5, updatedSteps);
           }
-        }
+        
       }
   setCurrentStep(updatedSteps.length)
       console.log('Final Updated Steps:', updatedSteps);
@@ -70,32 +74,36 @@ console.log('stepcount',typeof(stepCount.toString()));
 
   console.log("stpes", steps);
 
-  const handlePages = () => {
+  const handleServices = () => {
     switch (stepCount) {
       case 1:
         return <OverView overview={data} />;
 
         break;
       case 2:
-        return <Pricing data={data?.packages} optionId={data?.option_id} />;
+        return <Pricing data={data?.packages} standards={data?.standards} />;
 
         break;
+      // case 3:
+      //   return <Faq faqs={data?.faqs} description={data?.description?.description} />;
+
+      //   break;
       case 3:
-        return <Description faqs={data?.faqs} description={data?.description} />;
+        return <Gallery galleries={data?.galleries} image={data?.description?.image} />;
 
         break;
       case 4:
-        return <Gallery galleries={data?.galleries} />;
-
-        break;
-      case 5:
         return <Requirements data={data?.requirements} />;
 
         break;
-        case 6:
+        case 5:
           return <PrviewService services={data} />;
   
           break;
+          case 7:
+            return <Description details={data?.description} />;
+    
+            break;
 
       default:
         break;
@@ -105,10 +113,14 @@ console.log('stepcount',typeof(stepCount.toString()));
 
   return (
     <>
-      <div className="p-6">
-        <h2 className="text-green-600 font-semibold text-3xl">Technician</h2>
+      <div className="p-6 border-b">
+        <h2 className="text-green-600 font-semibold text-3xl  cursor-pointer"
+        onClick={()=>{
+          navigate("/",{replace:true})
+        }}
+        >Technician</h2>
       </div>
-    <section className=" py-4 px-10 mx-auto bg-gray-100">
+    <section className=" py-4 px-10 mx-auto">
       <section className="w-[80Vw] mx-auto">
         <div className="mb-3">
           <div className="flex justify-end gap-6">
@@ -132,16 +144,30 @@ console.log('stepcount',typeof(stepCount.toString()));
                   onClick={() => {
                     dispatch(setStepCount(6));
                   }}
-                  disabled={data?.requirements===null}
+                  disabled={(data?.requirements===null && type==='general') || (data?.description===null && type==="specific") || (data?.description!=null && type==="general") }
                   >Preview</button>
             </div>
 
           </div>
         </div>
-        <div className="flex justify-between mb-9 text-gray-300">
+        <div className="flex gap-12 mb-9 text-gray-300">
 
-
-          {steps.map((step, index) => {
+        <div className="flex gap-2">
+                <span className="bg-green-400 border rounded-full h-[30px] w-[30px] block text-center text-lg text-white ">
+                  1
+                </span>
+                <button
+                  className={`  text-[1.1em] font-semibold  ${
+                    stepCount === 1 && "text-gray-800"
+                  } `}
+                  onClick={() => {
+                    dispatch(setStepCount(1));
+                  }}
+                >
+                  Service Overview
+                </button>
+              </div>
+          {type==="general" && steps.map((step, index) => {
             return (
               <div className="flex gap-2" key={step.id}>
                 <span className="bg-green-400 border rounded-full h-[30px] w-[30px] block text-center text-lg text-white ">
@@ -161,8 +187,44 @@ console.log('stepcount',typeof(stepCount.toString()));
               </div>
             );
           })}
+          {
+            type==="specific" && <div className="flex gap-2">
+               <div className="flex gap-2" >
+                <span className="bg-green-400 border rounded-full h-[30px] w-[30px] block text-center text-lg text-white ">
+                  2
+                </span>
+                <button
+                  className={`  text-[1.1em] font-semibold  ${
+                    stepCount === 7 && "text-gray-800"
+                  } `}
+                  onClick={() => {
+                    dispatch(setStepCount(7));
+                  }}
+                  disabled={!data ||  Object.keys(data).length===0}
+                >
+                  Price & Description
+                </button>
+              </div>
+              {/* <div className="flex gap-2" >
+                <span className="bg-green-400 border rounded-full h-[30px] w-[30px] block text-center text-lg text-white ">
+                  3
+                </span>
+                <button
+                  className={`  text-[1.1em] font-semibold  ${
+                    stepCount === 3 && "text-gray-800"
+                  } `}
+                  onClick={() => {
+                    dispatch(setStepCount(step.id));
+                  }}
+                  disabled={!data?.preview}
+                >
+                 Preview
+                </button>
+              </div> */}
+            </div>
+          }
         </div>
-        <section className="p-4 bg-white">{handlePages()}</section>
+        <section className="p-4  shadow-lg">{handleServices()}</section>
       </section>
     </section>
     </>

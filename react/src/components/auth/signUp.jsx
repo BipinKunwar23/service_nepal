@@ -9,6 +9,7 @@ import { object, string, date, ref } from "yup";
 import TextError from "../error/TextError";
 import { setName } from "../../redux/sellerSlice";
 import { useDispatch } from "react-redux";
+import LandingNavbar from "../landingPage/landing-navbar";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
 
@@ -68,17 +69,17 @@ const SignUp = ({ role }) => {
 
   return (
     <section>
-         <div className="p-4">
-        <h2 className="text-green-600 font-semibold text-3xl">Technician</h2>
+         <div className="bg-slate-400">
+       <LandingNavbar/>
       </div>
-    <section className="grid grid-cols-2 gap-4">
-      <div className="grid place-content-center  text-4xl font-semibold">
+    <section className="grid  ">
+      {/* <div className="grid place-content-center  text-4xl font-semibold">
         <h2 className="text-left space-y-2 text-gray-700">Welcome to User Registration Page</h2>
-      </div>
+      </div> */}
       {isError && error?.status != 422 ? (
         <Error error={error} />
       ) : (
-        <div className=" form  w-full  text-slate-800 p-8 ">
+        <div className=" form  w-1/2  text-slate-800 p-8 mx-auto">
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -87,6 +88,9 @@ const SignUp = ({ role }) => {
             {(formik) => {
               return (
                 <Form>
+                  <div>
+                    <h2 className="text-3xl font-semibold ">Register User</h2>
+                  </div>
                   <div>
                     <label htmlFor="">
                       Full Name{" "}

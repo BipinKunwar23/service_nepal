@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 
+
 import { useAddCategoryMutation } from "../../../../api/admin/categoryApi";
 import { useSelector, useDispatch } from "react-redux";
-export const AddCategory = ({setAddItem}) => {
-  const { register, control, handleSubmit, setValue } = useForm();
+export const AddCategory = () => {
+  const { register, control, handleSubmit, setValue,reset } = useForm();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export const AddCategory = ({setAddItem}) => {
     await addCategory({ formdata })
       .unwrap()
       .then((response) => {
-       setAddItem(false)
+       reset()
         console.log(response);
       })
       .catch((error) => {
@@ -52,7 +53,7 @@ export const AddCategory = ({setAddItem}) => {
 
           <div className="grid content-end">
             <button
-              className="bg-blue-600 text-white p-2 rounded w-full"
+              className="bg-blue-600 text-white p-2 w-[150px] rounded "
               type="submit"
             >
               Save Category

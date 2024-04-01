@@ -32,6 +32,16 @@ export const optionApi = createApi({
       },
       invalidatesTags: ["subCategory"],
     }),
+    editOption: builder.mutation({
+      query: ({ values, id }) => {
+        return {
+          url: `edit/${id}`,
+          method: "PUT",
+          body: values,
+        };
+      },
+      invalidatesTags: ["subCategory"],
+    }),
 
     addServiceStandards: builder.mutation({
       query: ({ values, id }) => ({
@@ -73,5 +83,6 @@ export const {
   useAddServiceStandardsMutation,
   useGetStandardByServiceIdQuery,
   useGetValueByStandardQuery,
-  useAddStandardValueMutation
+  useAddStandardValueMutation,
+  useEditOptionMutation
 } = optionApi;

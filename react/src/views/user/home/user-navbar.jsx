@@ -20,7 +20,7 @@ const UserNavbar = () => {
     <SearchBar/>
 
        </div>
-        <div className="  text-[1.1em] flex-1 grid justify-end">
+        <div className="  text-[1.1em] flex-1 grid justify-end font-semibold">
           <ul className=" flex-1 flex gap-8  ">
           
           <li className="p-2">

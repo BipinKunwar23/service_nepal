@@ -5,6 +5,7 @@ import { AiOutlineMessage } from "react-icons/ai";
 import { MdFavoriteBorder } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import SearchBar from "../../../components/search/searchBar";
+import { setCounts } from "../../../redux/sellerSlice";
 import { useDispatch, useSelector } from "react-redux";
 const SellerNavbar = ({ profile }) => {
   const logged = localStorage.getItem("logged");
@@ -17,9 +18,10 @@ const SellerNavbar = ({ profile }) => {
   const location = useLocation();
   const [dropdown, setdropdown] = useState("");
   return (
-    <div className="  flex  gap-5 py-6  text-slate-500 p-4">
-      <div className=" text-gray-700 grid justify-end flex-1">
-        <ul className=" flex-1 flex gap-10   place-content-center ">
+    <div className="  flex bg-white  gap-5    p-3">
+     
+      <div className=" grid justify-end flex-1">
+        <ul className=" flex-1 flex   place-items-center gap-1 ">
           {/* 
           <li className="p-1 text-[1.4em] text-slate-500 ">
             <NavLink to="/user" className="w-full">
@@ -27,40 +29,46 @@ const SellerNavbar = ({ profile }) => {
               Switch to Buying
             </NavLink>
           </li> */}
-          <li className="p-2">
-            <NavLink to={`/user/${name}/notifications`} className="w-full flex">
+          <li className="">
+            <NavLink
+              to={`/user/${name}/seller/notification`}
+              className=" flex"
+              onClick={() => {
+                dispatch(setCounts({ ...count, notification: 0 }));
+              }}
+            >
               {" "}
-              <IoNotificationsOutline className="text-[1.7em]" />
+              <IoNotificationsOutline className="text-[1.4em] font-bold text-gray-700" />
               <sup
-                className={` text-[1.1em] ${
-                  count.notification > 0 && "bg-red-600"
-                }  rounded-full w-5 h-5 grid place-content-center p-2 text-white`}
+                className={` text-[1.em] ${
+                  count.notification > 0 && "bg-red-600 border shadow"
+                }  rounded-full w-6 h-6 grid place-content-center font-semibold  text-white`}
               >
                 {count.notification > 0 && count.notification}
               </sup>
             </NavLink>
           </li>
-          <li className="p-2">
+          <li className="">
             <NavLink to={`/user/${name}/chat/receiver`} className="w-full flex">
               {" "}
-              <AiOutlineMessage className="text-[1.7em]" />
+              <AiOutlineMessage className="text-[1.4em] text-gray-700" />
               <sup
-                className={` text-[1.1em] ${
+                className={` text-[1em] ${
                   count.message > 0 && "bg-red-600"
-                }  rounded-full w-5 h-5 grid place-content-center p-2 text-white`}
+                }  rounded-full w-5 h-5 grid place-content-center  text-white`}
               >
                 {count.message > 0 && count.message}
               </sup>
             </NavLink>
           </li>
-          <li className="p-2">
-            <NavLink to={`/${name}/notifications`} className="w-full">
+          <li className="">
+            <NavLink to={`/user/${name}/chat/receiver`} className="w-full flex text-green-600 font-semibold">
               {" "}
-              <MdFavoriteBorder className="text-[1.7em]" />
+          Switch to Buying
             </NavLink>
           </li>
 
-          <li className="relative">
+          <li className="relative ml-2">
             <div>
               <img
                 src={localStorage.getItem("photo")}
@@ -72,16 +80,16 @@ const SellerNavbar = ({ profile }) => {
               />
             </div>
             {dropdown && (
-              <ul className="flex flex-col text-[1.2em] w-[300px] absolute top-12 right-0 gap-4 py-5 border boder-gray-300 p-2 rounded-md bg-white">
-                <li className="text-gray-600 flex gap-3">
+              <ul className="flex flex-col w-[280px] font-semibold  text-black shadow bg-gray-50  absolute top-12 right-0 gap-2  p-4 z-10">
+                <li className=" flex gap-3">
                   <img
                     src={localStorage.getItem("photo")}
                     alt=""
-                    className="rounded-full border h-[35px] w-[35px] "
+                    className="rounded-full border h-[30px] w-[30px] "
                   />
                   <h2 className="text-lg">{localStorage.getItem("name")}</h2>
                 </li>
-                <li className="border border-gray-300 rounded-lg p-3">
+                <li className="border-2 border-gray-300 rounded-lg p-2">
                   <NavLink
                     to={`/user/${localStorage.getItem("name")}`}
                     onClick={() => {
@@ -91,28 +99,67 @@ const SellerNavbar = ({ profile }) => {
                     Switch to Buying
                   </NavLink>
                 </li>
-                <li className="text-gray-600 p-3 hover:bg-gray-300 ">
+                <li className="p-2">
                   <NavLink
                     to={`/user/${localStorage.getItem("name")}/profile`}
                     onClick={() => {
                       setdropdown(!dropdown);
                     }}
                   >
-                    Profile
+                    Dashboard
                   </NavLink>
                 </li>
-                <li className="text-gray-600 p-3 hover:bg-gray-300 ">
+                <li className=" p-2 ">
                   <NavLink
                     to="/seller/create/job"
                     onClick={() => {
                       setdropdown(!dropdown);
                     }}
                   >
-                    My Jobs
+                    My Services
+                  </NavLink>
+                </li>
+                <li className=" p-2 ">
+                  <NavLink
+                    to="/seller/create/job"
+                    onClick={() => {
+                      setdropdown(!dropdown);
+                    }}
+                  >
+                    My Orders
+                  </NavLink>
+                </li>
+                <li className=" p-2 border-t-2  ">
+                  <NavLink
+                    to="/seller/create/job"
+                    onClick={() => {
+                      setdropdown(!dropdown);
+                    }}
+                  >
+                    My Profile
+                  </NavLink>
+                </li>  <li className=" p-2 ">
+                  <NavLink
+                    to="/seller/create/job"
+                    onClick={() => {
+                      setdropdown(!dropdown);
+                    }}
+                  >
+                   Account
+                  </NavLink>
+                </li>  
+                <li className=" p-2 ">
+                  <NavLink
+                    to="/seller/create/job"
+                    onClick={() => {
+                      setdropdown(!dropdown);
+                    }}
+                  >
+                    Setting
                   </NavLink>
                 </li>
 
-                <li className="text-gray-600  p-3 hover:bg-gray-300 ">
+                <li className=" p-2 ">
                   <button
                     onClick={() => {
                       localStorage.removeItem("logged");
@@ -123,11 +170,14 @@ const SellerNavbar = ({ profile }) => {
                       navigate("/", { replace: true });
                     }}
                   >
-                    Sign Out
+                    Log Out
                   </button>
                 </li>
               </ul>
             )}
+          </li>
+          <li className="mx-2">
+            {localStorage.getItem('name')}
           </li>
         </ul>
       </div>

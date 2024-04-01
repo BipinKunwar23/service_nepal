@@ -5,7 +5,7 @@ const RequireAuth = ({children}) => {
     const location=useLocation()
     const logged = localStorage.getItem("logged");
 if(!logged){
-    return <Navigate to="/signin" state={{path:location.pathname}}/>
+    return <Navigate to="/user/signin" state={{path:location.pathname}} replace={true}/>
 }
   return  children
 }

@@ -1,4 +1,5 @@
 // import "./App.css";
+import React from "react";
 import { Routes, Route, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +23,6 @@ import Profile from "./components/profile/profile";
 import ServiceGuideline from "./views/seller/serviceManagement/porfileCreation/guideline";
 import ServiceProfile from "./views/seller/serviceManagement/porfileCreation/serviceProfile";
 import CreateService from "./views/seller/serviceManagement/serviceCreation/ceeateService";
-import ServiceDetail from "./views/seller/serviceManagement/serviceInformation/serviceDetail";
 import BuyerService from "./views/buyer/service/buyerService";
 
 import OrderConfirm from "./views/buyer/order/orderConfirm";
@@ -52,9 +52,14 @@ import BuyerNavbar from "./views/buyer/home/buyer-navbar";
 import RequireRole from "./views/seller/serviceManagement/serviceCreation/requireRole";
 import DraftService from "./views/seller/serviceManagement/serviceCreation/draftService";
 import NewService from "./views/seller/serviceManagement/serviceCreation/newService";
-import SellerServiceDetail from "./views/seller/serviceManagement/serviceInformation/serviceDetail";
+import SellerGeneralServiceDetail from "./views/seller/serviceManagement/serviceInformation/generalDetail";
 import AdminRoute from "./route/admin";
 import SellerNavbar from "./components/navbar/seller-navbar";
+import { List } from "./views/buyer/wihsList/list";
+import ListDetail from "./views/buyer/wihsList/listDetail";
+import UserServiceDetails from "./views/user/service/serviceDetail";
+import SpecificServiceDetail from "./views/seller/serviceManagement/serviceInformation/specificDetail";
+import SellerServiceDetail from "./views/seller/serviceManagement/serviceInformation/detail";
 
 function App() {
   const message = useSelector((state) => state.sellerSlice.toastMessage);
@@ -68,6 +73,7 @@ function App() {
 
   const senderMessage = useSelector((state) => state.sellerSlice.senderMessage);
   const notifications = useSelector((state) => state.sellerSlice.notifications);
+  console.log("homenotify", notifications);
   const name =
     useSelector((state) => state.sellerSlice.name) ||
     localStorage.getItem("name");
@@ -82,20 +88,31 @@ function App() {
     }
   });
 
-  window.Echo.private(`private-notification`).listen(
-    "notification",
-    (event) => {
-      console.log("event", event);
-      if (event?.notification?.receiver_id === receiverId) {
-        dispatch(setNotifications([...notifications, event?.notification]));
+  window.Echo.private(`order.${localStorage.getItem("userId")}`).notification(
+    (notification) => {
+      console.log("notificationMesage", notification);
+      if (notification && Object.keys(notification).length > 0) {
+        dispatch(setNotifications([notification, ...notifications]));
         dispatch(setCounts({ ...count, notification: count.notification + 1 }));
       }
     }
   );
 
+  // window.Echo.private(`private-notification`).listen(
+  //   "notification",
+  //   (event) => {
+  //     console.log("event", event);
+  //     if (event?.notification?.receiver_id === receiverId) {
+  //       dispatch(setNotifications([...notifications, event?.notification]));
+  //       dispatch(setCounts({ ...count, notification: count.notification + 1 }));
+  //     }
+  //   }
+  // );
+
   const seller = `user/${name}/seller`;
 
   const role = localStorage.getItem("role");
+  
 
   return (
     <section className="relative">
@@ -111,7 +128,7 @@ function App() {
             </LandingPage>
           }
         />
-        <Route path="/admin/*" element={<AdminRoute/>}/>
+        <Route path="/admin/*" element={<AdminRoute />} />
         <Route path="user/signin" element={<SignIn />}></Route>
         <Route path="user/signup" element={<SignUp />}></Route>
 
@@ -123,14 +140,22 @@ function App() {
 
           <Route
             path="service/:serviceId/option/:optionId"
-            element={<BuyerService />}
+            element={<UserServiceDetails />}
           />
+          <Route
+            path="service/:serviceId/option/:optionId/order"
+            element={
+              <RequireAuth>
+                <OrderConfirm />
+              </RequireAuth>
+            }
+          ></Route>
 
           <Route path="category/:categoryId" element={<SubCategory />} />
         </Route>
         <Route path="user/search" element={<SearchResult />} />
 
-        <Route path={`user/${name}`} element={<BuyerHome />}>
+        <Route path={`user/${name}/*`} element={<BuyerHome />}>
           <Route
             path="category/:categoryId/subcategory/:subcategoryId/service/:serviceId"
             element={<ServiceFilter />}
@@ -138,27 +163,29 @@ function App() {
           <Route path="result/service/search" element={<SearchResult />} />
 
           <Route
-            path="service/:serviceId/option/:optionId"
+            path="service/:serviceId"
             element={<BuyerService />}
           />
 
           <Route path="category/:categoryId" element={<SubCategory />} />
           <Route
-            path="service/:serviceId/option/:optionId/order"
+            path="service/:serviceId/order"
             element={<OrderConfirm />}
           ></Route>
-          <Route path={`orders`} element={<BuyerOrderList />}>
+          <Route path="order" element={<BuyerOrderList />}>
             <Route path=":orderId" element={<BuyerOrderDetail />} />
           </Route>
           <Route path={`chat/receiver`} element={<ViewChat />}></Route>
-          <Route path="service/:serviceId" element={<ServiceDetail />} />
+          <Route
+            path="service/:serviceId"
+            element={<SellerGeneralServiceDetail />}
+          />
 
           <Route path={`notifications`} element={<Notification />}></Route>
-          <Route
-            path={`/user/${name}/chat/receiver/:receiverId`}
-            element={<Chat />}
-          ></Route>
+          <Route path={`chat/receiver/:receiverId`} element={<Chat />}></Route>
 
+          <Route path={`list`} element={<List />} />
+          <Route path="list/:listId" element={<ListDetail />} />
           <Route
             path="service/:serviceId/review"
             element={<CreateReview />}
@@ -195,15 +222,22 @@ function App() {
         />
 
         <Route
-          path={`${seller}/service/:serviceId/option/:optionId`}
+          path={`${seller}/service/:serviceId`}
           element={<SellerServiceDetail />}
         />
 
+        <Route
+          path={`${seller}/option/:optionId/service/:serviceId`}
+          element={<SpecificServiceDetail />}
+        />
         <Route path={`${seller}/*`} element={<SellerHome />}>
           <Route path="dashboard" element={<SellerDashboard />} />
 
           <Route path="orders" element={<SellerOrderOverview />} />
+          <Route path="orders/:orderId" element={<OrderDetail />} />
+
           <Route path="services" element={<ServiceSummary />} />
+          <Route path={`notification`} element={<Notification />}></Route>
         </Route>
         <Route path={`${seller}/guideline`} element={<ServiceGuideline />} />
       </Routes>

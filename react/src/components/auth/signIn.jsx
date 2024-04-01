@@ -8,6 +8,7 @@ import { object, string } from "yup";
 import TextError from "../error/TextError";
 import { setName } from "../../redux/sellerSlice";
 import { useDispatch } from "react-redux";
+import LandingNavbar from "../landingPage/landing-navbar";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -52,27 +53,30 @@ const SignIn = () => {
   // bg-gradient-to-tr from-[#004B8F] to-[#02215B]
   return (
     <section>
-      <div className="p-4">
+      {/* <div className="p-4">
         <h2 className="text-green-600 font-semibold text-3xl">Technician</h2>
+      </div> */}
+      <div className="bg-gray-500">
+      <LandingNavbar/>
       </div>
 
-      <section className="grid grid-cols-2 ">
-        <div className="grid place-content-center">
+      <section className="grid  ">
+        {/* <div className="grid place-content-center">
           <h2 className="text-5xl font-semibold text-center p-10 text-slate-700">
             Welcome To Login Page
           </h2>
-        </div>
+        </div> */}
         {isError && error?.status != 422 ? (
           <Error error={error} />
         ) : (
-          <div className=" flex-1  px-10 py-5 text-[0.9em]   login ">
+          <div className=" flex-1   text-[0.9em] mx-auto w-[35Vw] login ">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
               <Form>
-                <div className="  text-gray-600 text-3xl  py-2 font-sans font-medium  text-center ">
+                <div className="  text-gray-800 text-3xl  py-2 font-sans font-medium   ">
                   <span>Sign In User</span>
                 </div>
                 <div>

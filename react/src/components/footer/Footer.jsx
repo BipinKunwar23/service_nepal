@@ -2,15 +2,15 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <footer className=' text-gray-6k 00 p-20 grid grid-cols-1 '>
-    <div className=" grid grid-cols-4 justify-items-center">
+    <footer className=' text-gray-600 p-4 shadow grid grid-cols-1 '>
+    <div className=" grid grid-cols-4  text-lg">
       <div className="contact-info">
-        <h4>Contact Us</h4>
+        <h4 className=''>Contact Us</h4>
         <ul>
             
-        <li>123 Main Street, City, Country</li>
-        <li>Email: info@example.com</li>
-        <li>Phone: +1 (555) 123-4567</li>
+        <li>Gaindakot-1,Nawalpur, Nepal</li>
+        <li> bipinkunwar23@gmail.com</li>
+        <li> +977 9823368617</li>
         </ul>
       </div>
       
@@ -18,11 +18,8 @@ const Footer = () => {
         <h4>Quick Links</h4>
         <ul>
           <li><a href="#home">Home</a></li>
-          <li><a href="#about">About Us</a></li>
           <li><a href="#services">Services</a></li>
-          <li><a href="#providers">Providers</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#contact">Become a seller</a></li>
         </ul>
       </div>
       

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { useDispatch } from "react-redux";
 import { NavLink, useLocation, useParams } from "react-router-dom";
+import { createReview } from "../../../redux/buyerSlice";
 
 const Rating = ({ rating }) => {
   const { serviceId } = useParams();
+  const dispatch=useDispatch()
   const location=useLocation();
 
   return (
@@ -56,13 +59,15 @@ const Rating = ({ rating }) => {
         </div>
       </div>
       <div className="py-6">
-          <NavLink
-            to={`/user/${localStorage.getItem('name')}/service/${serviceId}/review`}
-            state={{path:location.pathname}}
-            className="bg-green-600 text-white p-3 text-lg px-5 rounded bottom-full mt-7"
+          <button
+            
+            className="bg-green-600 text-white p-2 w-full text-lg px-5 rounded bottom-full mt-7"
+            onClick={()=>{
+              dispatch(createReview(true))
+            }}
           >
             write a review
-          </NavLink>
+          </button>
         </div>
     </section>
   );

@@ -15,26 +15,10 @@ class NotificationController extends Controller
     {
         $this->notificaiton = $notificaiton;
     }
-    public function createNotificaitons()
-    {
-        $request = [
-            'receiver_id' => 4,
-            'type' => 'orders',
-            'title' => 'sevice confirmation',
-            'body' => '
-      Lorem g elit. At atque repudiandae earum a, dgdfgdr sfsdfsd commodi voluptatem, dolorum officiis?
-            
-            ',
-            'link' => '',
-            'link_name' => ''
-        ];
-        $data = $this->notificaiton->createNotification($request);
-        return response()->json($data);
-    }
+    
     public function getNotifications()
     {
-        $notificaiton = Notification::where('receiver_id', Auth::user()->id)
-            ->with('sender.profile')->get();
+        $notificaiton = Notification::where('notifiable_id', Auth::user()->id)->latest()->get();
         return response()->json($notificaiton);
     }
 }

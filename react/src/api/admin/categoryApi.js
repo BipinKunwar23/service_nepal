@@ -43,10 +43,19 @@ tagTypes:['Category'],
 
    
     editCategory: builder.mutation({
-      query: ({formdata, id}) => ({
+      query: ({values, id}) => ({
         url: `edit/${id}`,
-        method: "POST",
-        body: formdata,
+        method: "PUT",
+        body: values,
+      }),
+      
+      invalidatesTags: ['Category'],
+
+    }),
+    deleteCategory: builder.mutation({
+      query: (id) => ({
+        url: `delete/${id}`,
+        method: "DELETE",
       }),
       
       invalidatesTags: ['Category'],
@@ -61,5 +70,6 @@ export const {
   useGetCategoryByIdQuery,
   useAddCategoryMutation,
   useEditCategoryMutation,
+  useDeleteCategoryMutation
   
 } = categoryApi;

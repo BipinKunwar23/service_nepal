@@ -8,7 +8,8 @@ export const buyerCatalogApi = createApi({
     prepareHeaders: (headers) => {
       // headers.set('Content-Type','multipart/form-data')
       headers.set("Accept", "application/json");
-      headers.set("Authorize", localStorage.getItem("token"));
+      headers.set("Authorization", `Bearer ${localStorage.getItem("token")}`);
+
       return headers;
     },
   }),

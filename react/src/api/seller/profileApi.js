@@ -83,6 +83,28 @@ export const sellerProfileApi = createApi({
       invalidatesTags: ["profiles"],
 
     }),
+    addFaq: builder.mutation({
+      query: ({ serviceId, values }) => {
+        return {
+          url: `faqs/${serviceId}`,
+          method: "POST",
+          body: values,
+        };
+      },
+
+      invalidatesTags: ["Services"],
+    }),
+    updateFaq: builder.mutation({
+      query: ({ serviceId, values }) => {
+        return {
+          url: `faqs/${serviceId}`,
+          method: "PUT",
+          body: values,
+        };
+      },
+
+      invalidatesTags: ["Services"],
+    }),
     addSecurityInfo: builder.mutation({
       query: (values) => {
         return {
@@ -128,7 +150,9 @@ export const {
   useUpdatePersonalMutation,
   useUpdateQualificationMutation,
   useSetRoleMutation,
-  useCheckRoleQuery
+  useCheckRoleQuery,
+  useAddFaqMutation,
+  useUpdateFaqMutation
   
 
 } = sellerProfileApi;

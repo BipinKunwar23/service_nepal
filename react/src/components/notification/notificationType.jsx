@@ -4,6 +4,7 @@ const notificationType = () => {
   const types = [
     {
       name: "All Notifications",
+      type:""
     },
     {
       name: "Order",

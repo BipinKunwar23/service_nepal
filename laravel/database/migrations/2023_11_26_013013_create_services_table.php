@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('subcategory_id');
             $table->foreign('subcategory_id')->references('id')->on('subcategories');
             $table->string('name');
+            $table->string('type',20);
+
             $table->string('keywords')->default(null);
             $table->timestamps();
         });

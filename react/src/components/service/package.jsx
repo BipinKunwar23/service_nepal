@@ -2,6 +2,7 @@ import React from 'react'
 import { FaCheck } from "react-icons/fa";
 
 const PricePackage = ({standards,service_packages}) => {
+  console.log('service_package',service_packages);
     const packages = [
         {
           name: "basic",

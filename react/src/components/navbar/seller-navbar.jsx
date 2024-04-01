@@ -53,7 +53,7 @@ const SellerNavbar = ({ profile }) => {
           <li className="p-2">
             <NavLink  to={`/user/${name}/chat/receiver`} className="w-full flex">
               {" "}
-              <AiOutlineMessage className="text-[1.7em]" />
+              <AiOutlineMessage className="text-[1.4em]" />
               <sup className={` text-[1.1em] ${count.message>0 && "bg-red-600"}  rounded-full w-5 h-5 grid place-content-center p-2 text-white`}>{count.message>0 && count.message}</sup>
 
             </NavLink>

@@ -11,7 +11,7 @@ const Availability = ({ availability, cities }) => {
   console.log("availabiltu", availability);
   const { register, control, setValue, handleSubmit } = useForm({
     defaultValues: {
-      cities: cities.length!=0 ?cities: [{ city: "" }],
+      cities: cities?.length!=0 ?cities: [{ city: "" }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -31,7 +31,7 @@ const Availability = ({ availability, cities }) => {
         .unwrap()
         .then((response) => {
           console.log("avaialbility", response);
-          dispatch(setProfileStep("preview"));
+          dispatch(setProfileStep(4));
           // navigate(`${location?.state?.path} `, { replace: true });
         })
         .catch((error) => {
@@ -44,7 +44,7 @@ const Availability = ({ availability, cities }) => {
       .unwrap()
       .then((response) => {
         console.log("avaialbility", response);
-        dispatch(setProfileStep("security"));
+        dispatch(setProfileStep(4));
         // navigate(`${location?.state?.path} `, { replace: true });
       })
       .catch((error) => {

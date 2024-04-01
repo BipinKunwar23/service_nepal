@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FaStar } from "react-icons/fa";
 
-
 import {
   useLocation,
   useNavigate,
@@ -14,13 +13,16 @@ import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import ServiceCard from "../card/serviceCard";
 
-const FilterQuery = ({services, filter_Type}) => {
+import { setPaginateUrl } from "../../redux/buyerSlice";
+import Pagination from "react-js-pagination";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const FilterQuery = ({ services, filter_Type }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-
+  const dispatch = useDispatch();
 
   const serviceName = useSelector((state) => state.buyerSlice.service);
-
 
   const filters = [
     {
@@ -43,7 +45,6 @@ const FilterQuery = ({services, filter_Type}) => {
   const [filterId, setFilters] = useState();
   const [filterType, setFilterType] = useState({});
 
-
   useEffect(() => {
     setSearchParams(filterType);
   }, [filterType]);
@@ -54,7 +55,6 @@ const FilterQuery = ({services, filter_Type}) => {
   console.log("prices", prices);
   const [city, setCity] = useState("");
 
- 
   console.log("filteredService", services);
   console.log("filter_Type", filter_Type);
 
@@ -75,7 +75,7 @@ const FilterQuery = ({services, filter_Type}) => {
               setFilters(null);
             }}
           >
-            <ul className="grid grid-cols-2 gap-3 text-lg p-4">
+            <ul className="grid grid-cols-2 gap-3  p-4">
               {filter_Type?.options?.map((type) => (
                 <li
                   key={type.id}
@@ -105,7 +105,7 @@ const FilterQuery = ({services, filter_Type}) => {
                 </li>
               ))}
             </ul>
-            <div className="grid grid-cols-2 gap-5  m-3 border-t border-gray-400 p-4  text-lg">
+            <div className="grid grid-cols-2 gap-5  m-3 border-t border-gray-400 p-4  ">
               <button
                 className="border border-gray-400 p-2 rounded-md"
                 type="button"
@@ -132,14 +132,19 @@ const FilterQuery = ({services, filter_Type}) => {
 
       case 2:
         const low = parseInt(
-          (parseInt(filter_Type?.budget[0]?.min) + parseInt(filter_Type?.budget[0]?.max)) / 3
+          (parseInt(filter_Type?.budget[0]?.min) +
+            parseInt(filter_Type?.budget[0]?.max)) /
+            3
         );
         const high = parseInt(
-          ((parseInt(filter_Type?.budget[0]?.min )+ parseInt(filter_Type?.budget[0]?.max)) / 3) * 2
+          ((parseInt(filter_Type?.budget[0]?.min) +
+            parseInt(filter_Type?.budget[0]?.max)) /
+            3) *
+            2
         );
         return (
-          <div className="bg-white  p-1 shadow shadow-gray-400 rounded-md col-span-2 mt-2 col-start-2 ">
-            <ul className="flex flex-col gap-3 text-lg">
+          <div className="bg-white  p-1  shadow shadow-gray-400 rounded-md col-span-2 mt-2 col-start-2 ">
+            <ul className="flex flex-col gap-3 ">
               <li className="flex gap-3  p-3 ">
                 <input
                   type="radio"
@@ -201,21 +206,22 @@ const FilterQuery = ({services, filter_Type}) => {
                 />
               </li>
 
-              <li className="grid grid-cols-2 gap-5  m-3 border-t border-gray-300 py-4 text-lg">
-                <button className="border border-gray-400 p-2 rounded-md"
-                onClick={()=>{
-                  delete filterType.price;
-                  setFilterType({ ...filterType });
+              <li className="grid grid-cols-2 gap-5  m-3 border-t border-gray-300 py-4 ">
+                <button
+                  className="border border-gray-400 p-2 rounded-md"
+                  onClick={() => {
+                    delete filterType.price;
+                    setFilterType({ ...filterType });
 
-                  setFilters(null);
-                  setPrices([]);
-                }}
+                    setFilters(null);
+                    setPrices([]);
+                  }}
                 >
                   Clear
                 </button>
                 <button
                   className="border border-gray-400 p-2 rounded-md"
-                  onClick={ () => {
+                  onClick={() => {
                     // await updateBudget({ value: prices });
                     setFilterType({ ...filterType, price: prices });
                   }}
@@ -230,7 +236,7 @@ const FilterQuery = ({services, filter_Type}) => {
       case 3:
         return (
           <div className="bg-white   shadow shadow-gray-400 rounded-md col-span-1 mt-2  max-h-[330px] col-start-3 overflow-y-auto">
-            <ul className="flex flex-col gap-2 p-2 text-lg ">
+            <ul className="flex flex-col gap-2 p-2  ">
               {filter_Type?.locations?.map((location) => (
                 <li
                   key={location.city}
@@ -245,7 +251,7 @@ const FilterQuery = ({services, filter_Type}) => {
                 </li>
               ))}
             </ul>
-            <div className="grid grid-cols-2 gap-5 border-t border-gray-300 py-3 px-2 text-lg">
+            <div className="grid grid-cols-2 gap-5 border-t border-gray-300 py-3 px-2 ">
               <button className="border border-gray-400 p-2 rounded-md">
                 Clear
               </button>
@@ -265,7 +271,7 @@ const FilterQuery = ({services, filter_Type}) => {
       case 4:
         return (
           <div className="bg-white   shadow shadow-gray-400 rounded-md col-span-2 mt-2   col-start-4 ">
-            <ul className="p-4 grid grid-cols-2 gap-2 text-lg">
+            <ul className="p-4 grid grid-cols-2 gap-2 ">
               <li className="flex gap-5  p-3 ">
                 <input type="checkbox" className="w-[18px]" />
                 <p>
@@ -291,7 +297,7 @@ const FilterQuery = ({services, filter_Type}) => {
                 </p>
               </li>
             </ul>
-            <div className="grid grid-cols-2 gap-5 border-t border-gray-300 m-3 p-4 text-lg">
+            <div className="grid grid-cols-2 gap-5 border-t border-gray-300 m-3 p-4 ">
               <button className="border border-gray-400 p-2 rounded-md">
                 Clear
               </button>
@@ -308,10 +314,10 @@ const FilterQuery = ({services, filter_Type}) => {
   };
 
   return (
-    <section>
-      <section className="px-10 mt-4 relative">
-        <h2 className="mb-8 text-2xl">{serviceName}</h2>
-        <div className="grid grid-cols-5   gap-5">
+    <section className="font-semibold text-[1em]">
+      <section className=" mt-4 relative">
+        <h2 className="mb-8 text-xl">{serviceName}</h2>
+        <div className="grid grid-cols-5  text-[0.9em2] gap-5">
           {filters.map((filter) => (
             <div
               key={filter.id}
@@ -336,10 +342,31 @@ const FilterQuery = ({services, filter_Type}) => {
       <section>
         {!services || services.data?.length === 0 ? (
           <div className="h-[50Vh] grid place-content-center">
-            <p className="text-2xl font-semibold text-gray-500">No result found</p>
+            <p className="text-2xl font-semibold text-gray-500">
+              No result found
+            </p>
           </div>
         ) : (
-          <ServiceCard cards={services}  url={`/user/${localStorage.getItem('name')}/service`} />
+          <ServiceCard
+            cards={services?.data}
+            url={`/user/${localStorage.getItem("name")}/service`}
+          >
+            <Pagination
+              totalItemsCount={services?.total}
+              activePage={services?.current_page}
+              itemsCountPerPage={services?.per_page}
+              onChange={(pageNumber) => {
+                dispatch(setPaginateUrl(pageNumber));
+              }}
+              itemClass="page-item"
+              linkClass="page-link"
+              prevPageText="Previous"
+              nextPageText="Next"
+              hideFirstLastPages={true}
+              hideNavigation={false}
+              activeClass="active"
+            />
+          </ServiceCard>
         )}
       </section>
     </section>

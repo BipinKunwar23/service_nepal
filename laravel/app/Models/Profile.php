@@ -9,7 +9,7 @@ use App\Models\User;
 class Profile extends Model
 {
     use HasFactory;
-    public $fillable=['user_id','name','address','language','photo','bio'];
+    public $fillable=['user_id','name','address','language','photo','bio','phone_number'];
 
     // protected $casts=[
     //     'address'=>'array'

@@ -29,8 +29,8 @@ export const buyerOrderApi = createApi({
     getProviderReceivedOrders: build.query({
       query: (id) => `provider/${id}`,
     }),
-    viewCustomerOrderDetail: build.query({
-      query: (id) => `${id}/made`,
+    viewOrderDetails: build.query({
+      query: (id) => `${id}`,
     }),
     getProviderReceivedOrderDetail: build.query({
       query: (orderId) => `${orderId}/received`,
@@ -56,7 +56,7 @@ export const {
   useGetCustomerOrdersQuery,
   useGetProviderReceivedOrdersQuery,
   useGetProviderReceivedOrderDetailQuery,
-  useViewCustomerOrderDetailQuery,
+  useViewOrderDetailsQuery,
   useAcceptOrderMutation,
   useCancelOrderMutation,
 } = buyerOrderApi;

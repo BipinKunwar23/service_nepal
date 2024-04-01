@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
@@ -28,4 +29,8 @@ Broadcast::channel('private-notification', function ($user) {
 
 Broadcast::channel('notification-count', function ($user) {
     return !is_null($user);
+});
+
+Broadcast::channel('order.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
 });

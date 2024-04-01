@@ -52,16 +52,16 @@ getSubCategory:builder.query({
 
 
 viewSubCategoryById:builder.query({
-  query:(id)=>`view/detail/${id}`,
+  query:(id)=>`view/${id}`,
   providesTags:['subCategory'],
 
 }),
 
 editSubCategory: builder.mutation({
-  query: ({id,...subcategory}) => ({
+  query: ({id,formdata}) => ({
     url: `edit/${id}`,
-    method: "PUT",
-    body: subcategory,
+    method: "POST",
+    body: formdata,
   }),
   invalidatesTags: ['subCategory'],
 

@@ -25,21 +25,7 @@ class ProgressController extends Controller
 
         $path = null;
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $name = time() . '.' . $extension;
-            $file->move('progress', $name);
-            $path = 'progress/' . $name;
-        }
-        $qrcode = null;
-        if ($request->hasFile('qrcode')) {
-            $file = $request->file('qrcode');
-            $extension = $file->getClientOriginalExtension();
-            $name = time() . '.' . $extension;
-            $file->move('qrcode', $name);
-            $qrcode = 'qrcode/' . $name;
-        }
+      
 
         $progress = Progress::create([
             'order_id' => $orderId,

@@ -4,67 +4,120 @@ import Loader from "../Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotifications } from "../../redux/sellerSlice";
 const viewNotification = () => {
-  const {data,isLoading}=useShowNotificaitonsQuery()
-  const receiverId=parseInt(localStorage.getItem('userId'))
-  console.log('id',typeof(receiverId));
+  const { data, isLoading } = useShowNotificaitonsQuery();
+  const receiverId = parseInt(localStorage.getItem("userId"));
+  console.log("id", typeof receiverId);
 
+  const dispatch = useDispatch();
+  const notifications = useSelector((state) => state.sellerSlice.notifications);
 
-  const dispatch=useDispatch();
-  const notifications=useSelector((state)=>state.sellerSlice.notifications);
+  console.log("savednotification", notifications);
 
-  
-  
   console.log("data", data);
   useEffect(() => {
-    if (data) {
-      dispatch(
-      setNotifications(data)
-
-      )
+    if (notifications  && data && (notifications?.length>=data?.length)) {
+      dispatch(setNotifications(notifications));
+    } else {
+      dispatch(setNotifications(data || []));
     }
+  
   }, [data]);
 
 
 
-
- 
-  if(isLoading){
-    return <Loader/>
-  }
-  return (
-    <div className="divide-y-2 bg-white  ">
-      {notifications.map((notification) => {
-        const date=new Date(notification?.created_at)
-        const day = date.toLocaleDateString(undefined, {
-          weekday: 'long'
-        });
-    
-        const time = date.toLocaleTimeString(undefined, {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
+  const NotificationMessage = ({ notification, day, time }) => {
+    switch (notification?.type) {
+      case "App\\Notifications\\Order":
         return (
-          <div key={notification?.id} className="bg-white p-4">
-            <div className="flex gap-5 w-[80%] ">
+          <div className="flex gap-3 p-3 ">
+            <img
+              src={`http://localhost:8000/${notification?.data?.photo}`}
+              alt=""
+              className="w-[40px] h-[40px] object-cover rounded-full "
+            />
+            <div className=" w-full space-y-1  ">
+              <div className="  w-full flex gap-2 ">
+                <p className="text-gray-700 text-[1em] w-full ">
+                  <span className=" font-semibold mr-3 text-gray-900 ">
+                    {notification?.data?.user}
+                  </span>
+                  <span>{notification?.data?.subject}</span>
+                  <span className="font-semibold text-slate-900 ml-3">
+                    {notification?.data?.service}
+                  </span>
+                </p>
+              </div>
+              <p className="text-blue-600 inline-block font-semibold">
+                <span className="mr-2">{day}</span> <span> {time}</span>
+              </p>
+            </div>
+          </div>
+        );
+        break;
+        case "App\\Notifications\\Service":
+          return (
+            <div className="flex gap-3 p-3 ">
               <img
-                src={`http://localhost:8000/${notification?.sender?.profile?.photo}`}
+                src={`http://localhost:8000/${notification?.data?.photo}`}
                 alt=""
-                className="w-[50px] h-[50px] rounded-full "
+                className="w-[40px] h-[40px] object-cover rounded-full "
               />
               <div className=" w-full space-y-1  ">
-                <h2 className="text-lg font-semibold ">
-                  {notification?.sender?.name}
-                </h2>
-                <div className=" mb-2 w-full ">
-                  <p className="text-gray-700 text-[1.1em] w-full ">
-                    {notification?.body}
+                <div className="  w-full flex gap-2 ">
+                  <p className="text-gray-700 text-[1em] w-full ">
+                    <span className=" font-semibold mr-3 text-gray-900 ">
+                      {notification?.data?.user}
+                    </span>
+                    <span>{notification?.data?.subject}</span>
+                    <span className="font-semibold text-slate-900 ml-3">
+                      {notification?.data?.service}
+                    </span>
                   </p>
                 </div>
-                <p className="text-blue-600 inline-block ">
-                  <span className="mr-2">{day}</span>  <span> {time}</span>
+                <p className="text-blue-600 inline-block font-semibold">
+                  <span className="mr-2">{day}</span> <span> {time}</span>
                 </p>
               </div>
             </div>
+          );
+          break;
+
+      default:
+        break;
+    }
+
+    if (isLoading) {
+      return <Loader />;
+    }
+
+  };
+  if(!notifications.length>0){
+    return <div className="grid place-content-center h-full">
+      <h2>
+        No notificaiton founds
+      </h2>
+    </div>
+  }
+  return (
+    <div className="  ">
+      {notifications.map((notification) => {
+        const date = new Date(notification?.created_at);
+        const day = date.toLocaleDateString(undefined, {
+          weekday: "long",
+        });
+
+        const time = date.toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        return (
+          <div key={notification?.id} className="bg-white p-4 border-b ">
+            <NotificationMessage
+              notification={notification}
+              day={day}
+              time={time}
+            />
           </div>
         );
       })}

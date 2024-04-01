@@ -22,11 +22,11 @@ return new class extends Migration
 
 
 
-            $table->string('contact_number', 12);
+            $table->string('contact_number', 14);
             $table->date('service_date');
-            $table->date('quantity');
-            $table->date('cost');
-            $table->string('package', 20);
+            $table->integer('quantity');
+            $table->integer('cost');
+            $table->string('package', 20)->nullable();
             $table->string('status', 30)->default("Pending");
 
             $table->timestamps();
