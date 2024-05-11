@@ -24,7 +24,10 @@ const initialState = {
   paginateUrl: 1,
   chat:false,
   continue:false,
-  review:false
+  review:false,
+
+  users:[],
+  quote:false
 
 };
 
@@ -81,6 +84,15 @@ export const buyerSlice = createSlice({
     createReview: (state, actions) => {
       state.review = actions.payload;
     },
+    setQuote: (state, actions) => {
+      state.quote = actions.payload;
+    },
+    leavedUsers: (state, actions) => {
+      state.leaved = actions.payload;
+    },
+    setUsers: (state, actions) => {
+      state.users = actions.payload;
+    },
   },
 });
 export const {
@@ -99,6 +111,8 @@ export const {
   setPaginateUrl,
   setChat,
   setContinue,
-  createReview
+  createReview,
+  setUsers,
+  setQuote
 } = buyerSlice.actions;
 export default buyerSlice.reducer;

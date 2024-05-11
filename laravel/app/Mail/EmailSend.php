@@ -29,8 +29,8 @@ class EmailSend extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address($this->data['from'], 'Bipin Kunwar'),
-            subject: ' Confirmation of Your Home Service Order',
+            from: new Address($this->data['from'], $this->data['address']->name),
+            // subject: $this->data['sub'],
         );
     }
 

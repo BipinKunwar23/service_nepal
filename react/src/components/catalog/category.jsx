@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { setCategory, setSubCategory } from "../../redux/buyerSlice";
+import { SlArrowLeft } from "react-icons/sl";
 
 export default function Category({ categories }) {
   const navigate = useNavigate();
@@ -56,11 +57,11 @@ export default function Category({ categories }) {
   };
 
   return (
-    <div className=" py-2 border-y flex relative">
+    <div className="flex relative">
       {showPrev && (
         <button
           onClick={handlePrevClick}
-          className=" bg-white text-gray-400 p-3 left-0 top-0 absolute text-2xl  "
+          className=" bg-white text-gray-600  left-0 top-0 absolute text-2xl  "
         >
           <i>
             <FaChevronLeft />
@@ -72,14 +73,15 @@ export default function Category({ categories }) {
         ref={containerRef}
         style={{
           display: "flex",
+          
           overflowX: "auto",
-          gap: "10px",
+          gap: "30px",
+          fontWeight: 500,
           content: "center",
         // Adjust as needed
           scrollbarWidth: "none", // Hide scrollbar for Firefox
-          "-ms-overflow-style": "none", // Hide scrollbar for IE and Edge
         }}
-        className="px-3"
+        className=""
       >
         {categories.map((category) => (
           <div
@@ -93,7 +95,7 @@ export default function Category({ categories }) {
                 dispatch(setSubCategory(null));
                 navigate(`category/${category.id}`);
               }}
-              className={`text-center text-gray-700  m-2  font-semibold  ${
+              className={`text-center text-black    text-[1em] ${
                 categoryId === category?.id
                   ? " border-b-2 pb-2 border-gray-700 "
                   : "bg-white"
@@ -107,7 +109,7 @@ export default function Category({ categories }) {
       {showNext && (
         <button
           onClick={handleNextClick}
-          className=" bg-white p-3 right-0  absolute text-2xl top-0 text-gray-400  "
+          className=" bg-white  right-0  absolute text-2xl top-0 text-gray-600  "
         >
           <i>
             <FaChevronRight />

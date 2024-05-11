@@ -29,7 +29,7 @@ class OptionsController extends Controller
   {
 
     $data = Option::where('service_id', $serviceId)
-      ->latest()->get();
+      ->get();
     return $data;
   }
  

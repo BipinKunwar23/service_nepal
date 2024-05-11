@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import signature from "./signature";
+import esewa from "../../../images/esewa.png";
+import { useLocation } from "react-router-dom";
 
-export const PaymentEsewa = ({amount=10 }) => {
+export const PaymentEsewa = ({ amount = 10 }) => {
   console.log("amount", amount);
+  const location = useLocation();
+  const success_url = window.location.origin + location.pathname+"/success";
+  console.log('succes',success_url);
   const tax_amount = 10;
   const product_service_charge = 10;
   const product_delivery_charge = 50;
@@ -12,14 +17,12 @@ export const PaymentEsewa = ({amount=10 }) => {
   console.log("total", total_amount);
   useEffect(() => {
     setTotalAmount(
-      
-        amount + tax_amount + product_delivery_charge + product_service_charge
-      
+      amount + tax_amount + product_delivery_charge + product_service_charge
     );
   }, []);
 
   const uuId = uuidv4();
-  console.log('uuid',uuId);
+  console.log("uuid", uuId);
 
   return (
     <form
@@ -86,7 +89,7 @@ export const PaymentEsewa = ({amount=10 }) => {
         type="text"
         id="success_url"
         name="success_url"
-        value="http://localhost:5173/user/Bipin%20Kunwar/service/4/order?package=basic"
+        value={`${success_url}`}
         required
         hidden
       />
@@ -94,7 +97,7 @@ export const PaymentEsewa = ({amount=10 }) => {
         type="text"
         id="failure_url"
         name="failure_url"
-        value="http://localhost:5173/user/Bipin%20Kunwar/service/4"
+        value="https://google.com"
         required
         hidden
       />
@@ -117,11 +120,17 @@ export const PaymentEsewa = ({amount=10 }) => {
         required
         hidden
       />
-      <input
+      <button
+        type="submit"
+        className=" border-gray-300 border-2  flex place-content-center text-white text-lg  rounded-md  w-full"
+      >
+        <img src={esewa} className="h-12 w-28 object-cover " alt="" />
+      </button>
+      {/* <input
         value="Pay view Esewa"
         type="submit"
         className="bg-green-600 text-white rounded p-2 w-44"
-      />
+      /> */}
     </form>
   );
 };

@@ -112,7 +112,7 @@ class User extends Authenticatable
     }
     public function feedbacks()
     {
-        return $this->hasMany(Feedback::class,'provider_id');
+        return $this->hasMany(Feedback::class,'seller_id');
     }
     public function locations()
     {

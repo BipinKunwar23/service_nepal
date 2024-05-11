@@ -21,22 +21,21 @@ import UserServiceDetail from "../views/admin/user/serviceDetail";
 import EditSubCategory from "../views/admin/catalog/subcategory/ediSubCategory";
 import AdminNavbar from "../views/admin/home/admin-navbar";
 import AdminNotification from "../views/admin/notification/notification";
+import SellerDashboard from "../views/seller/dashboard/sellerDashboard";
 const AdminRoute = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   return (
-    <section className=" flex  ">
+    <section className=" flex gap-4  ">
       {/* {!isAdmin && <Admin />}
     {isAdmin && ( */}
       <div
         className=" 
-    bg-[#0850E0] 
-      text-gray-300
+    bg-gray-100 
       w-[270px] sticky top-0 grid place-items-start h-[100%]  "
       >
         <Sidebar />
       </div>
-
       <section className=" flex-1 overflow-y-auto  ">
         <AdminNavbar />
         <section className=" ">
@@ -68,7 +67,7 @@ const AdminRoute = () => {
         <Route path="services" element={<Service />} />
         <Route path="services/new" element={<AddService />} /> */}
 
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard" element={<SellerDashboard />} />
             <Route path="service/create" element={<ServiceForm />} />
             <Route path="users" element={<GetUers />} />
             <Route path="services" element={<UserServices />} />

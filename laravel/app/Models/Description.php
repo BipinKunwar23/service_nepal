@@ -10,4 +10,7 @@ class Description extends Model
     use HasFactory;
     protected $table='descriptions';
     protected $fillable=['service_id','description','price','image','note'];
+    public function service(){
+        return $this->belongsTo(OptionUser::class,'service_id');
+    }
 }

@@ -52,7 +52,7 @@ class ServiceController extends Controller
     ], 200);
   }
 
-  public function viewServiceById($id)
+  public function viewById($id)
   {
     $services = Service::find($id);
     return response()->json($services);
@@ -61,7 +61,7 @@ class ServiceController extends Controller
   public function updateService(Request $request, Service $service)
   {
     $validate = $request->validate([
-      'name' => ['required', Rule::unique('services', 'name')->ignore($service->id)],
+      'name' => ['required'],
       'keywords' => 'required',
       'type' => 'required'
     ]);
@@ -91,7 +91,7 @@ class ServiceController extends Controller
   public function getBySubCategory($subcategoryId)
   {
 
-    $service = Service::where('subcategory_id', $subcategoryId)->latest()->get();
+    $service = Service::where('subcategory_id', $subcategoryId)->get();
     return response()->json($service);
     // if ($service) {
     //   return CatServiceResource::collection($service);

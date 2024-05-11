@@ -15,29 +15,29 @@ const SubCategory = () => {
   return (
     <section className=" relative py-4 min-h-[80Vh] shadow-sm ">
       <div className="  ">
-        <div className="grid grid-cols-4 gap-10  ">
+        <div className="grid grid-cols-3 gap-10  ">
           {subcategories.map((subcategory) => {
             return (
               <div className=" bg-white  p-4" key={subcategory.id}  >
                 <ul>
-                  <li className="flex flex-col gap-3">
+                  <li className="flex flex-col gap-1">
                     <img
                       src={`http://localhost:8000/${subcategory.icons}`}
                       alt=""
-                      className="h-[140px] rounded-lg object-cover  w-full border shadow shadow-gray-300 "
+                      className="h-[140px] rounded-lg object-cover  w-full  "
                     />
 
-                    <ul className="space-y-2 mt-1">
+                    <ul className="space-y-3 ">
                       <li className="mb-1">
-                        <p className="text-[1.2em] font-semibold text-gray-900 my-2 ">
+                        <p className="text-[1.3em] font-semibold text-gray-900 my-2 ">
                           {subcategory.name}
                         </p>
                       </li>
                       {subcategory.services.map((service) => {
                         return (
-                          <li key={service.id} className="text-[1.1em] hover:border-b-2 p-1 ">
+                          <li key={service.id} className="text-[1em] ">
                             <button
-                              className="  text-gray-600 font-semibold  hover:cursor-pointer "
+                              className="  text-black  hover:cursor-pointer "
                               onClick={async () => {
                                 navigate(
                                   `subcategory/${service?.subcategory_id}/service/${service.id}`

@@ -25,6 +25,7 @@ const OverView = ({ overview }) => {
 
   const { data: catalog, isLoading: iscatalog } = useGetCatalogQuery();
   console.log("catalog", catalog);
+  const [searchParams,setSearchParams]=useSearchParams()
 
   const [subcategory, setSubcategory] = useState([]);
   const [services, setServices] = useState([]);
@@ -88,16 +89,19 @@ const OverView = ({ overview }) => {
           .unwrap()
           .then((response) => {
             console.log("response", response);
-            const updatedSteps = [...steps];
+            // const updatedSteps = [...steps];
 
-            const stepIndex = updatedSteps.findIndex((step) => step.id === 2);
+            // const stepIndex = updatedSteps.findIndex((step) => step.id === 2);
 
-            updatedSteps[stepIndex] = {
-              ...updatedSteps[stepIndex],
-              show: true,
-            };
-            dispatch(setSteps(updatedSteps));
-            dispatch(setStepCount(2));
+            // updatedSteps[stepIndex] = {
+            //   ...updatedSteps[stepIndex],
+            //   show: true,
+            // };
+            // dispatch(setSteps(updatedSteps));
+            searchParams.get('type')==="specific" ?
+            dispatch(setStepCount(7))
+           : dispatch(setStepCount(2))
+            
              
             
             navigate(
@@ -127,7 +131,11 @@ const OverView = ({ overview }) => {
               show: true,
             };
             dispatch(setSteps(updatedSteps));
-            dispatch(setStepCount(2));
+           
+
+            searchParams.get('type')==="specific" ?
+            dispatch(setStepCount(7))
+           : dispatch(setStepCount(2))
           })
           .catch((error) => {
             console.log(error);
@@ -270,7 +278,7 @@ const OverView = ({ overview }) => {
               onChange={(option) => {
                 setValue("serviceId", option.value);
                 setValue("type", option.type);
-                dispatch(setType(option.type));
+                setSearchParams({type:option.type})
                 setServiceTypes(
                   services
                     ? services.find((service) => service.id === option.value)

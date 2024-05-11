@@ -85,7 +85,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="   ">
+      <div className=" ">
       <div
         className="text-[1.6em] mr-4 p-4 mb-2  space-x-3 font-semibold text-white  cursor-pointer "
         onClick={() => {

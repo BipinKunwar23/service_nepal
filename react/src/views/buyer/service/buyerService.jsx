@@ -22,6 +22,7 @@ import { MdFavorite } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { createReview } from "../../../redux/buyerSlice";
 import Availability from "../../../components/service/availability";
+import { createReview as addReview } from "../../../redux/buyerSlice";
 import {
   useGetListQuery,
   useAddWishListMutation,
@@ -32,6 +33,7 @@ import CreateReview from "../review/createReview";
 import ServiceSkeleton from "../../../components/service/serviceSkeleton";
 import SpecificServiceDetail from "../../../components/service/specificService";
 import SpecificOrder from "../../../components/service/specificOrder";
+import AddQuote from "./quote";
 const BuyerService = () => {
   const chat = useSelector((state) => state.buyerSlice.chat);
   const continues = useSelector((state) => state.buyerSlice.continue);
@@ -39,9 +41,13 @@ const BuyerService = () => {
   console.log("review", review);
 
   const packageName = useSelector((state) => state.sellerSlice.packageName);
+  const quote = useSelector((state) => state.buyerSlice.quote);
+
   const location = useLocation();
 
   const seller = useRef(null);
+  const view_review = useRef(null);
+
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -149,30 +155,29 @@ const BuyerService = () => {
   };
 
   useEffect(() => {
-    if (continues || newList) {
+    if (continues || newList || quote) {
       document.body.style.position = "fixed";
       document.body.style.width = "100%";
     }
 
-    // Clean up by restoring the original body style when the component unmounts
-    const handleScroll = () => {
-      // Check if the div is currently shown
-      if (review) {
-        // Hide the div when scrolling occurs
-        dispatch(createReview(false));
-      }
-    };
-
-    // Add event listener for scroll
-    window.addEventListener("scroll", handleScroll);
-
-    // Cleanup function to remove event listener
-
     return () => {
       document.body.style.position = "static";
-      window.removeEventListener("scroll", handleScroll);
     };
-  }, [continues, newList, review]);
+  }, [continues, newList, quote]);
+  // useEffect(() => {
+  //   if (review) {
+  //     document.body.style.position = "fixed";
+  //     document.body.style.width = "100%";
+  //   }
+  //   if (!review) {
+  //     if (view_review.current) {
+  //       view_review.current.scrollIntoView({
+  //         behavior: "auto",
+  //         block: "start",
+  //       });
+  //     }
+  //   }
+  // }, [review]);
 
   const scrollToSeller = () => {
     if (seller.current) {
@@ -197,7 +202,7 @@ const BuyerService = () => {
   if (type === "general") {
     return (
       <>
-        <section className=" bg-white     p-8 ">
+        <section className=" bg-white  ">
           <div className=" text-[1.1em] text-gray-500 flex gap-3  mb-5">
             <div className="w-[65%]">
               <ServiceCategory
@@ -310,15 +315,8 @@ const BuyerService = () => {
               />
             </section>
           </section>
-          <section className="relative">
+          <section ref={view_review}>
             <BuyerReview sellerId={data?.services?.user?.id} />
-            <div
-              className={` top-0 w-full bg-[rgba(0,0,0,0.8)] h-screen justify-items-end  absolute z-10  py-1 ${
-                review ? "grid" : "hidden"
-              }`}
-            >
-              <CreateReview sellerId={data?.services?.user?.id} />
-            </div>
           </section>
         </section>
         <div
@@ -330,7 +328,7 @@ const BuyerService = () => {
             packages={data?.services?.packages?.find(
               (pckg) => pckg?.package === packageName
             )}
-            serviceId={data?.services?.id}
+            sellerId={data?.services?.user?.id}
             standards={data?.standards}
           />
         </div>
@@ -340,6 +338,204 @@ const BuyerService = () => {
           }`}
         >
           <CreateListFrom />
+        </div>
+        {chat && (
+          <div className="w-[40Vw] mx-auto bg-white left-3 h-[90Vh] fixed    border top-10 z-10     rounded-xl shadow-lg">
+            <Chat setChat={setChat} receiverId={parseInt(data?.services?.user?.id)}>
+              <div className="">
+                <button
+                  className="text-xl text-gray-700 "
+                  onClick={() => {
+                    dispatch(setChat(false));
+                  }}
+                >
+                  {" "}
+                  X
+                </button>
+              </div>
+            </Chat>
+          </div>
+        )}
+
+        {/* <div
+          className={` top-[3Vh] left-10    justify-items-end  fixed z-10   ${
+            chat ? "grid" : "hidden"
+          }`}
+        >
+         
+        </div> */}
+        {review && (
+          <div className=" top-0  w-full bg-[rgba(0,0,0,0.6)] h-screen grid place-content-center absolute z-10  ">
+            <CreateReview sellerId={data?.services?.user?.id}>
+              <button
+                className="text-xl text-blue-600 "
+                onClick={() => {
+                  dispatch(addReview(false));
+                }}
+              >
+                {" "}
+                X
+              </button>
+            </CreateReview>
+          </div>
+        )}
+        {quote && (
+          <div className=" top-0  w-full bg-[rgba(0,0,0,0.6)] h-screen grid place-content-center absolute z-10  ">
+            <AddQuote sellerId={data?.services?.user?.id}>
+              <button
+                className="text-xl text-blue-600 "
+                onClick={() => {
+                  setQuote(false);
+                }}
+              >
+                {" "}
+                X
+              </button>
+            </AddQuote>
+          </div>
+        )}
+      </>
+    );
+  }
+  return (
+    <>
+      <section className="relative">
+        {/* <div className="mb-8">
+          <SellerProfile
+            photo={data?.services?.description?.image}
+            name={data?.services?.user?.profile?.name}
+          />
+        </div> */}
+        <div className="flex justify-between">
+          <div className=" text-[1.1em] text-gray-500  w-[65%]">
+            <ServiceCategory
+              category={data?.services?.service?.subcategory?.category}
+              // subcategory={data?.services?.service?.subcategory}
+              // service={data?.services?.service}
+              // option={data?.services?.option}
+            />
+          </div>
+          <div className="relative flex-1 ml-2">
+            <div className="flex gap-3  ">
+              <div>
+                <i
+                  className="text-2xl text-gray-400 cursor-pointer"
+                  onClick={() => {
+                    setIsList(!isList);
+                  }}
+                >
+                  <FaList />
+                </i>
+              </div>
+
+              <div>
+                <i className="text-2xl text-gray-400 cursor-pointer">
+                  <MdFavorite />
+                </i>
+              </div>
+            </div>
+            {isList && (
+              <div className="absolute top-8 bg-white border p-2 w-80  ">
+                <ul className="space-y-1 ">
+                  {lists?.map((list) => (
+                    <li key={list?.id} className="flex gap-3 p-2">
+                      <i
+                        className={`grid content-center text-2xl cursor-pointer ${
+                          list?.saved ? "text-pink-600 " : "text-gray-400 "
+                        }`}
+                        onClick={() => {
+                          AddWishList(list?.id, serviceId);
+                        }}
+                      >
+                        <MdFavorite />
+                      </i>
+                      {list?.name}
+                    </li>
+                  ))}
+                  <li className="flex gap-4 border-t-2 p-2">
+                    <span className="text-3xl ">+</span>
+                    <button
+                      onClick={() => {
+                        setNewList(true);
+                      }}
+                    >
+                      New List
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+        <section className="grid grid-cols-3 gap-5 my-8">
+          <div className=" overflow-y-auto col-span-2">
+            <div className="  mx-auto  box-border   ">
+              <div className=" mx-20 ">
+                <img
+                  src={`http://localhost:8000/${data?.services?.description?.image}`}
+                  className="object-cover object-center w-full min-h-[400px] h-full"
+                  alt=""
+                />
+              </div>
+            </div>
+           
+          </div>
+          <div className="sticky top-0 grid place-self-start">
+            <div className="space-y-6">
+              <h2 className="font-semibold text-[2em] text-black">
+              {data?.services?.service?.name}
+              </h2>
+              <h2 className="text-gray-600 text-xl font-semibold">
+              {data?.services?.option?.name}
+              </h2>
+              <div>
+
+              </div>
+              <p className="text-black line-clamp-2 ">
+                {data?.services?.description?.description}
+              </p>
+              <p className="text-gray-600 text-xl">
+                {" "}
+                <span className="text-black mr-3 font-semibold">Rs</span>
+                {data?.services?.description?.price}
+              </p>
+              <div></div>
+              {/* <div>
+                <p className="mt-4 font-semibold text-xl">
+                  {data?.services?.description?.note}
+                </p>
+              </div> */}
+              <div>
+                <SpecificOrder
+                  price={data?.services?.description?.price}
+                  sellerId={data?.services?.user?.id}
+            
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="mt-20">
+              <div className="my-4">
+                <Availability user={data?.services?.user} />
+              </div>
+              <div className="mb-8">
+                <SellerProfile
+                  photo={data?.services?.user?.profile?.photo}
+                  name={data?.services?.user?.name}
+                />
+              </div>
+              <User user={data?.services?.user} />
+              <section className="mt-4">
+                <ServiceFaqs faqs={data?.services?.user?.faqs}>
+                  <h2 className="font-semibold text-lg  mb-3">
+                    Frequently Asked Questions{" "}
+                  </h2>
+                </ServiceFaqs>
+              </section>
+            </section>
+        <div ref={view_review}>
+          <BuyerReview sellerId={data?.services?.user?.id} />
         </div>
 
         <div
@@ -363,167 +559,23 @@ const BuyerService = () => {
             </Chat>
           </div>
         </div>
-      </>
-    );
-  }
-  return (
-    <section className="relative p-4">
-      <div className="mb-8">
-        <SellerProfile
-          photo={data?.services?.description?.image}
-          name={data?.services?.user?.profile?.name}
-        />
-      </div>
-      <div className="flex justify-between">
-        <div className=" text-[1.1em] text-gray-500  w-[65%]">
-          <ServiceCategory
-            category={data?.services?.service?.subcategory?.category}
-            subcategory={data?.services?.service?.subcategory}
-            service={data?.services?.service}
-            option={data?.services?.option}
-          />
-        </div>
-        <div className="relative flex-1 ml-2">
-          <div className="flex gap-3  ">
-            <div>
-              <i
-                className="text-2xl text-gray-400 cursor-pointer"
-                onClick={() => {
-                  setIsList(!isList);
-                }}
-              >
-                <FaList />
-              </i>
-            </div>
-
-            <div>
-              <i className="text-2xl text-gray-400 cursor-pointer">
-                <MdFavorite />
-              </i>
-            </div>
-          </div>
-          {isList && (
-            <div className="absolute top-8 bg-white border p-2 w-80  ">
-              <ul className="space-y-1 ">
-                {lists?.map((list) => (
-                  <li key={list?.id} className="flex gap-3 p-2">
-                    <i
-                      className={`grid content-center text-2xl cursor-pointer ${
-                        list?.saved ? "text-pink-600 " : "text-gray-400 "
-                      }`}
-                      onClick={() => {
-                        AddWishList(list?.id, serviceId);
-                      }}
-                    >
-                      <MdFavorite />
-                    </i>
-                    {list?.name}
-                  </li>
-                ))}
-                <li className="flex gap-4 border-t-2 p-2">
-                  <span className="text-3xl ">+</span>
-                  <button
-                    onClick={() => {
-                      setNewList(true);
-                    }}
-                  >
-                    New List
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-      <section className="grid grid-cols-3 gap-5 my-8">
-        <div className="col-span-2 overflow-y-auto">
-          <div className="  mx-auto  box-border   ">
-            <div className=" ">
-              <img
-                src={`http://localhost:8000/${data?.services?.description?.image}`}
-                className="object-cover object-center w-full min-h-[400px] h-full"
-                alt=""
-              />
-            </div>
-          </div>
-          <section className="w-[60Vw]">
-            <div className="my-4">
-              <Availability user={data?.services?.user} />
-            </div>
-            <div className="mb-8">
-              <SellerProfile
-                photo={data?.services?.user?.profile?.photo}
-                name={data?.services?.user?.name}
-              />
-            </div>
-            <User user={data?.services?.user} />
-            <section className="mt-4">
-              <ServiceFaqs faqs={data?.services?.user?.faqs}>
-                <h2 className="font-semibold text-lg  mb-3">
-                  Frequently Asked Questions{" "}
-                </h2>
-              </ServiceFaqs>
-            </section>
-          </section>
-        </div>
-        <div className="sticky top-0 grid place-self-start">
-          <div className="space-y-3">
-            <h2 className="font-semibold text-2xl">{data?.services?.title}</h2>
-            <p className="text-gray-600 ">
-              {data?.services?.description?.description}
-            </p>
-            <p className="text-gray-600 text-xl">
+      </section>
+      {review && (
+        <div className=" top-0  w-full bg-[rgba(0,0,0,0.6)] h-screen grid place-content-center absolute z-10  ">
+          <CreateReview sellerId={data?.services?.user?.id}>
+            <button
+              className="text-xl text-blue-600 "
+              onClick={() => {
+                dispatch(addReview(false));
+              }}
+            >
               {" "}
-              <span className="text-black mr-3">NPR</span>
-              {data?.services?.description?.price}
-            </p>
-            <div></div>
-            <div>
-              <p className="mt-4 font-semibold text-xl">
-                {data?.services?.description?.note}
-              </p>
-            </div>
-            <div>
-              <SpecificOrder price={data?.services?.description?.price} />
-            </div>
-          </div>
+              X
+            </button>
+          </CreateReview>
         </div>
-      </section>
-
-      <section className="relative">
-        <BuyerReview sellerId={data?.services?.user?.id} />
-        <div
-          className={` top-0  w-full bg-[rgba(0,0,0,0.6)] justify-items-center  absolute z-10  py-1 ${
-            review ? "grid" : "hidden"
-          }`}
-        >
-          <div className="">
-            <CreateReview sellerId={data?.services?.user?.id} />
-          </div>
-        </div>
-      </section>
-      <div
-        className={` top-[8Vh] left-10    justify-items-end  fixed z-10   ${
-          chat ? "grid" : "hidden"
-        }`}
-      >
-        <div className="w-[40Vw] mx-auto bg-white border border-gray-300 shadow my-4 grid  rounded-lg">
-          <Chat setChat={setChat} receiverId={data?.services?.user?.id}>
-            <div className="">
-              <button
-                className="text-xl text-gray-400 "
-                onClick={() => {
-                  dispatch(setChat(false));
-                }}
-              >
-                {" "}
-                X
-              </button>
-            </div>
-          </Chat>
-        </div>
-      </div>
-    </section>
+      )}
+    </>
   );
 };
 

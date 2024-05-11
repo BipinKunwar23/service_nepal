@@ -17,6 +17,10 @@ export const userApi = createApi({
     }),
     getAllServices: builder.query({
       query: () => "service/all",
+      providesTags: (result) =>
+      result
+        ? [...result.map(({ id }) => ({ type: "Services", id })), "Services"]
+        : ["Services"],
     }),
     viewAllOrders: builder.query({
       query: () => "order/all",

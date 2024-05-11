@@ -12,6 +12,8 @@ export const buyerOrderApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Services"],
+
   endpoints: (build) => ({
     placeOrder: build.mutation({
       query: ({ serviceId, ...values }) => {
@@ -22,9 +24,23 @@ export const buyerOrderApi = createApi({
         };
       },
     }),
+    saveServiceAddress: build.mutation({
+      query: (values) => {
+        return {
+          url: `service/address`,
+          method: "POST",
+          body: values,
+        };
+      },
+      invalidatesTags: ["Services"],
+    }),
 
     getCustomerOrders: build.query({
       query: () => "all",
+    }),
+    viewServiceAddress: build.query({
+      query: () => "service/address",
+      providesTags: ["Services"],
     }),
     getProviderReceivedOrders: build.query({
       query: (id) => `provider/${id}`,
@@ -48,6 +64,9 @@ export const buyerOrderApi = createApi({
         method: "PUT",
       }),
     }),
+    getSellerLocation: build.query({
+      query: (sellerId) => `location/${sellerId}`,
+    }),
   }),
 });
 
@@ -59,4 +78,7 @@ export const {
   useViewOrderDetailsQuery,
   useAcceptOrderMutation,
   useCancelOrderMutation,
+  useSaveServiceAddressMutation,
+  useViewServiceAddressQuery,
+  useGetSellerLocationQuery
 } = buyerOrderApi;

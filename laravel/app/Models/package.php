@@ -14,4 +14,7 @@ class package extends Model
     public function standards(){
         return $this->belongsToMany(Standard::class,'package_standard','package_id','standard_id')->withPivot('value_id');
     }
+    public function service(){
+        return $this->belongsTo(OptionUser::class,'service_id');
+    }
 }

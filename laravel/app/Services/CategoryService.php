@@ -4,7 +4,7 @@ namespace App\Services;
 use App\Models\Category;
  class CategoryService {
     public function getAllCategory(){
-        $category = Category::latest()->get();
+        $category = Category::get();
         
         return $category;
     }

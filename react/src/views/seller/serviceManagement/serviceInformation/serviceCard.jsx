@@ -12,7 +12,7 @@ const ServiceCards = ({ active }) => {
    
 
     return (
-      <div className="grid grid-cols-2 gap-10 text-lg mt-16  ">
+      <div className="grid grid-cols-2 gap-14 text-lg mt-12  ">
         {services.length>0 && ( active ? services.filter((service)=>service?.status!=="draft") : services.filter((service)=>service?.status==="draft") ).map((service) => {
           return (
             

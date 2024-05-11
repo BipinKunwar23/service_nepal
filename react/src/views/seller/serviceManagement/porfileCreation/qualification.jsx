@@ -149,11 +149,12 @@ const Qualification = ({ profession }) => {
               <div className="col-span-2  p-2">
                 {subcategories.map((subcategory, index) => {
                   return (
-                    <div key={subcategory?.id} className="grid grid-cols-4">
+                    <div key={subcategory?.id} className="grid grid-cols-3 gap-4  auto-rows-min ">
                       {subcategory?.services.map((skills) => {
                         return (
                           <div key={skills.id} className="flex gap-2">
-                            <input
+                        <div>
+                        <input
                               type="checkbox"
                               {...register(`skills.${index}`)}
                               value={skills.id}
@@ -161,6 +162,7 @@ const Qualification = ({ profession }) => {
                                 (item) => item === skills.id
                               )}
                             />
+                        </div>
                             <p>{skills.name}</p>
                           </div>
                         );

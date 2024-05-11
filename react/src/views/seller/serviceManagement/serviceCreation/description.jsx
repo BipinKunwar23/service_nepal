@@ -37,7 +37,7 @@ if(!details){
     .unwrap()
     .then((response) => {
       console.log(response);
-      dispatch(setStepCount(6));
+      dispatch(setStepCount(5));
 
 
       // navigate(`${location?.state?.path} `, { replace: true });
@@ -53,7 +53,7 @@ else {
     .unwrap()
     .then((response) => {
       console.log(response);
-      dispatch(setStepCount(6));
+      dispatch(setStepCount(5));
 
       // navigate(`${location?.state?.path} `, { replace: true });
     })

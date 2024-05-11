@@ -159,6 +159,9 @@ class SellerServiceController extends Controller
 
     public function createGallery(Request $request, $serviceId)
     {
+        $detail = Description::where('service_id', $serviceId)->first();
+       
+
         $path = null;
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -169,7 +172,11 @@ class SellerServiceController extends Controller
             $file->move('service', $name);
             $path = 'service/' . $name;
         }
-        Description::where('service_id', $serviceId)->first()->update(['image' => $path]);
+        $detail->description=$request->description;
+        $detail->image=$path;
+        $detail->save();
+
+
         $imageNames = [];
         if (isset($request->images)) {
 
@@ -211,6 +218,8 @@ class SellerServiceController extends Controller
     {
 
         $detail = Description::where('service_id', $serviceId)->first();
+
+
         if ($request->hasFile('image')) {
             $destination = $detail->image;
             if (File::exists($destination)) {
@@ -224,6 +233,10 @@ class SellerServiceController extends Controller
         } else {
             $path = $detail->image;
         }
+        $detail->description=$request->description;
+        $detail->image=$path;
+        $detail->save();
+
 
 
 
@@ -458,7 +471,7 @@ class SellerServiceController extends Controller
 
     public function DraftGeneralService($serviceId)
     {
-        $service = OptionUser::with(['service:id,name,subcategory_id,type', 'service.subcategory:id,name,category_id', 'service.subcategory.category:id,name',  'packages.standards',  'galleries', 'requirements', 'description'])
+        $service = OptionUser::with(['user.profile','service:id,name,subcategory_id,type', 'service.subcategory:id,name,category_id', 'service.subcategory.category:id,name',  'packages.standards',  'galleries', 'requirements', 'description'])
             ->find($serviceId);
 
 
@@ -471,7 +484,7 @@ class SellerServiceController extends Controller
 
     public function DraftSpecificService($serviceId)
     {
-        $service = OptionUser::with(['option:id,name', 'service:id,name,subcategory_id,type', 'service.subcategory:id,name,category_id', 'service.subcategory.category:id,name',  'description'])
+        $service = OptionUser::with(['user.profile','option:id,name', 'service:id,name,subcategory_id,type', 'service.subcategory:id,name,category_id', 'service.subcategory.category:id,name',  'description'])
             ->find($serviceId);
 
 

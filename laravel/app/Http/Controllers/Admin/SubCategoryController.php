@@ -65,7 +65,7 @@ class SubCategoryController extends Controller
 
     public function getSubCategoryByCategory($categoryId)
     {
-        $subcategories = Category::find($categoryId)->subcategories()->latest()->get();
+        $subcategories = Category::find($categoryId)->subcategories()->get();
         return response()->json($subcategories);
     }
 

@@ -61,8 +61,25 @@ export const sellerOrderApi = createApi({
       invalidatesTags: ["Services"],
 
     }),
-    getCostByDay: build.query({
-      query: () => `cost`,
+    getStatisticData: build.query({
+      query: () => `statistic`,
+    }),
+    getOrderLocation: build.query({
+      query: () => `location`,
+    }),
+    getDonutCity: build.query({
+      query: (locations) => `donut/city?locations=${locations.join(',')}`,
+    }),
+  
+    getDonutStatus: build.query({
+      query: (locationId) => `donut/status/${locationId}`,
+    }),
+  
+    getDonutData: build.query({
+      query: (locationId) =>{
+        console.log('locationId',locationId);
+        return locationId?.length===1 ? `donut/status/${locationId[0]}` : locationId.length>1 ?`donut/city` : null
+      },
     }),
   }),
 });
@@ -72,7 +89,11 @@ export const {
   useGetOrderDetailQuery,
   useAcceptOrderMutation,
   useCancelOrderMutation,
-  useGetCostByDayQuery,
   useCompleteOrderMutation,
-  useDeleteOrderMutation
+  useDeleteOrderMutation,
+  useGetStatisticDataQuery,
+  useGetOrderLocationQuery,
+  useGetDonutDataQuery,
+  useGetDonutStatusQuery,
+  useGetDonutCityQuery
 } = sellerOrderApi;

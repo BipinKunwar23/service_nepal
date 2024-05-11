@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { IoIosArrowDropright } from "react-icons/io";
 import { IoIosArrowDropleft } from "react-icons/io";
 
-const Service = ({galleries,title,description}) => {
+const Service = ({galleries=[],title,description}) => {
   const [imageIndex, setImageIndex] = useState(0);
 
   return (

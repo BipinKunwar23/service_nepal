@@ -4,32 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>New Service Order</title>
 </head>
+<style>
+    /* .summary_service {
+
+    } */
+</style>
 
 <body>
     <h2>{{$data['title']}}</h2>
-    <p>{{$data['body']}}</p>
+    <p><strong>Order Details:</strong></p>
+    <ul>
+        <li><strong>Order ID:</strong> {{ $data['order']['id'] }}</li>
+        <li><strong>Status:</strong>Pending</li>
+        <li><strong>Created At:</strong> {{ $data['order']['created_at'] }}</li>
+    </ul>
+    
+    <p><strong>Service Details:</strong></p>
  
-    <div>
-        <p>
-            Please review the information provided, and if everything looks correct, kindly confirm your agreement by replying to this email. If there are any adjustments or additional requirements you'd like to discuss, please don't hesitate to let us know.
+    
+    <ul>
+        <li><strong>Service Name:</strong> {{ $data['service']['name'] }}</li>
+        <li><strong>Service Quantity:</strong> {{ $data['order']['quantity'] }}</li>
+        <li><strong>Service Cost:</strong> {{ $data['order']['cost'] }}</li>
+        <li><strong>Package:</strong> {{ $data['order']['package'] }}</li>
+    </ul>
+   
+   
+    <p><strong>Customer Details:</strong></p>
+    <ul>
+        <li><strong>Name:</strong> {{ $data['address']['name'] }}</li>
+        <li><strong>Email:</strong> {{ $data['address']['email'] }}</li>
+        <li><strong>Phone Number:</strong> {{ $data['address']['phone_number'] }}</li>
+        <li><strong>Location:</strong> {{ $data['address']['location'] }}</li>
+        <li><strong>Scheduled Date:</strong> {{ $data['address']['scheduled_date'] }}</li>
+    </ul>
 
-            We appreciate your trust in [Seller's Name], and we look forward to delivering exceptional results for your home project. Thank you once again for choosing us.
-
-            Best regards,
-        </p>
-    </div>
-    <p>Thank You</p>
-
-    <div>
-        <ul>
-            <li>Bipin Kunwar</li>
-            <li>Seller</li>
-            <li>9823368617</li>
-
-        </ul>
-    </div>
 
 </body>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AllCustomerOrdersResource;
 use App\Http\Resources\OrderDetailResource;
 use App\Mail\EmailSend;
+use App\Models\Location;
 use App\Models\Order;
 use App\Models\Standard;
 use App\Notifications\Order as NotificationsOrder;
@@ -27,20 +28,95 @@ class SellerOrderController extends Controller
             return AllCustomerOrdersResource::collection($orders);
         }
     }
-    public function getCostByDay()
+
+    public function viewOrderLocation()
     {
-        //         $mailData=[
-        //             'title'=>"Mail from ProHome",
-        //             'body'=>"Bipin Kunwar has send you an order .please visit our site prohome.com"
-        //         ];
+        $locations = Location::whereHas('serviceAddresses.orders')->where('user_id', Auth::user()->id)->select('id', 'city')->get();
+        return response()->json($locations);
+    }
+    public function getDonutCityData(Request $request)
+    {
+        $locationIds = explode(',', $request->input('locations'));
+        
 
-        //         Mail::to('bipinkunwar23@gmail.com')->send(new EmailSend($mailData));
+        $cities = Order::whereHas('services', function ($query) {
+            $query->where('user_id', Auth::user()->id);
+        })
+            ->whereHas('address', function ($query) use ($locationIds) {
+                $query->whereIn('location_id', $locationIds);
+            })
+          
+            ->join('service_address', 'orders.address_id', '=', 'service_address.id')
+            ->selectRaw('COUNT(*) as order_count, service_address.location_id')
+            ->groupBy('service_address.location_id')
+            ->get();
 
-        //   dd("successfully addes");
+        $orderCounts = [];
+        $city = [];
+
+        foreach ($cities as $order) {
+            $orderCounts[] = $order->order_count;
+            $city[] = $order->location_id;
+        }
+        $location = Location::whereIn('id', $city)->pluck('city');
+
+
+        return response()->json([
+            'orderCounts' => $orderCounts,
+            'labels' => $location
+        ]);
+
+    }
+    public function getDonutStatusData($locatinId)
+    {
+        $orders = Order::whereHas('services', function ($query) {
+            $query->where('user_id', Auth::user()->id);
+        })
+            ->whereHas('address', function ($query) use ($locatinId) {
+                $query->where('location_id', $locatinId);
+            });
+           
+
+
+        $status = $orders->selectRaw('COUNT(*) as order_count, status')
+            ->groupBy('status')
+            ->get();
+        $orderCounts = [];
+        $lables = [];
+
+        foreach ($status as $order) {
+            $orderCounts[] = $order->order_count;
+            $lables[] = $order->status;
+        }
+
+        return response()->json([
+            'orderCounts' => $orderCounts,
+            'labels' => $lables,
+        ]);
+        $locations = Location::where('user_id', Auth::user()->id)->select('id', 'city')->get();
+        return response()->json($locations);
+    }
+
+
+
+
+    public function getStatisticData()
+    {
+
+        $orders = Order::whereHas('services', function ($query) {
+            $query->where('user_id', Auth::user()->id);
+        });
+
+        $orderCount = $orders->Count();
+
+
+        $earining = $orders->whereIn('status', ['Active','Completed'])->SUM('cost');
+        $unique_clients = $orders->select('customer_id')->distinct('customer_id')->Count();
+
         $thirtyDaysAgo = Carbon::now()->subDays(30);
 
 
-        $orderData = Order::where('status', 'Completed')->selectRaw('DATE(created_at) as date, SUM(cost) as price ')
+        $orderData = Order::whereIn('status', ['Active','Completed'])->selectRaw('DATE(created_at) as date, SUM(cost) as price ')
             ->whereDate('created_at', '>=', $thirtyDaysAgo)
             ->groupBy('date')
             ->get();
@@ -53,7 +129,13 @@ class SellerOrderController extends Controller
             $formattedData[] = [$timestamp, $price]; // Push timestamp and price to the formatted data array
         }
 
-        return $formattedData;
+        return [
+            'revenue' => $formattedData,
+            'order_count' => $orderCount,
+            'unique_client' => $unique_clients,
+            'earning' => $earining,
+
+        ];
     }
 
     public function viewOrderReceived($orderId)
@@ -85,17 +167,14 @@ class SellerOrderController extends Controller
         if ($order) {
             $order->update(['status' => 'Active']);
         }
-        $mailData = [
-            'title' => "Mail from ProHome",
-            'body' => "Bipin Kunwar has send you an order .please visit our site prohome.com"
-        ];
-        $email = $buyer->email;
+
+        $email = $order->customers->email;
 
 
         $mailData = [
             'from' => Auth::user()->email,
             'title' => "Mail from Bipin Kunwar",
-            'body' => "Thank you for choosing [Seller's Name] for your home project needs. We are excited to begin working with you and ensure a smooth and satisfactory experience.
+            'body' => "Thank you for choosing me for your home project needs. We are excited to begin working with you and ensure a smooth and satisfactory experience.
 
                         Below, please find the details of your order along with important information regarding our collaboration:",
         ];
@@ -104,7 +183,6 @@ class SellerOrderController extends Controller
         return response()->json(
             "susscessfully Accepted"
         );
-        
     }
 
 

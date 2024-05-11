@@ -37,15 +37,19 @@ class BuyerServiceController extends Controller
             ->take(10)
             ->pluck('service_id');
 
-        if ($mostFrequentServiceId) {
+        if (isset($mostFrequentServiceId)) {
 
             $query = OptionUser::whereIn('service_id', $mostFrequentServiceId)->where('status', 'active');
 
 
 
             $services = $this->service->getBuyerServiceCards($query)->paginate(20);
+            if (!$services->isEmpty()) {
 
-            return response()->json($services);
+                return response()->json($services);
+            }
+           
+
         }
         $query = OptionUser::where('status', 'active');
         $services = $this->service->getBuyerServiceCards($query)->paginate(20);
@@ -93,9 +97,9 @@ class BuyerServiceController extends Controller
         if ($mostFrequentServiceId) {
 
             $query = OptionUser::withCount('orders')->where('service_id', $mostFrequentServiceId->service_id)->where('status', 'active')
-            ->orderByDesc('orders_count');
+                ->orderByDesc('orders_count');
 
-            $services = $this->service->getBuyerServiceCards($query)->paginate(20);
+            $services = $this->service->getBuyerServiceCards($query)->get();
 
             return response()->json($services);
         }

@@ -15,15 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('service_id');
+            $table->unsignedBigInteger('address_id');
 
-            $table->foreign('customer_id')->references('id')->on('users');
-            $table->foreign('service_id')->references('id')->on('option_user');
-            $table->string('delivery_city');
-
-
-
-            $table->string('contact_number', 14);
-            $table->date('service_date');
+            $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('service_id')->references('id')->on('option_user')->onDelete('cascade');
+            $table->foreign('address_id')->references('id')->on('service_address')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('quantity');
             $table->integer('cost');
             $table->string('package', 20)->nullable();

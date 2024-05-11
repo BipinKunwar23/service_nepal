@@ -12,26 +12,47 @@ export const chatApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Category"],
+
   endpoints: (build) => ({
     showChats: build.query({
       query: (receiverId) => `private/${receiverId}`,
- 
     }),
     sendMessage: build.mutation({
-      query: ({ message, receiverId }) => {
+      query: ({ formdata,receiverId }) => {
         return {
           url: `private/${receiverId}`,
           method: "post",
-          body: message,
+          body: formdata,
         };
       },
- 
+      invalidatesTags: ['Category'],
+
     }),
     recentUsers: build.query({
-      query: () =>"private/all",
- 
+      query: () => "private/all",
+      providesTags:(result)=>
+      result ?
+      [ ...result.map(({ id }) => ({ type: 'Category', id })), 'Category']
+      :['Category'],
+      
+    }),
+    deleteChat: build.mutation({
+      query: (receiverId) => {
+        return {
+          url: `private/${receiverId}`,
+          method: "delete",
+        };
+      },
+      invalidatesTags: ['Category'],
+
     }),
   }),
 });
 
-export const { useShowChatsQuery, useSendMessageMutation, useRecentUsersQuery } = chatApi;
+export const {
+  useShowChatsQuery,
+  useSendMessageMutation,
+  useRecentUsersQuery,
+  useDeleteChatMutation
+} = chatApi;

@@ -22,13 +22,7 @@ export const catServiceAPi = createApi({
       invalidatesTags: ["services"],
     }),
 
-    getCatServiceById: build.query({
-      query: (id) => `${id}`,
-      providesTags: (result) =>
-        result
-          ? [...result.map(({ id }) => ({ type: "services", id })), "services"]
-          : ["services"],
-    }),
+
 
     getBySubcategory: build.query({
       query: (id) => `subcategory/${id}`,
@@ -65,7 +59,6 @@ export const catServiceAPi = createApi({
 });
 export const {
   useAddCatServicesMutation,
-  useGetCatServiceByIdQuery,
   useGetServicesQuery,
   useEditServiceMutation,
   useViewServiceByIdQuery,

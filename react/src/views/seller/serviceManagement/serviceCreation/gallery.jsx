@@ -7,7 +7,7 @@ import {
 import Loader from "../../../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setStepCount, setSteps } from "../../../../redux/sellerSlice";
-export const Gallery = ({ galleries, image }) => {
+export const Gallery = ({ galleries, image,description }) => {
   console.log("image", image);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [previewImage, setPreviewImage] = useState(null);
@@ -63,6 +63,7 @@ export const Gallery = ({ galleries, image }) => {
 
   const onSubmit = async (values) => {
     const formdata = new FormData();
+    formdata.append("description", values?.description);
 
     formdata.append("image", previewImage);
     for (const file of imagePreviews) {
@@ -79,11 +80,11 @@ export const Gallery = ({ galleries, image }) => {
       await updateGallery({ serviceId, formdata })
         .unwrap()
         .then((response) => {
-          dispatch(setStepCount(5));
+          dispatch(setStepCount(4));
           console.log("response", response);
           const updatedSteps = [...steps];
 
-          const stepIndex = updatedSteps.findIndex((step) => step.id === 5);
+          const stepIndex = updatedSteps.findIndex((step) => step.id === 4);
 
           updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], show: true };
           dispatch(setSteps(updatedSteps));
@@ -96,11 +97,11 @@ export const Gallery = ({ galleries, image }) => {
       await addGallery({ serviceId, formdata })
         .unwrap()
         .then((response) => {
-          dispatch(setStepCount(5));
+          dispatch(setStepCount(4));
           console.log("response", response);
           const updatedSteps = [...steps];
 
-          const stepIndex = updatedSteps.findIndex((step) => step.id === 5);
+          const stepIndex = updatedSteps.findIndex((step) => step.id === 4);
 
           updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], show: true };
           dispatch(setSteps(updatedSteps));
@@ -121,15 +122,16 @@ export const Gallery = ({ galleries, image }) => {
         className="bg-white p-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="create-service">
+        <div className="space-y-4 mb-4">
           <label htmlFor="" className="font-semibold">
             Description
           </label>
           <textarea
             {...register("description")}
             id=""
-            rows={5}
+            rows={4}
             placeholder="About Service"
+            defaultValue={description}
           ></textarea>
         </div>
         <div className=" mb-5">

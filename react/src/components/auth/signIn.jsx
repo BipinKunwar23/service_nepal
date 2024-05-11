@@ -31,16 +31,18 @@ const SignIn = () => {
     await loginUser(values)
       .unwrap()
       .then((response) => {
-        response?.status === 200
-          ? (localStorage.setItem("logged", 1),
-            localStorage.setItem("userId", response.id),
-            localStorage.setItem("token", response.token),
-            localStorage.setItem("photo", response.photo),
-            localStorage.setItem("name", response.name),
-            localStorage.setItem("role", response.role),
-            dispatch(setName(response?.name)),
-            navigate(`/`, { replace: true }))
-          : null;
+        if (response) {
+          localStorage.setItem("logged", 1);
+          localStorage.setItem("userId", response.id);
+
+          localStorage.setItem("token", response.token);
+          localStorage.setItem("photo", response.photo);
+          localStorage.setItem("name", response.name);
+          localStorage.setItem("role", response.role);
+          console.log('role',response.role);
+          dispatch(setName(response?.name));
+          navigate("/",{replace:true});
+        }
       })
       .catch((error) => {
         error?.status === 422
@@ -56,9 +58,9 @@ const SignIn = () => {
       {/* <div className="p-4">
         <h2 className="text-green-600 font-semibold text-3xl">Technician</h2>
       </div> */}
-      <div className="bg-gray-500">
-      <LandingNavbar/>
-      </div>
+      {/* <div className="bg-gray-500">
+        <LandingNavbar />
+      </div> */}
 
       <section className="grid  ">
         {/* <div className="grid place-content-center">
@@ -69,19 +71,19 @@ const SignIn = () => {
         {isError && error?.status != 422 ? (
           <Error error={error} />
         ) : (
-          <div className=" flex-1   text-[0.9em] mx-auto w-[35Vw] login ">
+          <div className=" flex-1 mx-auto w-[30Vw] login border shadow rounded-lg">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
               <Form>
-                <div className="  text-gray-800 text-3xl  py-2 font-sans font-medium   ">
-                  <span>Sign In User</span>
+                <div className="  text-gray-800 text-2xl  py-2 font-sans font-medium   ">
+                  <h2 className="text-center">Sign In User</h2>
                 </div>
                 <div>
                   <label htmlFor="email">
-                    Email<span className="  text-2xl text-red-600">*</span>
+                    Email<span className="   text-red-600">*</span>
                   </label>
                   <Field
                     type="email"

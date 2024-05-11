@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePlaceOrderMutation } from "../../../api/buyer/orderApi";
 import { useDispatch, useSelector } from "react-redux";
 import Error from "../../../components/error/error";
 import { useForm, Controller } from "react-hook-form";
 import Loader from "../../../components/Loader";
 import signature from "../paymnet/signature";
+import { FaRegCircle } from "react-icons/fa";
+import { FaRegDotCircle } from "react-icons/fa";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import {
+  useViewServiceAddressQuery,
+  useSaveServiceAddressMutation,
+  useGetSellerLocationQuery,
+} from "../../../api/buyer/orderApi";
+import esewa from "../../../images/esewa.png";
 import {
   useLocation,
   useNavigate,
@@ -18,12 +27,39 @@ import { useGetOrderConfirmQuery } from "../../../api/buyer/serviceApi";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCheck } from "react-icons/fa";
 import { PaymentEsewa } from "../paymnet/payment";
+import Select from "react-select";
 const OrderConfirm = () => {
-  const order = useSelector((state) => state.sellerSlice.order);
   const { serviceId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const packageName = searchParams.get("package");
   const [nofification, setNotifcation] = useState("");
+  const [payment, setPayment] = useState("cash");
+  const [delivery, setDelivery] = useState(false);
+  const { data, isLoading: isAddress } = useViewServiceAddressQuery();
+  const [city, setCity] = useState();
+  console.log("address", data);
+  const { data: locations=[], isLoading: isLocation } = useGetSellerLocationQuery(
+    searchParams.get("seller")
+  );
+  console.log("locations", locations);
+  const [saveAddress] = useSaveServiceAddressMutation();
+
+  useEffect(() => {
+    if (delivery) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    }
+
+    return () => {
+      document.body.style.position = "static";
+    };
+  }, [delivery]);
+  useEffect(() => {
+    if (data && locations) {
+      setCity(  locations.find((city) => city.id === data?.location_id)?.city);
+    }
+  }, [data, locations]);
+
   const location = useLocation();
   const { data: service, isLoading } = useGetOrderConfirmQuery({
     serviceId,
@@ -31,21 +67,19 @@ const OrderConfirm = () => {
   });
 
   const [placeOrder, { isLoading: isPlacing }] = usePlaceOrderMutation();
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
   const navigate = useNavigate();
-  const onSubmit = async (values) => {
-    console.log("data", values);
-
+  const handleOrder = async () => {
     await placeOrder({
-      ...values,
       serviceId: serviceId,
-      quantity: order.quantity,
-      cost: order.cost,
+      addressId: data?.id,
+      quantity: sessionStorage.getItem("quantity"),
+      cost: sessionStorage.getItem("cost"),
       package: packageName,
     })
       .unwrap()
       .then((response) => {
-        console.log("response", response);
+        console.log("message", response);
 
         if (response) {
           toast(response?.message);
@@ -61,7 +95,26 @@ const OrderConfirm = () => {
       });
   };
 
-  if (isLoading || isPlacing) {
+  const handleAddress = async (values) => {
+    console.log("data", values);
+
+    await saveAddress(values)
+      .unwrap()
+      .then((response) => {
+        console.log("response", response);
+
+        if (response) {
+          setDelivery(false);
+        }
+        reset();
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast(error);
+      });
+  };
+
+  if (isLoading || isAddress || isLocation || isPlacing) {
     return <Loader />;
   }
   return (
@@ -79,66 +132,114 @@ const OrderConfirm = () => {
         theme="light"
         transition={Bounce}
       />
-      <section className="grid grid-cols-2  p-4 px-16 gap-20">
-        <div>
-          <form
-            className="  bg-white "
-            action=""
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <section className="    w-[40Vw] h-full">
-              <div className="      text-gray-700 ">
-                <p className=" text-xl font-semibold text-slate-800 p-2  ">
-                  Contact Information
+      <section className=" mt-8 p-8 flex  gap-10 text-[1em]">
+        <div className="text-black w-[55Vw]  ">
+          <div>
+            <h2 className="font-semibold text-lg px-4 bg-gray-50 p-3">
+              {" "}
+              Service Address Details
+            </h2>
+
+            <div className="shadow bg-white  px-4 space-y-4 py-6">
+              <div className="flex  gap-4 text-gray-600 ">
+                <p className="flex-1 ">
+                  Your invoice will be issued accrodig to the details listed
+                  here.
                 </p>
-                <div className="  flex flex-col gap-3">
-                  <div className="selected-field ">
-                    <label htmlFor="">Your City</label>
-
-                    <input
-                      type="text"
-                      {...register("delivery_city")}
-                      placeholder="Select Your City"
-                    />
-                  </div>
-                  <div className="selected-field ">
-                    <label htmlFor="">Phone Number</label>
-                    <input
-                      type="text"
-                      {...register("contact_number")}
-                      placeholder="Contact Number"
-                    />
-                  </div>
-                  <div className="selected-field ">
-                    <label htmlFor="">Calling Date</label>
-                    <input type="date" {...register("service_date")} />
-                  </div>
-                </div>
+                <button
+                  className="border-2 border-gray-400 p-2 w-36 rounded font-semibold text-black"
+                  onClick={() => {
+                    setDelivery(true);
+                  }}
+                >
+                  {data && Object.keys(data).length > 0
+                    ? "Change Details"
+                    : "Add Details"}
+                </button>
               </div>
-            </section>
-          </form>
-          <div className="mt-4 space-y-4">
-            <h2 className="text-lg font-semibold">Payment</h2>
+              <h2>
+                Delivered to: <span> {data?.name}</span>
+              </h2>
+              <p>
+                City:{" "}
+                {city ? (
+                  city
+                ) : (
+                  <span className="text-red-600">
+                    Please Enter a City that matches to the seller
+                    avaialability.
+                  </span>
+                )}
+              </p>
+              <div className="flex mt-3 gap-8">
+                <p>{data?.phone_number}</p>
+                <p>{data?.address}</p>
+                <p>{data?.email}</p>
+              </div>
+            </div>
+          </div>
 
-            <div className="flex justify-end">
-              <button className="bg-green-600 text-white rounded p-2 w-44">
-                Cash On Completion
-              </button>
-            </div>
-            <div className=" flex justify-end">
-             <PaymentEsewa amount={order?.cost}/>
-            </div>
+          <div className="mt-8">
+            <h2 className="font-semibold text-lg px-4 bg-gray-50 p-3">
+              {" "}
+              Paymnet Options
+            </h2>
+            <ul className="p-4 bg-white shadow space-y-10">
+              <li className=" text-gray-500 font-semibold">
+                <button
+                  onClick={() => {
+                    setPayment("cash");
+                  }}
+                  className="flex gap-3"
+                >
+                  {payment === "cash" ? (
+                    <i className="text-gray-800 text-xl">
+                      <FaRegDotCircle />
+                    </i>
+                  ) : (
+                    <i className="text-gray-400 text-xl">
+                      <FaRegCircle />
+                    </i>
+                  )}
+                  Cash On Completion
+                </button>
+              </li>
+              <li className=" text-gray-800  ">
+                <button
+                  onClick={() => {
+                    sessionStorage.setItem("serviceId", serviceId);
+                    sessionStorage.setItem("addressId", data?.id);
+                    sessionStorage.setItem("package", packageName);
+
+                    setPayment("esewa");
+                  }}
+                  className=" gap-3 flex place-items-center"
+                >
+                  {payment === "esewa" ? (
+                    <i className="text-gray-800 text-xl">
+                      <FaRegDotCircle />
+                    </i>
+                  ) : (
+                    <i className="text-gray-400 text-xl">
+                      <FaRegCircle />
+                    </i>
+                  )}
+
+                  <img src={esewa} className="h-10 w-20 object-cover " alt="" />
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="  bg-white border w-[35Vw] p-4 space-y-3">
+        <div className=" w-[32Vw] bg-white border p-4 space-y-3">
           <div>
             <p className=" text-xl font-semibold text-slate-800  ">
               Order Details
             </p>
           </div>
           <div className="flex gap-4">
-            <div className=" bg-red-500">
+            <div className=" ">
               <img
                 src={`http://localhost:8000/${service?.description?.image}`}
                 alt=""
@@ -235,24 +336,130 @@ const OrderConfirm = () => {
           <div className="space-y-4 ">
             <div className="flex justify-between  ">
               <h2 className="font-semibold">Service Quantity</h2>
-              <span className="text-gray-600">{order?.quantity}</span>
+              <span className="text-gray-600">
+                {sessionStorage.getItem("quantity")}
+              </span>
             </div>
             <div className="flex justify-between ">
               <h2 className="font-semibold">Total Cost</h2>
-              <span className="text-gray-600">NPR {order?.cost}</span>
+              <span className="text-gray-600">
+                NPR {sessionStorage.getItem("cost")}
+              </span>
             </div>
 
             <div>
-              <button
-                type="submit"
-                className=" bg-gray-800 text-white text-lg  rounded-md  p-2 w-full"
-              >
-                Confirm Order
-              </button>
+              {payment === "esewa" ? (
+                <PaymentEsewa
+                  amount={parseInt(sessionStorage.getItem("cost"))}
+                />
+              ) : (
+                <button
+                  type="submit"
+                  className=" bg-gray-800 text-white text-lg  rounded-md  p-2 w-full"
+                  onClick={() => {
+                    data?.id ? handleOrder() : setDelivery(true);
+                  }}
+                >
+                  Confirm Order
+                </button>
+              )}
             </div>
           </div>
         </div>
       </section>
+      {delivery && (
+        <div className="absolute top-0 w-full h-full bg-[rgba(0,0,0,0.6)]">
+          <form
+            className="  bg-white w-[40Vw] mx-auto translate-y-24 p-4  space-y-8  h-[85Vh] rounded shadow"
+            action=""
+            onSubmit={handleSubmit(handleAddress)}
+          >
+            <div className="   flex gap-4   text-gray-700 ">
+              <p className="flex-1 text-2xl font-semibold text-slate-800   ">
+                Service Address Details
+              </p>
+              <button
+                className="text-xl  "
+                onClick={() => {
+                  setDelivery(false);
+                }}
+              >
+                X
+              </button>
+            </div>
+
+            <div className=" space-y-4 text-[0.95em] overflow-y-auto h-[70%] ">
+              <div className="selected-field ">
+                <label htmlFor="">Full Name</label>
+
+                <input
+                  type="text"
+                  defaultValue={data?.name}
+                  {...register("name")}
+                />
+              </div>
+              <div className=" selected-field">
+                <label htmlFor="">Availble City</label>
+
+                <Select
+                  options={locations.map((location) => ({
+                    value: location.id,
+                    label: location.city,
+                  }))}
+                  onChange={(option) => {
+                    setValue("locationId", option.value);
+                  }}
+                />
+              </div>
+              <div className="selected-field ">
+                <label htmlFor="">Full Address</label>
+
+                <input
+                  type="text"
+                  {...register("address")}
+                  defaultValue={data?.address}
+                />
+              </div>
+              <div className="selected-field ">
+                <label htmlFor="">Phone Number</label>
+                <input
+                  type="text"
+                  {...register("phone_number")}
+                  defaultValue={data?.phone_number}
+                />
+              </div>
+              <div className="selected-field ">
+                <label htmlFor="">Email</label>
+                <input
+                  type="email"
+                  {...register("email")}
+                  defaultValue={data?.email}
+                />
+              </div>
+              <div className="selected-field ">
+                <label htmlFor="">Scheduled Date</label>
+                <input type="date" {...register("scheduled_date")} />
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 font-semibold place-self-end ">
+              <button
+                className=" bg-gray-200 rounded w-36 p-2 "
+                type="button"
+                onClick={() => {
+                  setDelivery(false);
+                }}
+              >
+                Cancel
+              </button>
+              <input
+                type="submit"
+                value="Save"
+                className="border bg-gray-700 rounded w-36 p-2 shadow text-white"
+              />
+            </div>
+          </form>
+        </div>
+      )}
     </>
   );
 };

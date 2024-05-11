@@ -17,12 +17,10 @@ import { setPaginateUrl } from "../../redux/buyerSlice";
 import Pagination from "react-js-pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const FilterQuery = ({ services, filter_Type }) => {
+const FilterQuery = ({ services, filter_Type, name }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useDispatch();
-
-  const serviceName = useSelector((state) => state.buyerSlice.service);
 
   const filters = [
     {
@@ -45,25 +43,29 @@ const FilterQuery = ({ services, filter_Type }) => {
   const [filterId, setFilters] = useState();
   const [filterType, setFilterType] = useState({});
 
-  useEffect(() => {
-    setSearchParams(filterType);
-  }, [filterType]);
   console.log("filters", filterType);
   const [types, setTypes] = useState([]);
   console.log("types", types);
-  const [prices, setPrices] = useState("");
+  const [prices, setPrices] = useState([]);
   console.log("prices", prices);
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(null);
+  console.log("city", city);
+  const [rating, setRating] = useState([]);
+  console.log("rating", rating);
 
   console.log("filteredService", services);
   console.log("filter_Type", filter_Type);
+
+  useEffect(() => {
+    setSearchParams(filterType);
+  }, [filterType]);
 
   const FilterData = () => {
     switch (filterId) {
       case 1:
         return (
           <form
-            className="bg-white   shadow shadow-gray-400 rounded-md col-span-2  mt-2  max-h-[330px] overflow-y-auto"
+            className="bg-white border  shadow shadow-gray-600 rounded-lg col-span-2  mt-2  max-h-[330px] overflow-y-auto"
             onSubmit={(e) => {
               e.preventDefault();
               if (types.length == 0) {
@@ -75,37 +77,44 @@ const FilterQuery = ({ services, filter_Type }) => {
               setFilters(null);
             }}
           >
-            <ul className="grid grid-cols-2 gap-3  p-4">
+            <div>
+              <h2 className="p-4 ">Service Options</h2>
+            </div>
+            <ul className="grid grid-cols-2  gap-y-4 border-y p-4">
               {filter_Type?.options?.map((type) => (
                 <li
                   key={type.id}
-                  className="p-2 flex gap-3 hover:cursor-pointer w-full"
+                  className="   flex gap-3 hover:cursor-pointer w-full"
                 >
-                  <input
-                    type="checkbox"
-                    id={type?.id}
-                    name={`type[${type?.id}]`}
-                    value={type?.name}
-                    className="w-[18px]"
-                    onChange={(e) => {
-                      const { checked, value } = e.target;
-                      if (checked) {
-                        // If checkbox is checked, add the value to the types array
-                        setTypes([...types, value]);
-                      } else {
-                        // If checkbox is unchecked, remove the value from the types array
-                        setTypes(types.filter((type) => type !== value));
-                      }
-                    }}
-                    checked={types.includes(type.name)}
-                  />
-                  <label htmlFor={type?.id} className="hover:cursor-pointer">
-                    {type?.name}
-                  </label>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={type?.id}
+                      name={`type[${type?.id}]`}
+                      value={type?.name}
+                      className="w-4 h-4 "
+                      onChange={(e) => {
+                        const { checked, value } = e.target;
+                        if (checked) {
+                          // If checkbox is checked, add the value to the types array
+                          setTypes([...types, value]);
+                        } else {
+                          // If checkbox is unchecked, remove the value from the types array
+                          setTypes(types.filter((type) => type !== value));
+                        }
+                      }}
+                      checked={types.includes(type.name)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor={type?.id} className="hover:cursor-pointer ">
+                      {type?.name}
+                    </label>
+                  </div>
                 </li>
               ))}
             </ul>
-            <div className="grid grid-cols-2 gap-5  m-3 border-t border-gray-400 p-4  ">
+            <div className="grid grid-cols-2 gap-5  p-4 border-gray-400   ">
               <button
                 className="border border-gray-400 p-2 rounded-md"
                 type="button"
@@ -120,7 +129,7 @@ const FilterQuery = ({ services, filter_Type }) => {
                 Clear
               </button>
               <button
-                className="border border-gray-400 p-2 rounded-md"
+                className=" bg-gray-700 text-white p-2 rounded-md"
                 type="submit"
               >
                 Apply
@@ -131,135 +140,146 @@ const FilterQuery = ({ services, filter_Type }) => {
         break;
 
       case 2:
-        const low = parseInt(
-          (parseInt(filter_Type?.budget[0]?.min) +
-            parseInt(filter_Type?.budget[0]?.max)) /
-            3
-        );
-        const high = parseInt(
-          ((parseInt(filter_Type?.budget[0]?.min) +
-            parseInt(filter_Type?.budget[0]?.max)) /
-            3) *
-            2
-        );
+        const low = filter_Type?.budget?.low;
+        const high = filter_Type?.budget?.high;
         return (
-          <div className="bg-white  p-1  shadow shadow-gray-400 rounded-md col-span-2 mt-2 col-start-2 ">
-            <ul className="flex flex-col gap-3 ">
-              <li className="flex gap-3  p-3 ">
+          <div className="bg-white border   shadow rounded-lg col-span-2 mt-2 col-start-2 ">
+            <h2 className="p-4 "> Budget Range</h2>
+            <ul className="flex flex-col gap-3 p-4 border-y  space-y-4">
+              <li className="flex gap-3  ">
                 <input
                   type="radio"
-                  className="w-[20px]"
+                  className="h-6 w-6"
                   name="price"
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setPrices(`low, ${low}`);
+                      setPrices(["low", low]);
                     }
                   }}
+                  checked={prices[0] === "low"}
                 />
+
                 <p>
                   Vlaue{" "}
                   <span className=" ml-2 text-gray-600">{`Under Rs  ${low}`}</span>
                 </p>
               </li>
-              <li className="flex gap-3  p-3 ">
+              <li className="flex gap-3  ">
                 <input
                   type="radio"
-                  className="w-[25px]"
+                  className="h-6 w-6"
                   name="price"
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setPrices(`mid, ${low}, ${high}`);
+                      setPrices(["mid", low, high]);
                     }
                   }}
+                  defaultChecked={prices[0] === "mid"}
                 />
                 <p>
                   Mid-Range{" "}
                   <span className=" ml-2 text-gray-600">{` Rs  ${low} -  ${high}`}</span>
                 </p>
               </li>
-              <li className="flex gap-3  p-3 ">
+              <li className="flex gap-3   ">
                 <input
                   type="radio"
-                  className="w-[25px]"
+                  className="h-6 w-6"
                   name="price"
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setPrices(`high, ${high}`);
+                      setPrices(["high", high]);
                     }
                   }}
+                  checked={prices[0] === "high"}
                 />
                 <p>
                   High-Above{" "}
                   <span className=" ml-2 text-gray-600">{` Rs  ${high}`}</span>
                 </p>
               </li>
-              <li className="flex gap-3  p-3 ">
-                <input type="radio" className="w-[25px]" name="price" />
+              <li className="flex gap-3  ">
+                <input type="radio" className="h-6 w-6" name="price" />
                 <p>Custom </p>
               </li>
-              <li className="  p-3 ">
-                <div></div>
+              <li className="  ">
                 <input
                   type="text"
-                  className="w-[80%] mx-auto  p-2 border border-gray-400  "
+                  className="w-[70%] mx-auto  p-2 border border-gray-400  "
                   placeholder="Enter Price"
                 />
               </li>
-
-              <li className="grid grid-cols-2 gap-5  m-3 border-t border-gray-300 py-4 ">
-                <button
-                  className="border border-gray-400 p-2 rounded-md"
-                  onClick={() => {
-                    delete filterType.price;
-                    setFilterType({ ...filterType });
-
-                    setFilters(null);
-                    setPrices([]);
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  className="border border-gray-400 p-2 rounded-md"
-                  onClick={() => {
-                    // await updateBudget({ value: prices });
-                    setFilterType({ ...filterType, price: prices });
-                  }}
-                >
-                  Apply
-                </button>
-              </li>
             </ul>
+            <div className="grid grid-cols-2 gap-5  p-4  ">
+              <button
+                className="border border-gray-400 p-2 rounded-md"
+                onClick={() => {
+                  delete filterType.price;
+                  setFilterType({ ...filterType });
+
+                  setFilters(null);
+                  setPrices([]);
+                }}
+              >
+                Clear
+              </button>
+              <button
+                className=" bg-gray-700 text-white p-2 rounded-md"
+                onClick={() => {
+                  // await updateBudget({ value: prices });
+                  setFilterType({ ...filterType, price: prices.join(",") });
+                  setFilters(null);
+                }}
+              >
+                Apply
+              </button>
+            </div>
           </div>
         );
         break;
       case 3:
         return (
-          <div className="bg-white   shadow shadow-gray-400 rounded-md col-span-1 mt-2  max-h-[330px] col-start-3 overflow-y-auto">
-            <ul className="flex flex-col gap-2 p-2  ">
+          <div className="bg-white   shadow shadow-gray-400 rounded-md col-span-2 mt-2  max-h-[330px] col-start-3 overflow-y-auto">
+            <h2 className="p-4">Filter By Location</h2>
+            <ul className="flex flex-col gap-2  p-4 space-y-4 border-y ">
               {filter_Type?.locations?.map((location) => (
                 <li
                   key={location.city}
-                  className={`p-2.5 border box-border border-gray-400 hover:bg-gray-300 ${
-                    location.city === city && "bg-gray-300"
-                  }  cursor-pointer w-full`}
-                  onClick={() => {
-                    setCity(location?.city);
-                  }}
+                  className="flex gap-3  cursor-pointer w-full"
                 >
-                  {location?.city}
+                  <input
+                    type="radio"
+                    className="h-6 w-6"
+                    name="price"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setCity(location?.city);
+                      }
+                    }}
+                    checked={location.city === city}
+                  />
+                  <p>{location?.city}</p>
                 </li>
               ))}
             </ul>
             <div className="grid grid-cols-2 gap-5 border-t border-gray-300 py-3 px-2 ">
-              <button className="border border-gray-400 p-2 rounded-md">
+              <button
+                className="border border-gray-400 p-2 rounded-md"
+                onClick={() => {
+                  delete filterType.city;
+                  setFilterType({ ...filterType });
+                  setCity(null);
+
+                  setFilters(null);
+                }}
+              >
                 Clear
               </button>
               <button
-                className="border border-gray-400 p-2 rounded-md"
-                onClick={async () => {
-                  await updateLocation({ city });
+                className=" bg-gray-700 text-white p-2 rounded-md"
+                onClick={() => {
                   setFilterType({ ...filterType, city });
+                  setFilters(null);
                 }}
               >
                 Apply
@@ -270,38 +290,121 @@ const FilterQuery = ({ services, filter_Type }) => {
         break;
       case 4:
         return (
-          <div className="bg-white   shadow shadow-gray-400 rounded-md col-span-2 mt-2   col-start-4 ">
-            <ul className="p-4 grid grid-cols-2 gap-2 ">
-              <li className="flex gap-5  p-3 ">
-                <input type="checkbox" className="w-[18px]" />
-                <p>
-                  Excellent <span>(2000)</span>
-                </p>
+          <div className="bg-white  border shadow shadow-gray-600 rounded-lg col-span-2 mt-2   col-start-4 ">
+            <h2 className="p-4 ">Filter By Rating</h2>
+            <ul className="p-4 grid grid-cols-2 gap-4 border-y ">
+              <li className="flex gap-5  ">
+                <input type="checkbox" className="w-[18px] "
+                  onChange={(e) => {
+                    const { checked } = e.target;
+                    if (checked) {
+                      // If checkbox is checked, add the value to the types array
+                      setRating([...rating, 5]);
+                    } else {
+                      // If checkbox is unchecked, remove the value from the types array
+                      setRating(rating.filter((rate) => rate !== 5));
+                    }
+                  }}
+                  checked={rating.includes(5)}
+                />
+                <div>
+                  <p>Excellent</p>
+                  <p>
+                   ( {filter_Type?.rating.find((rating) => rating?.stars === 5)
+                      ?.count || 0} )
+                  </p>
+                </div>
               </li>
-              <li className="flex gap-5 p-3 ">
-                <input type="checkbox" className="w-[18px]" />
-                <p>
-                  Average <span>(3000)</span>
-                </p>
+              <li className="flex gap-5  ">
+                <input type="checkbox" className="w-[18px]"
+                onChange={(e) => {
+                  const { checked } = e.target;
+                  if (checked) {
+                    // If checkbox is checked, add the value to the types array
+                    setRating([...rating, 4]);
+                  } else {
+                    // If checkbox is unchecked, remove the value from the types array
+                    setRating(rating.filter((rate) => rate !== 4));
+                  }
+                }}
+                checked={rating.includes(4)}
+                />
+                <div>
+                  <p>Average</p>
+                  <p>
+                   ( {filter_Type?.rating.find((rating) => rating?.stars === 4)
+                      ?.count || 0} )
+                  </p>
+                </div>
               </li>
-              <li className="flex gap-5 p-3">
-                <input type="checkbox" className="w-[18px]" />
-                <p>
-                  Good <span>(2000)</span>
-                </p>
+              <li className="flex gap-5 ">
+                <input type="checkbox" className="w-[18px]"
+                onChange={(e) => {
+                  const { checked } = e.target;
+                  if (checked) {
+                    // If checkbox is checked, add the value to the types array
+                    setRating([...rating, 3]);
+                  } else {
+                    // If checkbox is unchecked, remove the value from the types array
+                    setRating(rating.filter((rate) => rate !== 3));
+                  }
+                }}
+                checked={rating.includes(3)}
+                />
+                <div>
+                  <p>Good</p>
+                  <p>
+                   ( {filter_Type?.rating.find((rating) => rating?.stars === 3)
+                      ?.count || 0} )
+                  </p>
+                </div>
               </li>
-              <li className="flex gap-5 p-3">
-                <input type="checkbox" className="w-[18px]" />
-                <p>
-                  Newer <span>(2000)</span>
-                </p>
+              <li className="flex gap-5">
+                <input type="checkbox" className="w-[18px]"
+                onChange={(e) => {
+                  const { checked } = e.target;
+                  if (checked) {
+                    // If checkbox is checked, add the value to the types array
+                    setRating([...rating, 1]);
+                  } else {
+                    // If checkbox is unchecked, remove the value from the types array
+                    setRating(rating.filter((rate) => rate !==1));
+                  }
+                }}
+                checked={rating.includes(1)}
+                />
+                <div>
+                  <p>Newer</p>
+                  <p>
+                   ( {filter_Type?.rating.find((rating) => rating?.stars === 1)
+                      ?.count || 0} )
+                  </p>
+                </div>
               </li>
             </ul>
-            <div className="grid grid-cols-2 gap-5 border-t border-gray-300 m-3 p-4 ">
-              <button className="border border-gray-400 p-2 rounded-md">
+            <div className="grid grid-cols-2 gap-5  p-4 ">
+              <button className="border border-gray-400 p-2 rounded-md"
+               onClick={() => {
+                delete filterType.rating;
+                setFilterType({ ...filterType });
+
+                setFilters(null);
+                setRating([]);
+              }}
+              >
                 Clear
               </button>
-              <button className="border border-gray-400 p-2 rounded-md">
+              <button className=" bg-gray-700 text-white p-2 rounded-md"
+              onClick={()=>{
+                if (rating.length == 0) {
+                  delete filterType.rating;
+                  setFilterType({ ...filterType });
+                } else {
+                  setFilterType({ ...filterType, rating: rating.join(",") });
+                }
+                setFilters(null);
+              }}
+              >
                 Apply
               </button>
             </div>
@@ -315,27 +418,29 @@ const FilterQuery = ({ services, filter_Type }) => {
 
   return (
     <section className="font-semibold text-[1em]">
-      <section className=" mt-4 relative">
-        <h2 className="mb-8 text-xl">{serviceName}</h2>
-        <div className="grid grid-cols-5  text-[0.9em2] gap-5">
+      <section className=" relative">
+        <h2 className=" text-xl mb-8">{name}</h2>
+        <div className="grid grid-cols-6 gap-5 ">
           {filters.map((filter) => (
             <div
               key={filter.id}
-              className="flex justify-between  text-gray-700 gap-5 border border-gray-600 p-2 rounded-lg hover:cursor-pointer "
+              className="flex justify-between  text-gray-700 border-1 border-gray-500  p-2 rounded-lg hover:cursor-pointer "
               onClick={() => {
                 filterId === filter.id
                   ? setFilters(null)
                   : setFilters(filter.id);
               }}
             >
-              <p className="text-center ml-2 text-[1.1em] ">{filter.name}</p>
-              <span className=" transition-all delay-1000">
+              <button className="text-center  text-[1em] ">
+                {filter.name}
+              </button>
+              <i className=" transition-all delay-1000">
                 {filterId === filter.id ? <IoIosArrowDown /> : <IoIosArrowUp />}
-              </span>
+              </i>
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-5 gap-5 z-10 absolute w-[97%]">
+        <div className="grid grid-cols-6 gap-5 z-10 absolute w-full ">
           {FilterData()}
         </div>
       </section>

@@ -18,8 +18,7 @@ const SellerNavbar = ({ profile }) => {
   const location = useLocation();
   const [dropdown, setdropdown] = useState("");
   return (
-    <div className="  flex bg-white  gap-5    p-3">
-     
+    <div className="  flex bg-white  gap-5    p-2.5">
       <div className=" grid justify-end flex-1">
         <ul className=" flex-1 flex   place-items-center gap-1 ">
           {/* 
@@ -61,13 +60,7 @@ const SellerNavbar = ({ profile }) => {
               </sup>
             </NavLink>
           </li>
-          <li className="">
-            <NavLink to={`/user/${name}/chat/receiver`} className="w-full flex text-green-600 font-semibold">
-              {" "}
-          Switch to Buying
-            </NavLink>
-          </li>
-
+         
           <li className="relative ml-2">
             <div>
               <img
@@ -80,7 +73,7 @@ const SellerNavbar = ({ profile }) => {
               />
             </div>
             {dropdown && (
-              <ul className="flex flex-col w-[280px] font-semibold  text-black shadow bg-gray-50  absolute top-12 right-0 gap-2  p-4 z-10">
+              <ul className="flex flex-col w-[250px] text-[1em] text-black shadow bg-gray-50  absolute top-12 right-0 gap-2  p-4 z-10">
                 <li className=" flex gap-3">
                   <img
                     src={localStorage.getItem("photo")}
@@ -131,23 +124,24 @@ const SellerNavbar = ({ profile }) => {
                 </li>
                 <li className=" p-2 border-t-2  ">
                   <NavLink
-                    to="/seller/create/job"
+                    to={`/user/${localStorage.getItem("name")}/profile`}
                     onClick={() => {
                       setdropdown(!dropdown);
                     }}
                   >
                     My Profile
                   </NavLink>
-                </li>  <li className=" p-2 ">
+                </li>{" "}
+                <li className=" p-2 ">
                   <NavLink
                     to="/seller/create/job"
                     onClick={() => {
                       setdropdown(!dropdown);
                     }}
                   >
-                   Account
+                    Account
                   </NavLink>
-                </li>  
+                </li>
                 <li className=" p-2 ">
                   <NavLink
                     to="/seller/create/job"
@@ -158,7 +152,6 @@ const SellerNavbar = ({ profile }) => {
                     Setting
                   </NavLink>
                 </li>
-
                 <li className=" p-2 ">
                   <button
                     onClick={() => {
@@ -175,9 +168,6 @@ const SellerNavbar = ({ profile }) => {
                 </li>
               </ul>
             )}
-          </li>
-          <li className="mx-2">
-            {localStorage.getItem('name')}
           </li>
         </ul>
       </div>

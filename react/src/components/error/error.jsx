@@ -40,7 +40,7 @@ const Error = ({error}) => {
           </>
         )
       }
-  sd
+
 }
 
 export default Error

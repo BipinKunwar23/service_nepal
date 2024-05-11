@@ -60,6 +60,8 @@ import ListDetail from "./views/buyer/wihsList/listDetail";
 import UserServiceDetails from "./views/user/service/serviceDetail";
 import SpecificServiceDetail from "./views/seller/serviceManagement/serviceInformation/specificDetail";
 import SellerServiceDetail from "./views/seller/serviceManagement/serviceInformation/detail";
+import { setUsers } from "./redux/buyerSlice";
+import PaymentSuccess from "./views/buyer/paymnet/success";
 
 function App() {
   const message = useSelector((state) => state.sellerSlice.toastMessage);
@@ -68,6 +70,8 @@ function App() {
   //   setName( localStorage.getItem("name"))
 
   // },[localStorage.getItem("role")])
+  const users = useSelector((state) => state.buyerSlice.users);
+
   const senderId = parseInt(localStorage.getItem("userId"));
   const receiverId = parseInt(localStorage.getItem("userId"));
 
@@ -97,6 +101,20 @@ function App() {
       }
     }
   );
+  window.Echo.join("user-status")
+    .here((users) => {
+      dispatch(setUsers(users));
+    })
+    .joining((user) => {
+      console.log('joined',user);
+      dispatch(setUsers([...users, user]));
+    })
+    .leaving((user) => {
+      dispatch(setUsers(users.filter((item) => item.id !== user.id)));
+    })
+    .listen("UserStatusEvent", (e) => {
+      console.log("status", e);
+    });
 
   // window.Echo.private(`private-notification`).listen(
   //   "notification",
@@ -112,7 +130,6 @@ function App() {
   const seller = `user/${name}/seller`;
 
   const role = localStorage.getItem("role");
-  
 
   return (
     <section className="relative">
@@ -162,20 +179,20 @@ function App() {
           />
           <Route path="result/service/search" element={<SearchResult />} />
 
-          <Route
-            path="service/:serviceId"
-            element={<BuyerService />}
-          />
+          <Route path="service/:serviceId" element={<BuyerService />} />
 
           <Route path="category/:categoryId" element={<SubCategory />} />
           <Route
             path="service/:serviceId/order"
             element={<OrderConfirm />}
           ></Route>
+            <Route
+            path="service/:serviceId/order/success"
+            element={<PaymentSuccess />}
+          ></Route>
           <Route path="order" element={<BuyerOrderList />}>
             <Route path=":orderId" element={<BuyerOrderDetail />} />
           </Route>
-          <Route path={`chat/receiver`} element={<ViewChat />}></Route>
           <Route
             path="service/:serviceId"
             element={<SellerGeneralServiceDetail />}
@@ -191,6 +208,7 @@ function App() {
             element={<CreateReview />}
           ></Route>
         </Route>
+        <Route path={`user/${name}/chat/receiver`} element={<ViewChat />}></Route>
 
         <Route path={`user/${name}/profile`} element={<Profile />} />
 

@@ -16,6 +16,9 @@ export const buyerServiceApi = createApi({
     getServiceCards: builder.query({
       query: (page=1) => `all?page=${page}`,
     }),
+    getPopularService: builder.query({
+      query: () => `popular`,
+    }),
     getServiceDetailsById: builder.query({
       query: (serviceId) => `${serviceId}`,
     }),
@@ -26,5 +29,5 @@ export const buyerServiceApi = createApi({
     }),
   }),
 });
-export const { useGetServiceCardsQuery, useGetServiceDetailsByIdQuery, useGetOrderConfirmQuery } =
+export const { useGetServiceCardsQuery, useGetServiceDetailsByIdQuery, useGetOrderConfirmQuery , useGetPopularServiceQuery} =
 buyerServiceApi;

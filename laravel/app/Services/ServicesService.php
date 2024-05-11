@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Feedback;
 use App\Models\Lists;
 use App\Models\OptionUser;
 use App\Models\Service;
@@ -14,13 +15,15 @@ class ServicesService
 {
   public function getBuyerServiceCards($query)
   {
+ 
 
-
-    $services = $query->with( ['user:id,name', 'service:id,type', 'user.profile:id,user_id,photo','description','lists']);
+    $services = $query->with( ['user:id,name','option:id,name','service:id,name','user.feedbacks'=>function($query){
+      $query->selectRaw('seller_id, COUNT(stars) as count_rating, AVG(stars) as average_rating')->groupBy('seller_id');
+    }, 'service:id,type', 'user.profile:id,user_id,photo','description','lists']);
 
     return $services;
 
-   
+
   }
 
   public function viewServiceDetails($serviceId)

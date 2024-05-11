@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    public $fillable = ['customer_id', 'service_id', 'service_date', 'contact_number', 'delivery_city', 'package', 'quantity', 'cost','status'];
+    public $fillable = ['address_id','customer_id', 'service_id', 'package', 'quantity', 'cost','status'];
 
 
 
@@ -33,5 +33,9 @@ class Order extends Model
     public function progress()
     {
         return $this->hasOne(Progress::class, 'order_id');
+    }
+    public function address()
+    {
+        return $this->belongsTo(ServiceAddress::class, 'address_id');
     }
 }

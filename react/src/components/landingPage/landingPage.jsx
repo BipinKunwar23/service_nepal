@@ -4,8 +4,12 @@ import image from "../../images/landing.jpg";
 import { Navigate, useNavigate } from "react-router-dom";
 import LandingNavbar from "./landing-navbar";
 import { useGetLandingPageDataQuery } from "../../api/public/landingApi";
+import { useGetPopularServiceQuery } from "../../api/buyer/serviceApi";
 import Loader from "./../Loader";
 import SearchBar from "../search/searchBar";
+import ServiceCard from "../../components/card/serviceCard";
+import SignIn from "../auth/signIn";
+
 const landingPage = () => {
   const [started, setStarted] = useState(false);
   // const [role, setRole] = useState(null);
@@ -18,6 +22,8 @@ const landingPage = () => {
   //   navigate(`hello`)
   // },[logged])
   const { data, isLoading } = useGetLandingPageDataQuery();
+  // const { data:populars, isLoading:ispopular } = useGetPopularServiceQuery();
+
   console.log("data", data);
   if (logged) {
     if (role == "admin") {
@@ -33,11 +39,18 @@ const landingPage = () => {
   }
 
   return (
-    <>
-    <section className="object-cover bg-no-repeat  " style={{ backgroundImage: 'url("/src/images/landing.jpg")' }}>
-      <div className="bg-[rgba(0,0,0,0.4)] h-screen obje">
-
+    <div className="w-[80Vw] mx-auto text-gray-800">
       <LandingNavbar />
+      {/* <div className="absolute"> 
+        <SignIn/>
+      </div> */}
+      <section
+        className=" rounded-xl  "
+        style={{ backgroundImage: 'url("/src/images/landing.jpg")',
+      backgroundSize:"cover",
+      }}
+      >
+        <div className="bg-[rgba(0,0,0,0.4)]  object-cover rounded-xl">
           <article className=" text-gray-600    grid grid-cols-2 justify-between  gap-10  box-border    ">
             <div className=" flex-1 p-4 mt-20 ">
               <div className=" flex flex-col flex-1 gap-4">
@@ -67,65 +80,26 @@ const landingPage = () => {
                 </div>
               </div>
             </div>
-           
           </article>
-      </div>
-
-    </section>
+        </div>
+      </section>
       <section className="  text-gray-600   -z-10 ">
         <div className="  rounded-b-lg    ">
-
+          {/* {
+              ispopular ? <Loader/> :
           <article className=" p-8      ">
             <h2 className=" text-[1.2em] font-bold  p-8 text-center text-gray-900  mb-4">
               POPULAR SERVICES
             </h2>
-            <div className="grid grid-cols-4 gap-5   ">
-              <div className="service-card  ">
-                <img src={image1} alt="" />
-                <div className="service-title">Graphic Design</div>
-                <div className="service-description">
-                  Eye-catching visuals for your brand.
-                </div>
-                <a href="#" className="learn-more-btn">
-                  Learn More
-                </a>
-              </div>
-              <div className="service-card ">
-                <img src={image1} alt="" />
-                <div className="service-title">Graphic Design</div>
-                <div className="service-description">
-                  Eye-catching visuals for your brand.
-                </div>
-                <a href="#" className="learn-more-btn">
-                  Learn More
-                </a>
-              </div>
-
-              <div className="service-card">
-                <img src={image1} alt="" />
-
-                <div className="service-title">Web Development</div>
-                <div className="service-description">
-                  Build your online presence with expert developers.
-                </div>
-                <a href="#" className="learn-more-btn">
-                  Learn More
-                </a>
-              </div>
-
-              <div className="service-card">
-                <img src={image1} alt="" />
-
-                <div className="service-title">Content Writing</div>
-                <div className="service-description">
-                  Engaging content tailored to your audience.
-                </div>
-                <a href="#" className="learn-more-btn  ">
-                  Learn More
-                </a>
-              </div>
-            </div>
+         
+            <ServiceCard
+                  cards={populars}
+                  url={`/user/${localStorage.getItem("name")}/service`}
+                >
+                
+                </ServiceCard>
           </article>
+} */}
 
           <section>
             <article className=" bg-white p-5   border-b border-gray-400 ">
@@ -195,9 +169,7 @@ const landingPage = () => {
           </section>
 
           <article className="bg-white border-b border-gray-400 text-[#666] flex flex-col gap-5 p-10 box-border">
-            <h1 className=" font-bold text-xl text-green-600">
-              ABOUT US
-            </h1>
+            <h1 className=" font-bold text-xl text-green-600">ABOUT US</h1>
 
             <div className="grid grid-cols-2 gap-4 p-8">
               <div>
@@ -215,17 +187,16 @@ const landingPage = () => {
                   aperiam eos optio velit, fugit sapiente mollitia saepe
                   perferendis, Lorem ipsum dolor sit amet consectetur
                   adipisicing elit. Voluptatem, adipisci. Aperiam veritatis vel
-                  itaque, quidem quo quas ipsum sint eligendi quasi! I
-                  tenetur veritatis magni cumque corrupti quaerat eius est
-                  aperiam eos optio velit, fugit sapiente mollitia saepe
-                  perferendis, Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Voluptatem, adipisci. Aperiam veritatis vel
-                  itaque, quidem quo quas ipsum sint eligendi quasi! Iusto ipsum
-                  facere ipsa ut laboriosam. Itaque, ab consequunturusto ipsum
-                  facere ipsa ut laboriosam. Itaque, ab consequuntur.
-                  aperiam eos optio velit, fugit sapiente mollitia saepe
-                  perferendis, Lorem ipsum dolor sit amet consectetur
-     
+                  itaque, quidem quo quas ipsum sint eligendi quasi! I tenetur
+                  veritatis magni cumque corrupti quaerat eius est aperiam eos
+                  optio velit, fugit sapiente mollitia saepe perferendis, Lorem
+                  ipsum dolor sit amet consectetur adipisicing elit. Voluptatem,
+                  adipisci. Aperiam veritatis vel itaque, quidem quo quas ipsum
+                  sint eligendi quasi! Iusto ipsum facere ipsa ut laboriosam.
+                  Itaque, ab consequunturusto ipsum facere ipsa ut laboriosam.
+                  Itaque, ab consequuntur. aperiam eos optio velit, fugit
+                  sapiente mollitia saepe perferendis, Lorem ipsum dolor sit
+                  amet consectetur
                 </p>
                 <div className=" flex-1">
                   <button className="bg-[#EF351B] rounded-md p-2 w-[150px] text-white font-semibold ">
@@ -234,7 +205,6 @@ const landingPage = () => {
                   </button>
                 </div>
               </div>
-              
             </div>
           </article>
 
@@ -243,65 +213,59 @@ const landingPage = () => {
               Frequently Asked Questions
             </h2>
             <div className=" p-4  space-y-4 divide-y-2">
-        {data?.faqs?.map((faq) => {
-          return (
-            <div key={faq?.id} className=" p-4 box-border">
-              
-              <div className="">
-              <div className="flex  mt-3 font-semibold text-blue-600">
-                <div className="flex-1">
-                <h2 className="text-sky-500  font-semibold text-xl mb-2">
-                  {faq?.question}
-                </h2>
-                </div>
-               
-              </div>
-                
-                <p className=" text-lg text-gray-600 ">
-                  {faq?.answer}
-                </p>
-              </div>
-              
-              
+              {data?.faqs?.map((faq) => {
+                return (
+                  <div key={faq?.id} className=" p-4 box-border">
+                    <div className="">
+                      <div className="flex  mt-3 font-semibold text-blue-600">
+                        <div className="flex-1">
+                          <h2 className="text-sky-500  font-semibold text-xl mb-2">
+                            {faq?.question}
+                          </h2>
+                        </div>
+                      </div>
+
+                      <p className=" text-lg text-gray-600 ">{faq?.answer}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
           </section>
           <section className="p-8">
-          <h2 className="text-3xl font-semibold  text-green-600">
-             Meet Our Teams
+            <h2 className="text-3xl font-semibold  text-green-600">
+              Meet Our Teams
             </h2>
-          <div className=" p-4  grid gap-6 grid-cols-3">
-        {data?.teams?.map((member) => {
-          return (
-            <div key={member?.id} className=" p-4 box-border">
-              <div className="grid place-content-center">
-                <img
-                  src={`http://localhost:8000/${member?.photo} `}
-                  className="h-52 w-52  object-center object-cover rounded-full"
-                  alt=""
-                />
-              </div>
-              <div className="mt-4">
-                <h2 className="text-sky-500  text-center text-xl mb-2">
-                  {member?.role}
-                </h2>
-                <h2 className="text-center text-xl font-semibold ">
-                  {member?.name}
-                </h2>
-                <p className="text-center mb-2 text-gray-600">{member?.bio}</p>
-              </div>
-              
-              
+            <div className=" p-4  grid gap-6 grid-cols-3">
+              {data?.teams?.map((member) => {
+                return (
+                  <div key={member?.id} className=" p-4 box-border">
+                    <div className="grid place-content-center">
+                      <img
+                        src={`http://localhost:8000/${member?.photo} `}
+                        className="h-52 w-52  object-center object-cover rounded-full"
+                        alt=""
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <h2 className="text-sky-500  text-center text-xl mb-2">
+                        {member?.role}
+                      </h2>
+                      <h2 className="text-center text-xl font-semibold ">
+                        {member?.name}
+                      </h2>
+                      <p className="text-center mb-2 text-gray-600">
+                        {member?.bio}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
           </section>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

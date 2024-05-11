@@ -25,7 +25,7 @@ class ProfileController extends Controller
 
         $profile = User::with('profile', 'role')->find(Auth::user()->id);
 
-return response()->json($profile);
+        return response()->json($profile);
         return  new UserResource($profile);
     }
     public function changeProfileImage(Request $request)
@@ -47,57 +47,66 @@ return response()->json($profile);
                 $path = $profile->photo;
             }
         } else {
-            $path = null;
             if ($request->hasFile('photo')) {
                 $file = $request->file('photo');
                 $extension = $file->getClientOriginalExtension();
+
                 $name = time() . '.' . $extension;
                 $file->move('profile/image', $name);
                 $path = 'profile/image/' . $name;
             }
         }
 
-        $user = User::find(Auth::user()->id);
+
 
         Profile::updateOrCreate([
-            'user_id' => $user,
+            'user_id' => Auth::user()->id,
         ], [
             'photo' => $path,
         ]);
+        return response()->json($path);
+
         return response()->json([
-            'message' => "Changed Successfully"
+            'message' => "Photo Changed Successfully"
         ]);
     }
+    public function changeName(Request $request)
+    {
 
+        User::find(Auth::user()->id)->update(['name' => $request->name]);
+        return response()->json('successfully updated', 200);
+    }
     public function changePhoneNumber(Request $request)
     {
-        $user = User::find(Auth::user()->id);
 
         Profile::updateOrCreate([
-            'user_id' => $user,
+            'user_id' => Auth::user()->id,
         ], [
             'phone_number' => $request->phone_number,
         ]);
+        return response()->json('successfully updated', 200);
     }
     public function changeAddress(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+
 
         Profile::updateOrCreate([
-            'user_id' => $user,
+            'user_id' => Auth::user()->id,
         ], [
             'address' => $request->address,
         ]);
+        return response()->json('successfully updated', 200);
     }
     public function changeBio(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+
 
         Profile::updateOrCreate([
-            'user_id' => $user,
+            'user_id' => Auth::user()->id,
         ], [
             'bio' => $request->bio,
         ]);
+        return response()->json('successfully updated', 200);
     }
 
     public function addSkills(Request $request)

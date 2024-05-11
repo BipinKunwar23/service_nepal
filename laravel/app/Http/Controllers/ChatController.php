@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\chatEvent;
 use App\Events\privateChat;
+use App\Http\Resources\ChatResource;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -41,7 +42,13 @@ class ChatController extends Controller
             // Find the message using the latest_message_id
             if (!in_array($userId, array_column($recentUserWithMessage, 'user_id'))) {
                 $user = $usersWithMessages->firstWhere('id', $userId);
-                $latestMessage = Message::find($message->latest_message_id)->message;
+                $chat = Message::find($message->latest_message_id);
+                if ($chat->type === "image") {
+                    $latestMessage = "sent a photo";
+                } else {
+
+                    $latestMessage = $chat->message;
+                }
 
                 $recentUserWithMessage[] = [
                     'user_id' => $userId,
@@ -64,25 +71,46 @@ class ChatController extends Controller
         }
         $message = Message::whereIn('sender_id', [Auth::user()->id, $receiverId])->whereIn('receiver_id', [$receiverId, Auth::user()->id])
             ->get();
+
+        $data = ChatResource::collection($message);
         return response()->json([
             'receiver' => $user,
-            'messages' => $message
+            'messages' => $data
         ]);
         // event(new chatEvent);
+    }
+    public function deleteChat($receiverId)
+    {
+        Message::whereIn('sender_id', [Auth::user()->id, $receiverId])->whereIn('receiver_id', [$receiverId, Auth::user()->id])
+            ->delete();
+        return response()->json(200);
     }
     public function store(Request $request,  $receiverId)
     {
         if (empty($receiverId)) {
             return;
         }
+        $message = null;
+        if ($request->hasFile('message')) {
+            $file = $request->file('message');
+            $extension = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+            $file->move('chat/image', $name);
+            $message = 'chat/image/' . $name;
+        }
 
-        $message = Message::create([
+
+
+        $chats = Message::create([
             'sender_id' => Auth::user()->id,
             'receiver_id' => $receiverId,
-            'message' => $request->message,
+            'type' => $request->type,
+
+            'message' => $message ? $message : $request->message,
 
         ]);
-        event(new privateChat($message));
-        return $message;
+        $data = new ChatResource($chats);
+        event(new privateChat($data));
+        return response()->json($data);
     }
 }

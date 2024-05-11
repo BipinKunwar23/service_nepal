@@ -47,12 +47,12 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-full">
-      <div className=" flex border-2 rounded-full border-slate-300  ">
+    <div className="relative   rounded ">
+      <div className=" flex  bg-sky-200 rounded-md  ">
         <input
           type="search"
-          className="bg-white p-1.5  w-full text-gray-600 text-lg rounded-l-full   placeholder:text-lg focus:outline-none"
-          placeholder="What service are you looking today ?"
+          className="bg-sky-200  p-1.5 rounded-md w-full text-gray-600 text-lg   placeholder:text-lg focus:outline-none"
+          placeholder="Search Services"
           onFocus={handleSearchFocus}
           onBlur={handleSearchBlur}
           value={searchValue}
@@ -60,7 +60,7 @@ const SearchBar = () => {
           onKeyUp={handleKeyUp}
         />
         <button
-          className="text-blue-600 rounded-r-full bg-white grid place-content-center w-[60px] text-2xl"
+          className="text-gray-500  border grid place-content-center w-[60px] text-2xl"
           onClick={() => {
             // searchName &&
             //   (navigate(`user/service/search`),
@@ -74,7 +74,10 @@ const SearchBar = () => {
             });
           }}
         >
+          <i className="">
           <FaSearch className="font-light" />
+
+          </i>
         </button>
       </div>
       {showItemList && searchValue !== "" && (

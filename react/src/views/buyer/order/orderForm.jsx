@@ -4,7 +4,7 @@ import { setOrderDetails } from "../../../redux/sellerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setContinue } from "../../../redux/buyerSlice";
 
-const OrderForm = ({ packages,serviceId,standards }) => {
+const OrderForm = ({ packages,sellerId }) => {
   const packageName = useSelector((state) => state.sellerSlice.packageName);
 
   console.log("packages", packages);
@@ -16,9 +16,6 @@ const OrderForm = ({ packages,serviceId,standards }) => {
   const location=useLocation();
 
 
-  useEffect(() => {
-    dispatch(setOrderDetails({quantity:count,cost:packages?.price * count}));
-  }, [count,packages]);
 
   return (
     <section className=" w-[35%]  bg-white flex flex-col gap-8 ">
@@ -87,12 +84,17 @@ const OrderForm = ({ packages,serviceId,standards }) => {
 
       <div className="p-5">
         <button
-          className="w-full box-border text-[1.2em] bg-gray-700 text-white p-3 rounded-sm "
+          className="w-full box-border text-[1.2em]  bg-gray-700 text-white p-2 rounded-sm "
           onClick={() => {
+            sessionStorage.setItem('quantity',count)
+            sessionStorage.setItem('cost',packages?.price * count)
+
+            dispatch(setOrderDetails({quantity:count,cost:packages?.price * count}))
             navigate({
               pathname: `order`,
               search: createSearchParams({
-                package: `${packageName}`,
+                seller:sellerId,
+                package: packageName,
               }).toString(),
             },
             {state:{
@@ -102,7 +104,7 @@ const OrderForm = ({ packages,serviceId,standards }) => {
             );
           }}
         >
-          CONTINUE <span className="ml-4">${order?.cost}</span>{" "}
+          CONTINUE <span className="ml-4">${packages?.price * count}</span>{" "}
         </button>
       </div>
     </section>

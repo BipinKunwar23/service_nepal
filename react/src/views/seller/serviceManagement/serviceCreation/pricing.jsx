@@ -11,7 +11,8 @@ import { useParams } from "react-router-dom";
 import { useGetServiceStandardQuery } from "../../../../api/seller/serviceApi";
 import Select from "react-select";
 
-const Pricing = ({ data=[],standards }) => {
+const Pricing = ({ data = [], standards }) => {
+  console.log("package standards", data);
 
   const { serviceId } = useParams();
   const dispatch = useDispatch();
@@ -32,12 +33,13 @@ const Pricing = ({ data=[],standards }) => {
             description: data[0]?.description || "",
             price: data[0]?.price || "",
             package: "basic",
-            standards: data[0]?.standards.map(element => {
-              return {
-                standard_id:element?.id,
-                value_id:element?.pivot?.value_id
-              }
-            }) || [],
+            standards:
+              data[0]?.standards.map((element) => {
+                return {
+                  standard_id: element?.id,
+                  value_id: element?.pivot?.value_id,
+                };
+              }) || [],
           },
           {
             id: data[1]?.id || null,
@@ -46,12 +48,13 @@ const Pricing = ({ data=[],standards }) => {
             description: data[1]?.description || "",
             price: data[1]?.price || "",
             package: "standard",
-            standards: data[1]?.standards.map(element => {
-              return {
-                standard_id:element?.id,
-                value_id:element?.pivot?.value_id
-              }
-            }) || [],
+            standards:
+              data[1]?.standards.map((element) => {
+                return {
+                  standard_id: element?.id,
+                  value_id: element?.pivot?.value_id,
+                };
+              }) || [],
           },
           {
             id: data[2]?.id || null,
@@ -60,12 +63,13 @@ const Pricing = ({ data=[],standards }) => {
             description: data[2]?.description || "",
             price: data[2]?.price || "",
             package: "premium",
-            standards: data[2]?.standards.map(element => {
-              return {
-                standard_id:element?.id,
-                value_id:element?.pivot?.value_id
-              }
-            }) || [],
+            standards:
+              data[2]?.standards.map((element) => {
+                return {
+                  standard_id: element?.id,
+                  value_id: element?.pivot?.value_id,
+                };
+              }) || [],
           },
         ],
       },
@@ -106,14 +110,11 @@ const Pricing = ({ data=[],standards }) => {
     },
   ];
 
-  const price = getValues("price");
-
-
   const onSubmit = async (values) => {
     console.log("data", values);
 
     if (data && data?.length > 0) {
-      await updateServicePrice({ optionId: serviceId, price: values?.price })
+      await updateServicePrice({serviceId, price: values?.price })
         .unwrap()
         .then((response) => {
           console.log("response", response);
@@ -152,7 +153,7 @@ const Pricing = ({ data=[],standards }) => {
         });
     }
   };
-  if ( isUpdating) {
+  if (isUpdating) {
     return <Loader />;
   }
   return (
@@ -227,7 +228,7 @@ const Pricing = ({ data=[],standards }) => {
               if (standard?.values?.length > 0) {
                 return (
                   <tr key={standard?.id} className="price-table ">
-                    <td className="font-bold">{standard?.name}</td>
+                    <td className="font-semibold">{standard?.name}</td>
 
                     {packages?.map((pkg, index) => {
                       const value_id = data[index]?.standards.find(
@@ -239,24 +240,25 @@ const Pricing = ({ data=[],standards }) => {
                       return (
                         <td className="" key={pkg?.name}>
                           <Select
-                            defaultValue={{
-                              label: value?.name,
-                              value: value?.id,
-                            }}
-                            options={standard?.values
-                              
-                              .map((value) => ({
+                            defaultValue={
+                              value && {
                                 label: value?.name,
                                 value: value?.id,
-                              }))}
+                              }
+                            }
+                            options={standard?.values.map((value) => ({
+                              label: value?.name,
+                              value: value?.id,
+                            }))}
                             onChange={(option) => {
-                              const updatedValue = price[
-                                index
-                              ].standards.filter(
-                                (item) => item?.standard_id !== standard?.id
+                              const price = watch("price");
+                              console.log("price", price);
+                              const updatedValue = price[index]?.standards.filter(
+                                (item) => item.standard_id !== standard?.id
                               );
                               setValue(`price[${index}].standards`, [
                                 ...updatedValue,
+
                                 {
                                   standard_id: standard?.id,
                                   value_id: option?.value,
@@ -272,20 +274,21 @@ const Pricing = ({ data=[],standards }) => {
               }
 
               return (
-                <tr key={standard?.id} className="price-table text-center ">
-                  <td className="font-bold">{standard?.name}</td>
+                <tr key={standard?.id} className="price-table  ">
+                  <td className="font-semibold">{standard?.name}</td>
 
                   {packages?.map((pkg, index) => {
                     const value_id = data[index]?.standards.find(
                       (item) => item?.id === standard?.id
                     )?.pivot?.value_id;
                     return (
-                      <td className="" key={pkg?.name}>
+                      <td className="text-center" key={pkg?.name}>
                         <input
                           type="checkbox"
                           className="w-[20px] h-[20px]"
                           defaultChecked={value_id === null}
                           onChange={(e) => {
+                            const price = watch("price");
                             const checked = e.target.checked;
                             if (checked) {
                               setValue(`price[${index}].standards`, [
@@ -313,6 +316,7 @@ const Pricing = ({ data=[],standards }) => {
             })}
           </tbody>
         </table>
+
 
         <div className=" grid grid-cols-3 gap-10 ">
           <button

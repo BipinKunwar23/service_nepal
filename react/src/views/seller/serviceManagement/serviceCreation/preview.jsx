@@ -5,7 +5,7 @@ useSaveServiceMutation
 } from "../../../../api/seller/serviceApi";
 import Loader from "../../../../components/Loader";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import SellerProfile from "../../../../components/service/profile";
 import ServiceCategory from "./../../../../components/service/category";
 import Service from "../../../../components/service/service";
@@ -15,8 +15,10 @@ import ServiceTerms from "../../../../components/service/terms";
 import { useSelector } from "react-redux";
 const PrviewService = ({ services }) => {
   const navigate = useNavigate();
+  console.log('services',services);
+  const [searchParams,setSearchParams]=useSearchParams()
 
-  const type = useSelector((state) => state.sellerSlice.type);
+  const type = searchParams.get('type')
 
   const [setService, { isLoading: isSaving }] = useSaveServiceMutation();
   const { serviceId } = useParams();
@@ -42,7 +44,7 @@ const PrviewService = ({ services }) => {
   if (type === "specific") {
     return (
       <section>
-        <SellerProfile />
+        <SellerProfile  name={services?.user?.name} photo={services?.user?.profile?.photo}/>
         <section className="grid grid-cols-2 gap-4">
           <div className="">
             <img
@@ -82,7 +84,7 @@ const PrviewService = ({ services }) => {
 
   return (
     <section className="text-[1.1em]  bg-white  p-8 ">
-      <SellerProfile />
+      <SellerProfile photo={services?.user?.profile?.photo} name={services?.user?.profile?.name}/>
       <ServiceCategory
         category={services?.service?.subcategory?.category}
         subcategory={services?.service?.subcategory}
@@ -93,7 +95,7 @@ const PrviewService = ({ services }) => {
           <Service
             galleries={services?.galleries}
             title={services?.title}
-            description={services?.description}
+            description={services?.description?.description}
           />
         </div>
         <section>

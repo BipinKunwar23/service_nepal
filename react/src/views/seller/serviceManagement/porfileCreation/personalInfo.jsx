@@ -28,18 +28,18 @@ export default function PersonalInfo({ personal }) {
     bio: yup.string().required("Biography  is Required"),
     address: yup.string().required("Address is Required"),
     phone_number: yup.string().required("Phone Number is Required"),
-    image: yup
-    .mixed()
-    .required('Image is required')
-    .test('fileSize', 'Image file is too large', (value) =>{
-      console.log('size',value[0].size);
-      return true
-    }
-    //  !value || value[0].size <= 5242880
-     )
-    .test('fileType', 'Unsupported file format', (value) => true
-      // !value || ['image/jpeg', 'image/png', 'image/gif'].includes(value[0].type)
-    ),
+    // image: yup
+    // .mixed()
+    // .required('Image is required')
+    // .test('fileSize', 'Image file is too large', (value) =>{
+    //   console.log('size',value[0].size);
+    //   return true
+    // }
+    // //  !value || value[0].size <= 5242880
+    //  )
+    // .test('fileType', 'Unsupported file format', (value) => true
+    //   // !value || ['image/jpeg', 'image/png', 'image/gif'].includes(value[0].type)
+    // ),
   });
 
   const form = useForm({
@@ -140,25 +140,11 @@ export default function PersonalInfo({ personal }) {
                         name="image"
                         // ref={register}
                         className=" hidden"
-                        onChange={ async (e) => {
+                        onChange={  (e) => {
                         
-                            const selectedFile = e.target.files;
-                            try {
-                              // Validate the file object against the schema
-                              await schema.validate({ image: selectedFile }, { abortEarly: false });
-                              console.log('selected',selectedFile);
-                              // If validation succeeds, set the preview image
-                              setPreviewImage(selectedFile);
-                              // Clear any previous errors
-                              // setError('file',null);
-                            } catch (validationError) {
-                              console.log('error',validationError);
-                              // If validation fails, set the error message
-                              setError('file', validationError.errors[0]);
-                              // Clear the preview image
-                              setPreviewImage(null);
-                            }
-                          
+                            const selectedFile = e.target.files[0];
+                            setPreviewImage(selectedFile);
+                            
                           // setValue("file", e.target.files[0]);
                           // setPreviewImage(e.target.files[0]);
                         }}

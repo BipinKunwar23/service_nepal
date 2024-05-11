@@ -13,4 +13,10 @@ class Location extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
+    
+        public function serviceAddresses()
+        {
+            return $this->hasMany(ServiceAddress::class,'location_id');
+        }
+    
 }

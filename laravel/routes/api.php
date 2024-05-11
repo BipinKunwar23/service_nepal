@@ -56,6 +56,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
 Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::post('/create', 'create');
     Route::middleware('auth:sanctum')->get('/get', [UserController::class, 'get']);
@@ -88,20 +91,29 @@ Route::prefix('profile')->middleware('auth:sanctum')->controller(ProfileControll
 
     // Route::middleware('auth:sanctum')->get('/get',[UserController::class,'get']);
 
-    Route::get('/view', 'viewProfile');
-    Route::post('/create', 'create');
-    Route::post('/security', 'addSecurity');
+    Route::get('view', 'viewProfile');
+    Route::post('create', 'create');
+    Route::post('security', 'addSecurity');
+    Route::post('edit/photo', 'changeProfileImage');
+    Route::put('edit/address', 'changeAddress');
+    Route::put('edit/phone', 'changePhoneNumber');
+    Route::put('edit/bio', 'changeBio');
+    Route::put('edit/name', 'changeName');
+
+
+
+
 
     Route::delete('/delete/{profile}', 'delete');
 });
 
-Broadcast::routes(['middleware' => ['auth:sanctum']]);
 Route::prefix('chat')->middleware('auth:sanctum')->controller(ChatController::class)->group(function () {
 
     // Route::get('chat/get',[ChatController::class,'sendMessage'])->middleware('auth:sanctum')
     Route::get('private/all', 'index');
     Route::post('private/{receiverId}', 'store');
     Route::get('private/{receiverId}', 'show');
+    Route::delete('private/{receiverId}', 'deleteChat');
 });
 
 
@@ -266,10 +278,14 @@ Route::prefix('buyer')->middleware('auth:sanctum')->group(function () {
 
 
     Route::prefix('order')->controller(BuyerOrderController::class)->group(function () {
+        Route::post('service/address', 'saveServiceAddress');
         Route::post('service/{serviceId}', 'placeOrder');
+        Route::get('service/address', 'viewServiceAddress');
+
         Route::get('all', 'getAllOrders');
         Route::get('{orderId}', 'viewOrder');
         Route::put('{orderId}/cancel', 'CancelOrder');
+        Route::get('location/{sellerId}', 'viewSellerLocation');
     });
 
     Route::prefix('review')->controller(BuyerFeedbackController::class)->group(function () {
@@ -365,6 +381,8 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
 
     Route::prefix('order')->controller(SellerOrderController::class)->group(function () {
         Route::get('all', 'getAllReceivedOrders');
+        Route::get('location', 'viewOrderLocation');
+
         Route::get('view/{orderId}', 'viewOrderReceived');
         Route::put('{orderId}/accept', 'AcceptOrder');
         Route::put('{orderId}/cancel', 'CancelOrder');
@@ -372,7 +390,11 @@ Route::prefix('seller')->middleware('auth:sanctum')->group(function () {
         Route::delete('{orderId}/delete', 'DeleteOrder');
 
 
-        Route::get('cost', 'getCostByDay');
+        Route::get('statistic', 'getStatisticData');
+        Route::get('donut/city', 'getDonutCityData');
+        Route::get('donut/status/{locationId}', 'getDonutStatusData');
+
+
         Route::put('status', 'updateStatus');
     });
 });

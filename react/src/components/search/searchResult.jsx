@@ -3,17 +3,17 @@ import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useGetSearchedServiceQuery } from "../../api/buyer/filterApi";
 import ServiceCard from "../card/serviceCard";
+import CardSkeleton from "../../views/buyer/home/cardSkeleton";
 
 const SearchResult = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const service = searchParams.get("query");
 
   const { data: services, isLoading } = useGetSearchedServiceQuery(service);
-  console.log("services", services);
   if (isLoading) {
-    return;
+    <CardSkeleton/>
   }
-  if (!services || services.length === 0) {
+  if (!services || services.length===0) {
     return (
       <div className="p-10 text-xl">
         <p className="text-center">No Result Found For {service}</p>
@@ -21,13 +21,13 @@ const SearchResult = () => {
     );
   }
   return (
-    <section className="">
-      <div className="px-4 mt-3">
+    <section className="p-4">
+      <div className=" my-2">
 
-      <h2 className=" text-3xl ">Result For {service}</h2>
+      <h2 className=" text-2xl text-gray-700 font-semibold ">Result For {service}</h2>
       </div>
       <div>
-        <ServiceCard cards={services?.data} />
+        <ServiceCard cards={services?.data} url={`/user/${localStorage.getItem('name')}/service`}/>
       </div>
     </section>
   );

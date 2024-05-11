@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createReview as addReview } from "../../../redux/buyerSlice";
 import { useDispatch } from "react-redux";
 
-const createReview = ({ sellerId }) => {
+const createReview = ({ sellerId, children }) => {
   const [reviewService, { isLoading }] = useReviewServiceMutation();
 
   const { register, control, handleSubmit } = useForm();
@@ -32,28 +32,25 @@ const createReview = ({ sellerId }) => {
       });
   };
   return (
-    <section className="p-5 justify-center grid">
-      <div className="w-[40Vw] border p-10 shadow  bg-white ">
-        <div className="border-b mb-4 grid justify-end">
-          <button
-            className="text-xl text-blue-600 "
-            onClick={() => {
-              dispatch(addReview(false));
-            }}
-          >
-            {" "}
-            X
-          </button>
-        </div>
-        <h2 className="font-semibold text-gray-700 text-xl mb-6">
+    <section className=" w-[35Vw]  rounded border p-6 shadow space-y-4 bg-white  ">
+        <div className="border-b pb-2  mb-6 flex justify-between">
+        <h2 className="font-semibold text-gray-700 text-xl ">
           Review and Rating
         </h2>
+         {
+          children
+         }
+        </div>
+        
         <form
           action=""
-          className="space-y-4"
+          className="space-y-4   "
           onSubmit={handleSubmit(handleReview)}
+          
         >
-          <div className="space-y-8 border p-8">
+          <div className="h-[70Vh] overflow-y-auto">
+
+          <div className="space-y-8 border mb-4 p-8">
             <p className="text-slate-600 text-[2em]  text-center ">
               How was your experience?
             </p>
@@ -83,6 +80,8 @@ const createReview = ({ sellerId }) => {
               placeholder="Write your review "
             ></textarea>
           </div>
+          </div>
+
           <div className="">
             <button
               type="submit "
@@ -92,7 +91,6 @@ const createReview = ({ sellerId }) => {
             </button>
           </div>
         </form>
-      </div>
     </section>
   );
 };

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Buyer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProviderResource;
 use App\Models\BrowseHistory;
+use App\Models\Description;
+use App\Models\Feedback;
 use App\Models\Location;
 use App\Models\Option;
 use App\Models\OptionUser;
@@ -41,14 +43,15 @@ class FilterSearchController extends Controller
             ->orwhereHas('service', function ($query) use ($keyword) {
                 $query->where('keywords', 'like', '%' . $keyword . '%');
             })
-            ->orWhereHas('category', function ($query) use ($keyword) {
+
+            ->orWhereHas('service.subcategory', function ($query) use ($keyword) {
                 $query->Where('keywords', 'like', '%' . $keyword . '%');
             })
-            ->orWhereHas('subcategory', function ($query) use ($keyword) {
+            ->orWhereHas('service.subcategory.category', function ($query) use ($keyword) {
                 $query->Where('keywords', 'like', '%' . $keyword . '%');
             })
             ->select('keywords')->distinct()->get();
-        return $services;
+        return response()->json($services);
     }
 
 
@@ -63,29 +66,29 @@ class FilterSearchController extends Controller
 
 
 
-        $service = OptionUser::where('keywords', 'like', '%' . $keyword . '%')
+        $service = OptionUser::where('status', "Active")->where('keywords', 'like', '%' . $keyword . '%')
 
             ->orwhereHas('service', function ($query) use ($keyword) {
                 $query->where('keywords', 'like', '%' . $keyword . '%');
             })
-            ->orWhereHas('category', function ($query) use ($keyword) {
+            ->orWhereHas('service.subcategory', function ($query) use ($keyword) {
                 $query->Where('keywords', 'like', '%' . $keyword . '%');
             })
-            ->orWhereHas('subcategory', function ($query) use ($keyword) {
+            ->orWhereHas('service.subcategory.category', function ($query) use ($keyword) {
                 $query->Where('keywords', 'like', '%' . $keyword . '%');
             });
         $data = $this->services->getBuyerServiceCards($service)->paginate(20);
         return response()->json($data);
     }
 
-
     public function getFilterTypes($serviceId)
     {
+      
+
 
         $data = OptionUser::whereHas('service', function ($query) use ($serviceId) {
             $query->where('id', $serviceId);
-        });
-
+        })->where('status', 'Active');
 
         $user = User::whereHas('options', function ($query) use ($serviceId) {
             $query->where('option_user.service_id', $serviceId);
@@ -105,15 +108,47 @@ class FilterSearchController extends Controller
             ->get();
 
         $optionId = $data->pluck('id');
-        $budget = package::whereIn('service_id', $optionId)
-            ->selectRaw('MIN(price) as min, MAX(price) as max')
-            ->get();
+        $service = Service::find($serviceId);
+        if ($service->type === "general") {
+            $budget = package::whereHas('service', function ($query) use ($optionId) {
+                $query->where('status', 'Active')->whereIn('id', $optionId);
+            })
+                ->selectRaw('MIN(price) as min, AVG(price) as mid, MAX(price) as max')
+                ->get();
+        } else {
+            $budget = Description::whereHas('service', function ($query) use ($optionId) {
+                $query->where('status', 'Active')->whereIn('id', $optionId);
+            })
+
+                ->selectRaw('MIN(price) as min, AVG(price) as mid, MAX(price) as max')
+                ->get();
+        }
+        $minPrice = $budget[0]->min;
+        $midPrice = intval($budget[0]->mid);
+        $maxPrice = $budget[0]->max;
+
+        // Compute quartiles (Q1, Q2 (median), Q3)
+        $q1 = $minPrice + 0.25 * ($midPrice - $minPrice); // Q1
+        $q3 = $midPrice + 0.25 * ($maxPrice - $midPrice);
+
+        $rating=Feedback::whereHas('seller',function($query) use($serviceId){
+            $query->whereHas('options',function($query) use($serviceId){
+                $query->where('option_user.service_id',$serviceId);
+            });
+        })
+        ->selectRaw('COUNT(stars) as count, stars')
+            ->groupBy('stars')
+        ->get();
 
         return response()->json(
             [
                 'options' => $options,
                 'locations' => $location,
-                'budget' => $budget,
+                'budget' => [
+                    'low' => $q1,
+                    'high' => $q3,
+                ],
+                'rating'=>$rating
             ]
         );
     }
@@ -123,9 +158,8 @@ class FilterSearchController extends Controller
     public function getfilteredService(Request $request, $serviceId)
     {
 
-        // $types = $request->input('price');
-        // $typeArray = explode(',', $types);
-        // return response()->json($typeArray);
+         $type=Service::find($serviceId)->type;
+
         if (!$request->all()) {
             BrowseHistory::create([
                 'service_id' => $serviceId,
@@ -140,7 +174,7 @@ class FilterSearchController extends Controller
 
         $query->whereHas('service', function ($query) use ($serviceId) {
             $query->where('id', $serviceId);
-        });
+        })->where('status', 'Active');
 
 
 
@@ -157,33 +191,59 @@ class FilterSearchController extends Controller
                 });
             })
             ->when($request->has('rating'), function ($query) use ($request) {
-                $query->whereHas('ratings', function ($query) use ($request) {
-                    $query->selectRaw('avg(stars) as avg_rating')
-                        ->havingRaw('avg_rating >= ?', [$request->input('rating')]);
+                $query->whereHas('user.feedbacks', function ($query) use ($request) {
+                  
+                    $query->whereIn('stars',explode(',', $request->input('rating')));
                 });
             })
-            ->when($request->has('price'), function ($query) use ($request) {
-                $query->whereHas('prices.packages', function ($query) use ($request) {
-                    $types = $request->input('price');
-                    $typeArray = explode(',', $types);
-                    if ($typeArray[0] === 'low') {
+            ->when($request->has('price'), function ($query) use ($request, $type ) {
+                if($type==="general"){
+                    $query->whereHas('packages', function ($query) use ($request) {
+                        $types = $request->input('price');
+                        $typeArray = explode(',', $types);
+                        if ($typeArray[0] === 'low') {
+    
+                            $query->where('price', '<=', $typeArray[1]);
+                        }
+                        if ($typeArray[0] === 'mid') {
+    
+                            $query->where('price', '>=', $typeArray[1])->where('price', '<=', $typeArray[2]);
+                        }
+    
+                        if ($typeArray[0] === 'high') {
+    
+                            $query->where('price', '>=', $typeArray[1]);
+                        }
+                        if ($typeArray[0] === 'custom') {
+    
+                            $query->where('price', '>=', $typeArray[1])->where('price', '<=', $typeArray[2]);
+                        }
+                    });
 
-                        $query->where('price', '<=', $typeArray[1]);
-                    }
-                    if ($typeArray[0] === 'mid') {
-
-                        $query->where('price', '>=', $typeArray[1])->where('price', '<=', $typeArray[2]);
-                    }
-
-                    if ($typeArray[0] === 'high') {
-
-                        $query->where('price', '>=', $typeArray[1]);
-                    }
-                    if ($typeArray[0] === 'custom') {
-
-                        $query->where('price', '>=', $typeArray[1])->where('price', '<=', $typeArray[2]);
-                    }
-                });
+                }
+                else {
+                    $query->whereHas('description', function ($query) use ($request) {
+                        $types = $request->input('price');
+                        $typeArray = explode(',', $types);
+                        if ($typeArray[0] === 'low') {
+    
+                            $query->where('price', '<=', $typeArray[1]);
+                        }
+                        if ($typeArray[0] === 'mid') {
+    
+                            $query->where('price', '>=', $typeArray[1])->where('price', '<=', $typeArray[2]);
+                        }
+    
+                        if ($typeArray[0] === 'high') {
+    
+                            $query->where('price', '>=', $typeArray[1]);
+                        }
+                        if ($typeArray[0] === 'custom') {
+    
+                            $query->where('price', '>=', $typeArray[1])->where('price', '<=', $typeArray[2]);
+                        }
+                    });
+                }
             });
 
         $services = $this->services->getBuyerServiceCards($query)->paginate(20);

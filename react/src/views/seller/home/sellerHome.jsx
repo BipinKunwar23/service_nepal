@@ -16,11 +16,11 @@ const sellerHome = ({ children }) => {
   if (!isDefault) {
     return (
       <section className="flex  ">
-        <div className="w-[20Vw]  sticky top-0 shadow h-screen  ">
+        <div className="w-[17Vw] p-2 sticky top-0 bg-[rgba(0,0,0,0.7)] h-screen  ">
           <Sidebar />
         </div>
 
-        <section className="flex-1 border overflow-y-auto ">
+        <section className="flex-1 border overflow-y-auto hide-scrollbar  ">
           <div className="border-b ">
             <SellerNavbar />
           </div>

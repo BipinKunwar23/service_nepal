@@ -84,7 +84,7 @@ class StandardController extends Controller
   public function getValuesByStandard($id)
   {
 
-    $service = DB::table('standard_values')->where('standard_id', $id)->latest()->get();
+    $service = DB::table('standard_values')->where('standard_id', $id)->get();
     return $service;
     // if ($service) {
     //   return CatServiceResource::collection($service);

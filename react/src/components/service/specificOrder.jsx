@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { setChat } from "../../redux/buyerSlice";
 import { setOrderDetails } from "../../redux/sellerSlice";
 import { useDispatch } from "react-redux";
 
-const SpecificOrder = ({  price }) => {
+const SpecificOrder = ({  price,sellerId }) => {
   const [count, setCount] = useState(1);
   useEffect(() => {
     dispatch(setOrderDetails({quantity:count,cost:price * count}));
@@ -47,7 +47,15 @@ const dispatch=useDispatch()
         <button
           className="w-full box-border text-[1.2em] bg-gray-700 text-white p-2 rounded-sm "
           onClick={() => {
-            navigate("order", {
+            sessionStorage.setItem('quantity',count)
+            sessionStorage.setItem('cost',price * count)
+
+            navigate({
+              pathname: `order`,
+              search: createSearchParams({
+                seller:sellerId,
+              }).toString(),
+            }, {
               state: {
                 path: location.pathname,
               },

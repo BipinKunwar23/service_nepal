@@ -23,6 +23,10 @@ Broadcast::channel('private-chat', function ($user) {
     return !is_null($user);
 });
 
+Broadcast::channel('user-status', function ($user) {
+    return $user;
+});
+
 Broadcast::channel('private-notification', function ($user) {
     return !is_null($user);
 });

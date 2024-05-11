@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserStatusEvent;
 use App\Http\Requests\useAuthRequest;
 use App\Models\Role;
 use App\Models\User;
@@ -15,7 +16,7 @@ class UserController extends Controller
     public function create(useAuthRequest $request)
     {
         $validate = $request->validated();
-        $user = User::create(collect($validate)->put('role_id',2)->toArray());
+        $user = User::create(collect($validate)->put('role_id', 2)->toArray());
         $token = $user->createToken('mytoken')->plainTextToken;
 
 
@@ -24,7 +25,7 @@ class UserController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'message' => 'Register successfully',
-            'role'=>'buyer',
+            'role' => 'buyer',
 
         ], 200)->withCookie('mytoken', $token, 1000);
 
@@ -47,19 +48,19 @@ class UserController extends Controller
                 'password' => 'Wrong password',
             ]);
         $token = $user->createToken('mytoken')->plainTextToken;
-   
+
         return response()->json([
             'message' => 'Login successfully ',
             'id' => $user->id,
             'status' => 200,
             'photo' => $profile ? "http://localhost:8000/" . $profile->photo : null,
             'name' => $user->name,
-            'role'=>$user->role->role,
+            'role' => $user->role->role,
             'token' => $token,
         ], 200)->withCookie('mytoken', $token, config('sanctum.lifetime'), null, null, true, true);
     }
 
-  
+
     public function update(useAuthRequest $request, User  $user)
     {
 
@@ -95,7 +96,7 @@ class UserController extends Controller
         }
         return false;
     }
-    
+
     public function viewAll()
     {
         $users = User::all();

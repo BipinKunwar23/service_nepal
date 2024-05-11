@@ -33,7 +33,7 @@ const Requirements = ({data}) => {
         .unwrap()
         .then((response) => {
           console.log("response", response);
-          dispatch(setStepCount(6));
+          dispatch(setStepCount(5));
   
           // navigate(`${location?.state?.path} `, { replace: true });
         })
@@ -46,7 +46,7 @@ const Requirements = ({data}) => {
       .unwrap()
       .then((response) => {
         console.log("response", response);
-        dispatch(setStepCount(6));
+        dispatch(setStepCount(5));
 
         // navigate(`${location?.state?.path} `, { replace: true });
       })
